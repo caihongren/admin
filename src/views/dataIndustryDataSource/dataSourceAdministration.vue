@@ -39,8 +39,8 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="float:left;border-left: 5px solid #1ab394;padding-left: 10px;color: #1ab394;">数据源列表</p>
-        <el-button type="text" icon="el-icon-plus" style="float:right;color: #1ab394;" @click="addisanswer=true">添加数据源</el-button>
+        <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据源列表</p>
+        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addisanswer=true">添加数据源</el-button>
       </div>
       <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" :default-sort="{prop: 'name', order: 'descending'}">
         <el-table-column fixed label="序号" type="index" min-width="100" />
@@ -54,10 +54,10 @@
 
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #1ab394;" @click="see(scope.row.id)">查看</el-button>
-            <el-button type="text" style="color: #1ab394;" @click="seedata(scope.row.id)">查看数据</el-button>
+            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
+            <el-button type="text" style="color: #4283d8;" @click="seedata(scope.row.id)">查看数据</el-button>
 
-            <el-button type="text" style="color: #1ab394;" @click="modify(scope.row.id)">修改</el-button>
+            <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
 
           </template>
@@ -197,7 +197,7 @@
     </el-dialog>
 
     <!-- 产看数据表弹出框 -->
-    <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="数据源详情">
+    <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="查看数据">
       <el-select v-model="itemlist" placeholder="请选择排序依据" style="width:30%" @change="addFileInput(itemlist)">
         <el-option
           v-for="item in teacherOptions"
@@ -585,7 +585,7 @@ export default {
     },
     // 表格样式设置
     headClass() {
-      return 'text-align: center;background:#dff0d8;color:#868e98'
+      return 'text-align: center;background:#4283d8;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -614,7 +614,6 @@ export default {
       this.isanswer = true
       getDatabase(id).then(res => {
         if (res.code == 0) {
-          console.log(res, '5555')
           this.lookForm.name = res.data.name
           this.lookForm.type = res.data.type
           this.lookForm.databaseType = res.data.databaseType
@@ -630,7 +629,6 @@ export default {
     modify(id) {
       this.changeisanswe = true
       getDatabase(id).then(res => {
-        console.log(res, '789')
         this.lookForm.name = res.data.name
         this.lookForm.type = res.data.type
         this.lookForm.databaseType = res.data.databaseType
@@ -759,8 +757,8 @@ export default {
   padding-bottom: 40px;
 }
 .dataSource .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .head {
   background-color: #ffffff;
@@ -768,10 +766,11 @@ export default {
   padding-top: 2%;
   padding-left: 1%;
   padding-right: 1%;
+  margin-bottom: 10px;
+
 }
 .conter {
   background-color: #ffffff;
-  margin-top: 10px;
   padding-left: 1%;
   padding-right: 1%;
 
@@ -805,8 +804,8 @@ export default {
   line-height: 33px;
 }
 .dialog .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .dialog .el-form-item__label {
   font-size: 12px;

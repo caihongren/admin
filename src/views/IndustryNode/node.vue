@@ -24,8 +24,8 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="float:left;border-left: 5px solid #1ab394;padding-left: 10px;color: #1ab394;">企业节点列表</p>
-        <el-button type="text" icon="el-icon-plus" style="float:right;color: #1ab394;" @click="addisanswer=true">添加企业节点</el-button>
+        <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">企业节点列表</p>
+        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addisanswer=true">添加企业节点</el-button>
       </div>
       <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass">
         <el-table-column fixed label="序号" type="index" min-width="100" />
@@ -35,8 +35,8 @@
         <el-table-column prop="address" label="类型" min-width="180" />
         <el-table-column label="操作" min-width="250">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #1ab394;" @click="see(scope.row)">查看</el-button>
-            <el-button type="text" style="color: #1ab394;" @click="modify(scope.row)">修改</el-button>
+            <el-button type="text" style="color: #4283d8;" @click="see(scope.row)">查看</el-button>
+            <el-button type="text" style="color: #4283d8;" @click="modify(scope.row)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
 
           </template>
@@ -250,7 +250,7 @@ export default {
       })
     },
     headClass() {
-      return 'text-align: center;background:#dff0d8;color:#868e98'
+      return 'text-align: center;background:#4283d8;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -306,8 +306,8 @@ export default {
   padding-bottom: 40px;
 }
 .node .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .head {
   background-color: #ffffff;
@@ -315,11 +315,11 @@ export default {
   padding-top: 2%;
   padding-left: 1%;
   padding-right: 1%;
+  margin-bottom: 10px;
 
 }
 .conter {
   background-color: #ffffff;
-  margin-top: 10px;
   padding-left: 1%;
   padding-right: 1%;
 
@@ -354,8 +354,8 @@ export default {
   line-height: 33px;
 }
 .dialog .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .dialog .el-form-item__label{
   font-size: 12px;

@@ -1,7 +1,7 @@
 <template>
   <div class="personnel">
-    <p style="float:left;border-left: 5px solid #1ab394;padding-left: 10px;color: #1ab394;">人员管理列表</p>
-    <el-button type="text" icon="el-icon-plus" style="float:right;color: #1ab394;" @click="dialogFormVisibleadd=true">添加用户</el-button>
+    <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">人员管理列表</p>
+    <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="dialogFormVisibleadd=true">添加用户</el-button>
     <el-table
       class="table"
       :data="tableData"
@@ -19,7 +19,7 @@
         <template slot-scope="scope">
           <el-button type="text" round size="mini" style="color: #d05e5e;" @click="changePassword(scope.row.id)">重置密码</el-button>
           <el-button v-if="scope.row.state=='0'" type="text" style="color: #d05e5e;" round size="mini" @click="Deactivation(scope.row.id)">停用</el-button>
-          <el-button v-if="scope.row.state=='1'" type="text" style="color: #1ab394;" round size="mini" @click="startUp(scope.row.id)">启动</el-button>
+          <el-button v-if="scope.row.state=='1'" type="text" style="color: #4283d8;" round size="mini" @click="startUp(scope.row.id)">启动</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -27,7 +27,7 @@
       <el-pagination :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
     <!-- 新增加弹出框 -->
-    <el-dialog title="新增用户" :visible.sync="dialogFormVisibleadd" width="35%">
+    <el-dialog title="新增用户" :visible.sync="dialogFormVisibleadd" width="25%">
       <el-form ref="formadd" :model="formadd" :rules="rules" label-width="70px">
         <el-form-item label="名称" prop="name">
           <el-input v-model="formadd.name" maxlength="20" placeholder="请输入名称" />
@@ -49,7 +49,7 @@
           <el-input v-model="defaultPassword" style="width:26%" :disabled="true" />
         </el-form-item>
         <el-form-item>
-          <div style="width: 200px;float:right">
+          <div style="width: 40%;float:right">
             <el-button type="primary" size="small" @click="addteacher('formadd')">确认</el-button>
             <el-button size="small" @click="Reset">重置</el-button>
           </div>
@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#dff0d8;color:#868e98'
+      return 'text-align: center;background:#4283d8;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -201,7 +201,6 @@ export default {
         if (valid) {
           addUser(this.formadd)
             .then(res => {
-              console.log(res)
               if (res.code == 0) {
                 this.$message({
                   showClose: true,
@@ -256,7 +255,6 @@ export default {
           accountDeactivate({
             id: row
           }).then(res => {
-            console.log(res, '888')
             if (res.code == 0) {
               this.$message({
                 showClose: true,
@@ -297,7 +295,6 @@ export default {
           accountEnable({
             id: row
           }).then(res => {
-            console.log(res, '888')
             if (res.code == 0) {
               this.$message({
                 showClose: true,
@@ -346,9 +343,9 @@ export default {
 </style>
 <style>
 .btnFalses{
-    background: #1ab394 !important;
+    background: #4283d8 !important;
     color:#fff !important;
-    border:#1ab394 !important;
+    border:#4283d8 !important;
 }
 .personnel .el-input__inner {
   height: 33px;
@@ -368,8 +365,8 @@ export default {
   text-align: center
 } */
 .personnel .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 
 </style>

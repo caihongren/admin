@@ -187,7 +187,7 @@ export default Vue.extend({
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#dff0d8;color:#868e98'
+      return 'text-align: center;background:#4283d8;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -264,7 +264,6 @@ export default Vue.extend({
 
           accountId: user
         }).then(res => {
-          console.log(res, '登录退出')
           if (res.code == 0) {
             // 退出清除缓存信息
             sessionStorage.clear()
@@ -358,15 +357,15 @@ export default Vue.extend({
 </style>
 <style>
 .btnFalses {
-  background: #1ab394 !important;
+  background: #4283d8 !important;
   color: #fff !important;
-  border: #1ab394 !important;
+  border: #4283d8 !important;
 }
 .mylectures .el-tabs__nav-wrap::after {
   height: 0px;
 }
 .mylectures .el-tabs__item.is-active {
-  color: #1ab394;
+  color: #4283d8;
   /* background-color: #cdd9f1; */
 }
 .mylectures .el-tabs__header {
@@ -379,7 +378,7 @@ export default Vue.extend({
   line-height: 60px;
 }
 .mylectures .el-tabs__active-bar {
-   background-color: #1ab394;
+   background-color: #4283d8;
 
 }
 
@@ -390,12 +389,12 @@ export default Vue.extend({
   line-height: 60px;
 }
 .mylectures .el-tabs__item:hover{
-  color: #1ab394;
+  color: #4283d8;
 
 }
 .modify .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .mylectures .el-input__inner {
   height: 33px;

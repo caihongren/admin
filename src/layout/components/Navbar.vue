@@ -73,9 +73,8 @@ export default {
 
           accountId: user
         }).then(res => {
-          console.log(res, '登录退出')
           if (res.code == 0) {
-          // 退出清除缓存信息
+            // 退出清除缓存信息
             sessionStorage.clear()
             localStorage.clear()
             this.$router.push('/login')
@@ -118,7 +117,7 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
-padding-right: 6%;
+    padding-right: 7px;
     &:focus {
       outline: none;
     }

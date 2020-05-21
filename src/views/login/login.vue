@@ -28,7 +28,7 @@
         <el-col :span="15">
           <el-form-item prop="pictureCode">
             <span class="svg-container">
-              <i class="el-icon-key" />
+              <i class="el-icon-key" style="font-weight: 700;font-size: 20px;" />
             </span>
             <el-input :key="pictureCode" v-model="loginUser.pictureCode" placeholder="请输入验证码" name="pictureCode" type="text" tabindex="1" auto-complete="on" />
           </el-form-item>
@@ -83,7 +83,6 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
-        // console.log(route, 'route')
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -97,7 +96,6 @@ export default {
     // 登录验证
     account() {
       account().then(res => {
-        console.log(res, '4444')
         const pictureId = res.data.pictureId
         sessionStorage.setItem('pictureId', JSON.stringify(pictureId))
         let str = res.data.pictureCode.replace(/\. +/g, '')
@@ -121,7 +119,6 @@ export default {
         if (valid) {
           sessionStorage.clear()
           login(this.loginUser).then(res => {
-            console.log(res, '数据')
             if (res.code == 0) {
               const token = res.data.token
               const user = res.data.accountEntity
