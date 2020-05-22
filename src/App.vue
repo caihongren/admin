@@ -1,11 +1,16 @@
 <template>
-  <div id="app">
+  <div id="app" :data-color='dataColor'> 
     <router-view />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {
+      dataColor:'black',
+    }
+  },
 }
 </script>

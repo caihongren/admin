@@ -1,0 +1,32 @@
+#app{
+    &[data-color='black']{
+        $dataBgColor:black;
+        $dataTextColor:'';
+       .navbar{
+            background-color: $dataBgColor;
+        }
+        .el-scrollbar{
+            background-color:$dataBgColor ;
+            .submenu-title-noDropdown{
+                background-color: $dataBgColor !important;
+            }
+        }
+        
+    }
+
+    &[data-color='white']{
+        $dataBgColor:black;
+        $dataTextColor:'';
+       .navbar{
+            background-color: $dataBgColor;
+        }
+        .el-scrollbar{
+            background-color: black !important;
+            .submenu-title-noDropdown{
+                background-color: black !important;
+            }
+        }
+        
+    }
+}
+
