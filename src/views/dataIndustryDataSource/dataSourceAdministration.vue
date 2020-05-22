@@ -233,6 +233,7 @@ import {
 export default {
   data() {
     return {
+      putid: '',
       tableLabel: [],
       tableData: [],
       tableData2: [],
@@ -299,6 +300,7 @@ export default {
         databaseUsername: ''
       },
       lookForm: {
+        id: '',
         name: '',
         type: '',
         databaseType: '',
@@ -627,6 +629,7 @@ export default {
     },
     // 修改初始化
     modify(id) {
+      this.putid = id
       this.changeisanswe = true
       getDatabase(id).then(res => {
         this.lookForm.name = res.data.name
