@@ -9,7 +9,12 @@
             background-color:$dataBgColor ;
             .submenu-title-noDropdown{
                 background-color: $dataBgColor !important;
+                & :hover{
+                    background-color: white !important;
+                }
             }
+
+          
         }
         
     }
