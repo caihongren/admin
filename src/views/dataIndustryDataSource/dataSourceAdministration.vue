@@ -791,5 +791,11 @@ export default {
 .dialog .el-form-item__label {
   font-size: 12px;
 }
+/* .dataSource .el-table .sort-caret.ascending{
+  border-bottom-color: #fff;
+}
+.dataSource .el-table .sort-caret.descending{
+  border-top-color: red;
+} */
 </style>
 
