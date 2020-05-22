@@ -171,7 +171,7 @@ export const constantRoutes = [
         path: 'node',
         name: '企业节点管理',
         component: () => import('@/views/IndustryNode/node'),
-        meta: { title: '企业节点管理', icon: 'node' }
+        meta: { title: '企业节点管理', icon: 'enterprise' }
       }
     ]
   },

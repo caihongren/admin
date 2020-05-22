@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :data-color='dataColor'> 
+  <div id="app" :data-color="dataColor">
     <router-view />
   </div>
 </template>
@@ -9,8 +9,8 @@ export default {
   name: 'App',
   data() {
     return {
-      dataColor:'black',
+      dataColor: 'black'
     }
-  },
+  }
 }
 </script>

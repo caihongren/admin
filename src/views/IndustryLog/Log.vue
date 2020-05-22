@@ -34,7 +34,7 @@
       </div>
       <div class="conter">
         <div style="padding:10px 0;">
-          <p style="border-left: 5px solid #1ab394;padding-left: 10px;color: #1ab394;">任务日志管理列表</p>
+          <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">任务日志管理列表</p>
         </div>
         <el-table
           :data="tableData"
@@ -55,7 +55,7 @@
 
           <el-table-column label="操作" width="250">
             <template slot-scope="scope">
-              <el-button type="text" style="color: #1ab394;" @click="compileClick(scope.row)">查看</el-button>
+              <el-button type="text" style="color: #4283d8;" @click="compileClick(scope.row)">查看</el-button>
               <el-button type="text" style="color: #d05e5e;" @click="compileClick(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -69,7 +69,7 @@
     <div v-if="Sign">
       <div class="SignIn">
         <div style="padding:10px 0;">
-          <p style="border-left: 5px solid #1ab394;padding-left: 10px;color: #1ab394;">登录日志管理列表</p>
+          <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">登录日志管理列表</p>
         </div>
         <el-table
           :data="History"
@@ -227,7 +227,7 @@ export default {
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#dff0d8;color:#868e98'
+      return 'text-align: center;background:#4283d8;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -256,7 +256,6 @@ export default {
       this.loginHistory()
     },
     handleCurrentChange(val) {
-      console.log(val, '4444')
       this.offset = val
       this.loginHistory()
     },
@@ -325,11 +324,11 @@ export default {
   padding-top: 2%;
   padding-left: 1%;
   padding-right: 1%;
+  margin-bottom: 10px;
 
 }
 .conter {
   background-color: #ffffff;
-  margin-top: 10px;
   padding-left: 1%;
   padding-right: 1%;
   min-height: 700px;
@@ -347,13 +346,13 @@ export default {
 </style>
 <style>
 .log .el-button--primary {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .btnFalses{
-    background: #1ab394 !important;
+    background: #4283d8 !important;
     color:#fff !important;
-    border:#1ab394 !important;
+    border:#4283d8 !important;
 }
 .log .el-form-item__label{
     font-size: 12px;

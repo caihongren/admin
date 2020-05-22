@@ -49,7 +49,6 @@ export default {
              item.path == '/IndustrySystem' ||
              item.path == '/IndustryPersonal') {
               newlist.push(item)
-              console.log(newlist, 'newlist')
             }
           }
         } else if (user.accountNumber == 'data1') {
@@ -85,3 +84,9 @@ export default {
   }
 }
 </script>
+<style>
+.el-menu-item.is-active {
+   background-color:#1f2d3d !important;
+}
+</style>
+

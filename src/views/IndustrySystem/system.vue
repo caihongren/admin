@@ -126,7 +126,7 @@ export default Vue.extend({
   .theme {
     width: 100%;
     .current {
-      color: #1ab394;
+      color: #4283d8;
       border-bottom: 2px solid #abc5c0;
       padding-bottom: 10px;
     }
@@ -150,15 +150,15 @@ export default Vue.extend({
   text-align: center;
 }
 .btnFalses {
-  background: #1ab394 !important;
+  background: #4283d8 !important;
   color: #fff !important;
-  border: #1ab394 !important;
+  border: #4283d8 !important;
 }
 .system .el-tabs__nav-wrap::after {
   height: 0px;
 }
 .system .el-tabs__item.is-active {
-  color: #1ab394;
+  color: #4283d8;
 }
 .system .el-tabs__header {
   margin: 0 auto;
@@ -170,7 +170,7 @@ export default Vue.extend({
   line-height: 40px;
 }
 .system .el-tabs__active-bar {
-  background-color: #1ab394;
+  background-color: #4283d8;
 }
 
 .system .el-form-item__label {
@@ -180,15 +180,15 @@ export default Vue.extend({
   line-height: 60px;
 }
 .system .el-tabs__item:hover {
-  color: #1ab394;
+  color: #4283d8;
 }
 .system .el-button--primary {
   background-color: #ebb563;
   border-color: #ebb563;
 }
 .system .el-button--info {
-  background-color: #1ab394;
-  border-color: #1ab394;
+  background-color: #4283d8;
+  border-color: #4283d8;
 }
 .el-upload {
   margin-top: 3%;
@@ -210,12 +210,12 @@ export default Vue.extend({
   padding: 10px 30px;
 }
 .system .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
-  color: #1ab394;
+  color: #4283d8;
 }
 .system
   .el-tabs--border-card
   > .el-tabs__header
   .el-tabs__item:not(.is-disabled):hover {
-  color: #1ab394;
+  color: #4283d8;
 }
 </style>
