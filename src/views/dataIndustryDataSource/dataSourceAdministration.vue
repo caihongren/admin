@@ -69,7 +69,7 @@
     </div>
 
     <!-- 添加数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="数据源详情">
+    <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
         <el-form-item label="数据源名称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
@@ -124,31 +124,31 @@
       </el-form>
     </el-dialog>
     <!-- 修改数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="数据源详情">
-      <el-form ref="lookForm" :model="lookForm" label-width="100px" class="dialog">
+    <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="修改数据源">
+      <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
         <el-form-item label="数据源名称">
-          <el-input v-model="lookForm.name" placeholder="请输入数据源名称" />
+          <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
         <el-form-item label="数据源类型">
-          <el-input v-model="lookForm.type" placeholder="请输入数据源名称" :disabled="true" />
+          <el-input v-model="addForm.type" placeholder="请输入数据源名称" :disabled="true" />
         </el-form-item>
         <el-form-item label="数据库类型">
-          <el-input v-model="lookForm.databaseType" placeholder="请输入数据源名称" :disabled="true" />
+          <el-input v-model="addForm.databaseType" placeholder="请输入数据源名称" :disabled="true" />
         </el-form-item>
         <el-form-item label="数据库名称">
-          <el-input v-model="lookForm.databaseName" />
+          <el-input v-model="addForm.databaseName" />
         </el-form-item>
         <el-form-item label="连接地址">
-          <el-input v-model="lookForm.databaseUrl" />
+          <el-input v-model="addForm.databaseUrl" />
         </el-form-item>
         <el-form-item label="端口号">
-          <el-input v-model="lookForm.databasePort" />
+          <el-input v-model="addForm.databasePort" />
         </el-form-item>
         <el-form-item label="用户名">
-          <el-input v-model="lookForm.databaseUsername" />
+          <el-input v-model="addForm.databaseUsername" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input :key="password" ref="password" v-model="lookForm.password" :type="password" />
+          <el-input :key="password" ref="password" v-model="addForm.databasePassword" :type="password" />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="password === 'password' ? 'eye' : 'eye-open'" />
           </span>
@@ -167,31 +167,31 @@
       </el-form>
     </el-dialog>
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="数据源详情">
-      <el-form ref="lookForm" :model="lookForm" label-width="100px">
+    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看数据源">
+      <el-form ref="addForm" :model="addForm" label-width="100px">
         <el-form-item label="数据源名称">
-          <el-input v-model="lookForm.name" :disabled="true" />
+          <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
         <el-form-item label="数据源类型">
-          <el-input v-model="lookForm.type" :disabled="true" />
+          <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
         <el-form-item label="数据库类型">
-          <el-input v-model="lookForm.databaseType" :disabled="true" />
+          <el-input v-model="addForm.databaseType" :disabled="true" />
         </el-form-item>
         <el-form-item label="数据库名称">
-          <el-input v-model="lookForm.databaseName" :disabled="true" />
+          <el-input v-model="addForm.databaseName" :disabled="true" />
         </el-form-item>
         <el-form-item label="连接地址">
-          <el-input v-model="lookForm.databaseUrl" :disabled="true" />
+          <el-input v-model="addForm.databaseUrl" :disabled="true" />
         </el-form-item>
         <el-form-item label="端口号">
-          <el-input v-model="lookForm.databasePort" :disabled="true" />
+          <el-input v-model="addForm.databasePort" :disabled="true" />
         </el-form-item>
         <el-form-item label="用户名">
-          <el-input v-model="lookForm.databaseUsername" :disabled="true" />
+          <el-input v-model="addForm.databaseUsername" :disabled="true" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="lookForm.password" :disabled="true" />
+          <el-input v-model="addForm.databasePassword" :disabled="true" />
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -253,28 +253,6 @@ export default {
         type: '',
         name: ''
       },
-
-      // tableDome: [{
-      //   name: 'creatorName',
-      //   label: '创建人'
-      // },
-      // {
-      //   name: 'name',
-      //   label: '名称'
-      // },
-      // {
-      //   name: 'created',
-      //   label: '创建时间'
-      // },
-      // {
-      //   name: 'type',
-      //   label: '类型'
-      // },
-      // {
-      //   name: 'databaseType',
-      //   label: '数据库类型'
-      // }
-      // ],
       addDataShow: false,
       addFileShow: false,
       addForm: {
@@ -288,29 +266,7 @@ export default {
         databaseUrl: '',
         databaseUsername: ''
       },
-      updateForm: {
-        name: '',
-        type: '',
-        creatorId: '',
-        databaseType: '',
-        databaseName: '',
-        databasePassword: '',
-        databasePort: '',
-        databaseUrl: '',
-        databaseUsername: ''
-      },
-      lookForm: {
-        id: '',
-        name: '',
-        type: '',
-        databaseType: '',
-        databaseName: '',
-        databaseUrl: '',
-        databasePort: '',
-        databaseUsername: '',
-        password: ''
 
-      },
       changeisanswe: false,
       addisanswer: false,
       isanswer: false,
@@ -479,6 +435,7 @@ export default {
           const user = JSON.parse(sessionStorage.getItem('user')).id
           this.addForm.creatorId = user
           connectionTest(this.addForm).then(res => {
+            console.log(res, '678')
             if (res.code == 0) {
               this.$message({
                 showClose: true,
@@ -505,6 +462,9 @@ export default {
             })
         }
       }
+    },
+    modifyTest() {
+
     },
     // 添加数据源
     database() {
@@ -580,6 +540,13 @@ export default {
               this.addForm.databasePort = ''
               this.addForm.databaseUrl = ''
               this.addForm.databaseUsername = ''
+            } else {
+              this.$message({
+                showClose: true,
+                duration: 1000,
+                type: 'error',
+                message: '添加失败'
+              })
             }
           })
         }
@@ -616,14 +583,14 @@ export default {
       this.isanswer = true
       getDatabase(id).then(res => {
         if (res.code == 0) {
-          this.lookForm.name = res.data.name
-          this.lookForm.type = res.data.type
-          this.lookForm.databaseType = res.data.databaseType
-          this.lookForm.databaseName = res.data.databaseName
-          this.lookForm.databaseUrl = res.data.databaseUrl
-          this.lookForm.databasePort = res.data.databasePort
-          this.lookForm.databaseUsername = res.data.databaseUsername
-          this.lookForm.password = res.data.databasePassword
+          this.addForm.name = res.data.name
+          this.addForm.type = res.data.type
+          this.addForm.databaseType = res.data.databaseType
+          this.addForm.databaseName = res.data.databaseName
+          this.addForm.databaseUrl = res.data.databaseUrl
+          this.addForm.databasePort = res.data.databasePort
+          this.addForm.databaseUsername = res.data.databaseUsername
+          this.addForm.databasePassword = res.data.databasePassword
         }
       })
     },
@@ -632,60 +599,60 @@ export default {
       this.putid = id
       this.changeisanswe = true
       getDatabase(id).then(res => {
-        this.lookForm.name = res.data.name
-        this.lookForm.type = res.data.type
-        this.lookForm.databaseType = res.data.databaseType
-        this.lookForm.databaseName = res.data.databaseName
-        this.lookForm.databaseUrl = res.data.databaseUrl
-        this.lookForm.databasePort = res.data.databasePort
-        this.lookForm.databaseUsername = res.data.databaseUsername
-        this.lookForm.password = res.data.databasePassword
+        this.addForm.name = res.data.name
+        this.addForm.type = res.data.type
+        this.addForm.databaseType = res.data.databaseType
+        this.addForm.databaseName = res.data.databaseName
+        this.addForm.databaseUrl = res.data.databaseUrl
+        this.addForm.databasePort = res.data.databasePort
+        this.addForm.databaseUsername = res.data.databaseUsername
+        this.addForm.databasePassword = res.data.databasePassword
       })
     },
     updateDatabase() {
-      if (this.lookForm.name == '') {
+      if (this.addForm.name == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
           message: '请输入数据源名称'
         })
-      } else if (this.lookForm.type == '') {
+      } else if (this.addForm.type == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
           message: '请输入数据源类型'
         })
-      } else if (this.lookForm.databaseName == '') {
+      } else if (this.addForm.databaseName == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
           message: '请输入数据库名称'
         })
-      } else if (this.lookForm.databaseType == '') {
+      } else if (this.addForm.databaseType == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
           message: '请输入数据源名称'
         })
-      } else if (this.lookForm.databaseUrl == '') {
+      } else if (this.addForm.databaseUrl == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
           message: '请输入连接地址'
         })
-      } else if (this.lookForm.databasePort == '') {
+      } else if (this.addForm.databasePort == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
           message: '请输入端口号'
         })
-      } else if (this.lookForm.databaseUsername == '') {
+      } else if (this.addForm.databaseUsername == '') {
         this.$message({
           showClose: true,
           duration: 1000,
@@ -693,7 +660,17 @@ export default {
           message: '请输入用户名'
         })
       } else {
-        putDatabase(this.lookForm).then(res => {
+        putDatabase({
+          databaseName: this.addForm.databaseName,
+          databasePassword: this.addForm.databasePassword,
+          databasePort: this.addForm.databasePort,
+          databaseType: this.addForm.databaseType,
+          databaseUrl: this.addForm.databaseUrl,
+          databaseUsername: this.addForm.databaseUsername,
+          id: this.putid,
+          name: this.addForm.name,
+          type: this.addForm.type
+        }).then(res => {
           if (res.code == 0) {
             this.$message({
               showClose: true,
@@ -702,6 +679,7 @@ export default {
               message: '修改成功'
             })
             this.changeisanswe = false
+            this.list()
           }
         })
       }
@@ -709,7 +687,7 @@ export default {
 
     // 删除
     det(id) {
-      this.$confirm('此操作将删除该历史记录, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         confirmButtonClass: 'btnFalses',
