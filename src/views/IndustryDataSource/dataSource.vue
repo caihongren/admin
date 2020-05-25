@@ -12,19 +12,6 @@
             <el-option label="文件" value="file" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="排序依据">
-          <el-select v-model="query.orderBy" placeholder="请选择排序依据">
-            <el-option label="名称" value="s.name" />
-            <el-option label="创建人" value="a.name" />
-            <el-option label="创建时间" value="s.created" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-select v-model="query.order" placeholder="请选择排序方式">
-            <el-option label="正序" value="asc" />
-            <el-option label="倒序" value="desc" />
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="创建时间">
           <el-date-picker v-model="times" style="margin-right:20px" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
         </el-form-item>
@@ -38,7 +25,7 @@
       <div style="padding:10px 0;">
         <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据源列表</p>
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass">
+      <el-table :data="tableData" :cell-style="rowClass" style="color:#43454a;" stripe :header-cell-style="headClass">
         <el-table-column fixed label="序号" type="index" min-width="100" />
 
         <el-table-column prop="creatorName" label="创建人" width="180" sortable />
@@ -107,7 +94,9 @@ export default {
         startTime: null,
         endTime: null,
         type: '',
-        name: ''
+        name: '',
+        startTimeStr: null,
+        endTimeStr: null
       },
       lookForm: {
         name: '',
@@ -189,10 +178,10 @@ export default {
       this.query.pageSize = this.pageSize
       this.query.pageNum = this.currentPage
 
-      // if (this.times != null && this.times.length == 2) {
-      //   this.query.startTime = this.times[0]
-      //   this.query.endTime = this.times[1]
-      // }
+      if (this.times != null && this.times.length == 2) {
+        this.query.startTimeStr = this.times[0]
+        this.query.endTimeStr = this.times[1]
+      }
       list(this.query).then(res => {
         if (res.code == 0) {
           this.tableData = res.data.result
@@ -201,7 +190,7 @@ export default {
       })
     },
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -224,7 +213,10 @@ export default {
       this.query.order = ''
       this.query.orderBy = ''
       this.query.type = ''
-      this.times = ''
+      this.query.startTimeStr = ''
+      this.query.endTimeStr = ''
+
+      this.list()
     },
     // 查看按钮
     see(id) {
@@ -261,12 +253,11 @@ export default {
 }
 .head {
   background-color: #ffffff;
- border-radius: 3px;
+  border-radius: 3px;
   padding-top: 2%;
   padding-left: 1%;
   padding-right: 1%;
   margin-bottom: 10px;
-
 }
 .conter {
   background-color: #ffffff;
@@ -279,25 +270,25 @@ export default {
 }
 </style>
 <style>
-.systemDataSource .el-form-item__label{
-    font-size: 12px;
+.systemDataSource .el-form-item__label {
+  font-size: 12px;
 }
 .systemDataSource .el-input__inner {
   height: 33px;
   line-height: 33px;
 }
 .systemDataSource .el-table__header tr,
-  .el-table__header th {
-    padding: 0;
-    height: 40px;
+.el-table__header th {
+  padding: 0;
+  height: 40px;
 }
 .systemDataSource .el-table__body tr,
-  .el-table__body td {
-    padding: 0;
-    height: 40px;
+.el-table__body td {
+  padding: 0;
+  height: 40px;
 }
- .dialog .el-form-item{
-    margin-bottom: 15px;
+.dialog .el-form-item {
+  margin-bottom: 15px;
 }
 .dialog .el-input__inner {
   height: 33px;
@@ -307,9 +298,12 @@ export default {
   background-color: #4283d8;
   border-color: #4283d8;
 }
-.dialog .el-form-item__label{
+.dialog .el-form-item__label {
   font-size: 12px;
-
+}
+ .systemDataSource .el-table th>.cell{
+  height: 50px;
+  line-height:50px;
 }
 </style>
 

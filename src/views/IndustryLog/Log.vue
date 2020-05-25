@@ -36,12 +36,7 @@
         <div style="padding:10px 0;">
           <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">任务日志管理列表</p>
         </div>
-        <el-table
-          :data="tableData"
-          stripe
-          :cell-style="rowClass"
-          :header-cell-style="headClass"
-        >
+        <el-table :data="tableData" stripe :cell-style="rowClass" :header-cell-style="headClass">
           <el-table-column fixed label="序号" type="index" width="100" />
 
           <el-table-column prop="date" label="任务名" width="180" />
@@ -71,12 +66,7 @@
         <div style="padding:10px 0;">
           <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">登录日志管理列表</p>
         </div>
-        <el-table
-          :data="History"
-          stripe
-          :cell-style="rowClass"
-          :header-cell-style="headClass"
-        >
+        <el-table style="color:#43454a;" :data="History" stripe :cell-style="rowClass" :header-cell-style="headClass">
           <el-table-column fixed label="序号" type="index" width="100" />
 
           <el-table-column prop="accountName" label="用户名" width="180" />
@@ -90,7 +80,7 @@
           </el-table-column>
         </el-table>
         <div style="text-align: center;margin-top: 5%;">
-          <el-pagination :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+          <el-pagination :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
       </div>
 
@@ -142,6 +132,7 @@ export default {
         user: '',
         region: ''
       },
+      History: [],
       task: true,
       Sign: false,
       form: {
@@ -159,6 +150,7 @@ export default {
       limit: 10,
       length: 10,
       currentPage4: 1,
+      pageSize: 10,
       newName: '',
       value: '任务日志',
       pickerOptions: {
@@ -227,7 +219,7 @@ export default {
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -320,12 +312,11 @@ export default {
 }
 .head {
   background-color: #ffffff;
- border-radius: 3px;
+  border-radius: 3px;
   padding-top: 2%;
   padding-left: 1%;
   padding-right: 1%;
   margin-bottom: 10px;
-
 }
 .conter {
   background-color: #ffffff;
@@ -334,52 +325,54 @@ export default {
   min-height: 700px;
   border-radius: 3px;
 }
-.SignIn{
-   background-color: #ffffff;
+.SignIn {
+  background-color: #ffffff;
   margin-top: 10px;
   padding-left: 1%;
   padding-right: 1%;
   min-height: 750px;
   border-radius: 3px;
 }
-
 </style>
 <style>
 .log .el-button--primary {
   background-color: #4283d8;
   border-color: #4283d8;
 }
-.btnFalses{
-    background: #4283d8 !important;
-    color:#fff !important;
-    border:#4283d8 !important;
+.btnFalses {
+  background: #4283d8 !important;
+  color: #fff !important;
+  border: #4283d8 !important;
 }
-.log .el-form-item__label{
-    font-size: 12px;
+.log .el-form-item__label {
+  font-size: 12px;
 }
 .log .el-input__inner {
   height: 33px;
   line-height: 33px;
 }
 .log .el-table__header tr,
-  .el-table__header th {
-    padding: 0;
-    height: 40px;
+.el-table__header th {
+  padding: 0;
+  height: 40px;
 }
 .log .el-table__body tr,
-  .el-table__body td {
-    padding: 0;
-    height: 40px;
+.el-table__body td {
+  padding: 0;
+  height: 40px;
 }
- .dialog .el-form-item{
-    margin-bottom: 15px;
+.dialog .el-form-item {
+  margin-bottom: 15px;
 }
 .dialog .el-input__inner {
   height: 33px;
   line-height: 33px;
 }
-.dialog .el-form-item__label{
+.dialog .el-form-item__label {
   font-size: 12px;
-
+}
+.log .el-table th > .cell {
+  height: 50px;
+  line-height: 50px;
 }
 </style>

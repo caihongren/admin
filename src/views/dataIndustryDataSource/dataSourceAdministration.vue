@@ -12,25 +12,9 @@
             <el-option label="文件" value="file" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="排序依据">
-          <el-select v-model="query.orderBy" placeholder="请选择排序依据">
-            <el-option label="名称" value="s.name" />
-            <el-option label="创建人" value="a.name" />
-            <el-option label="创建时间" value="s.created" />
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="排序">
-          <el-select v-model="query.order" placeholder="请选择排序方式">
-            <el-option label="正序" value="asc" />
-            <el-option label="倒序" value="desc" />
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="创建时间">
           <el-date-picker v-model="times" style="margin-right:20px" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
         </el-form-item>
-        <!-- <el-form-item label="数据源" style="font-size:12px">
-          <el-input v-model="query.name" placeholder="请输入数据源名称" />
-        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" size="mini" round icon="el-icon-search" @click="list">查询</el-button>
           <el-button type="warning" size="mini" round icon="el-icon-refresh" @click="Reset">重置</el-button>
@@ -42,13 +26,13 @@
         <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据源列表</p>
         <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addisanswer=true">添加数据源</el-button>
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" :default-sort="{prop: 'name', order: 'descending'}">
+      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" :default-sort="{prop: 'name', order: 'descending'}" style="color:#43454a;" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
 
         <!-- <el-table-column v-for="(item,index) in tableDome" :key="index" :label="item.label" :prop="item.name" min-width="180" /> -->
-        <el-table-column prop="creatorName" label="创建人" min-width="180" sortable />
-        <el-table-column prop="name" label="名称" min-width="180" sortable />
-        <el-table-column prop="created" label="创建时间" min-width="180" sortable />
+        <el-table-column prop="creatorName" label="创建人" min-width="180" sortable="custom" />
+        <el-table-column prop="name" label="名称" min-width="180" sortable="custom" />
+        <el-table-column prop="created" label="创建时间" min-width="180" sortable="custom" />
         <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="180" />
         <el-table-column prop="databaseType" label="数据库类型" min-width="180" />
 
@@ -117,7 +101,7 @@
               </el-upload>
             </el-col>
             <el-col :span="4">
-              <el-button type="primary" size="mini" round @click="database">确定</el-button>
+              <el-button type="primary" size="mini" round @click="adddatabase">确定</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -233,9 +217,9 @@ import {
 export default {
   data() {
     return {
+      tableData: [], // 数据列表
       putid: '',
       tableLabel: [],
-      tableData: [],
       tableData2: [],
       id333: '',
       itemlist: {},
@@ -248,8 +232,8 @@ export default {
         orderBy: '',
         pageNum: 1,
         pageSize: 10,
-        startTime: null,
-        endTime: null,
+        startTimeStr: null,
+        endTimeStr: null,
         type: '',
         name: ''
       },
@@ -307,6 +291,24 @@ export default {
     this.list()
   },
   methods: {
+    // 排序功能
+    sort_change(column) {
+      console.log(column.prop)
+      if (column.order == 'descending') {
+        this.query.order = 'desc'
+      } else if (column.order == 'ascending') {
+        this.query.order = 'asc'
+      }
+      if (column.prop == 'creatorName') {
+        this.query.orderBy = 'a.name'
+      } else if (column.prop == 'name') {
+        this.query.orderBy = 's.name'
+      } else if (column.prop == 'created') {
+        this.query.orderBy = 's.created'
+      }
+      this.list()
+    },
+
     // 获取表
     seedata(id) {
       this.id333 = id
@@ -355,13 +357,15 @@ export default {
     list() {
       this.query.pageSize = this.pageSize
       this.query.pageNum = this.currentPage
+      this.query.pageSize = this.pageSize
+
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
         this.query.creatorld = user.id
-        // if (this.times != null && this.times.length == 2) {
-        //   this.query.startTime = this.times[0]
-        //   this.query.endTime = this.times[1]
-        // }
+        if (this.times != null && this.times.length == 2) {
+          this.query.startTimeStr = this.times[0]
+          this.query.endTimeStr = this.times[1]
+        }
         list(this.query).then(res => {
           if (res.code == 0) {
             this.tableData = res.data.result
@@ -467,7 +471,7 @@ export default {
 
     },
     // 添加数据源
-    database() {
+    adddatabase() {
       if (this.addForm.name == '') {
         this.$message({
           showClose: true,
@@ -554,7 +558,7 @@ export default {
     },
     // 表格样式设置
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -573,10 +577,12 @@ export default {
     // 重置按钮
     Reset() {
       this.query.name = ''
-      this.query.order = ''
-      this.query.orderBy = ''
       this.query.type = ''
       this.times = ''
+      this.query.startTimeStr = ''
+      this.query.endTimeStr = ''
+
+      this.list()
     },
     // 查看按钮
     see(id) {
@@ -791,11 +797,9 @@ export default {
 .dialog .el-form-item__label {
   font-size: 12px;
 }
-/* .dataSource .el-table .sort-caret.ascending{
-  border-bottom-color: #fff;
+ .dataSource .el-table th>.cell{
+  height: 50px;
+  line-height:50px;
 }
-.dataSource .el-table .sort-caret.descending{
-  border-top-color: red;
-} */
 </style>
 

@@ -1,23 +1,22 @@
 <template>
   <div class="node">
     <div class="head">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form :inline="true" :model="query" class="demo-form-inline">
         <el-form-item label="企业节点" style="font-size:12px">
-          <el-input v-model="formInline.user" placeholder="请输入数据源名称" />
+          <el-input v-model="query.name" placeholder="请输入数据源名称" />
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="formInline.region" placeholder="请选择类型">
-            <el-option v-for="item in teacherOptions" :key="item.value" :label="item.label" :value="item.value" />
+          <el-select v-model="query.type" placeholder="请选择类型">
+            <el-option label="全部" value="" />
+            <el-option label="SNMS系统" value="SNMS" />
+            <el-option label="标识代理服务" value="LAS" />
           </el-select>
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker v-model="value2" style="margin-right:20px" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
-        </el-form-item>
-        <el-form-item label="创建者">
-          <el-input v-model="formInline.user" placeholder="请输入创建者名称" />
+          <el-date-picker v-model="times" style="margin-right:20px" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" round icon="el-icon-search" @click="query">查询</el-button>
+          <el-button type="primary" size="mini" round icon="el-icon-search" @click="list">查询</el-button>
           <el-button type="warning" size="mini" round icon="el-icon-refresh" @click="Reset">重置</el-button>
         </el-form-item>
       </el-form>
@@ -27,16 +26,15 @@
         <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">企业节点列表</p>
 
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass">
-        <el-table-column fixed label="序号" type="index" width="100" />
-
-        <el-table-column prop="date" label="创建人" width="180" />
-        <el-table-column prop="name" label="名称" width="180" />
-        <el-table-column prop="address" label="创建时间" />
-        <el-table-column prop="address" label="类型" />
-        <el-table-column label="操作" width="250">
+      <el-table :data="tableData" style="color:#43454a;" :cell-style="rowClass" stripe :header-cell-style="headClass" @sort-change="sort_change">
+        <el-table-column fixed label="序号" type="index" min-width="100" />
+        <el-table-column prop="creatorName" label="创建人" min-width="180" sortable="custom" />
+        <el-table-column prop="name" label="名称" min-width="180" sortable="custom" />
+        <el-table-column prop="created" label="创建时间" min-width="180" sortable="custom" />
+        <el-table-column prop="typeAlias" label="类型" min-width="180" />
+        <el-table-column label="操作" min-width="250">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #4283d8;" @click="see(scope.row)">查看</el-button>
+            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
 
           </template>
         </el-table-column>
@@ -47,22 +45,22 @@
     </div>
 
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="企业节点详情">
-      <el-form ref="form" :model="form" label-width="100px" class="dialog">
+    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看企业节点">
+      <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
         <el-form-item label="企业节点名称">
-          <el-input v-model="form.name" :disabled="true" />
+          <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
         <el-form-item label="企业节点类型">
-          <el-input v-model="form.name" :disabled="true" />
+          <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
         <el-form-item label="接口地址">
-          <el-input v-model="form.name" :disabled="true" />
+          <el-input v-model="addForm.url" :disabled="true" />
         </el-form-item>
         <el-form-item label="用户名">
-          <el-input v-model="form.name" :disabled="true" />
+          <el-input v-model="addForm.username" :disabled="true" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form.name" :disabled="true" />
+          <el-input v-model="addForm.password" :disabled="true" />
         </el-form-item>
       </el-form>
 
@@ -71,36 +69,42 @@
 </template>
 <script>
 import {
-  roleList // 获取角色
+  nodeList, // 获取企业节点列表
+  getEnterpriseNode // 查看企业节点
 } from '@/api/user.js'
 export default {
   data() {
     return {
       teacherOptions: [],
+      times: null,
+      query: {
+        putid: '',
 
-      formInline: {
-        user: '',
-        region: ''
+        order: '',
+        orderBy: '',
+        pageNum: 1,
+        pageSize: 10,
+        startTimeStr: null,
+        endTimeStr: null,
+        type: '',
+        name: ''
       },
-      form: {
+      addForm: {
         name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        type: '',
+        password: '',
+        url: '',
+        username: ''
       },
       changeisanswe: false,
       addisanswer: false,
       isanswer: false,
       offset: 0,
       limit: 10,
-      length: 10,
-      currentPage4: 1,
-      newName: '',
-      value: '',
+      length: 0, // 总条数
+      pageSize: 10, // 每页个数
+      currentPage: 1, // 当前页数
+      pageNum: 1,
       pickerOptions: {
         shortcuts: [{
           text: '本月',
@@ -124,64 +128,15 @@ export default {
           }
         }]
       },
-      value1: '',
-      value2: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
+  created() {
+    this.list()
+  },
   methods: {
-    // 获取角色
-    roleList() {
-      roleList().then(res => {
-        if (res.code == 0) {
-          this.teacherOptions = []
-          for (let i = 0; i < res.data.length; i++) {
-            this.teacherOptions.push({ label: res.data[i].alias, value: res.data[i].id })
-          }
-        } else {
-          this.$message.error({
-            showClose: true,
-            duration: 1000,
-            message: res.data.msg,
-            type: 'warning'
-          })
-        }
-      })
-    },
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -190,38 +145,73 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.limit = val
-      this.getCourseListNew()
+      this.list()
     },
     handleCurrentChange(val) {
       this.offset = val
-      this.getCourseListNew()
-    },
-    // 查询按钮
-    query() {
-
+      this.list()
     },
     // 重置按钮
     Reset() {
+      this.query.name = ''
+      this.query.type = ''
+      this.times = ''
+      this.query.startTimeStr = ''
+      this.query.endTimeStr = ''
 
+      this.list()
+    },
+    // 排序功能
+    sort_change(column) {
+      console.log(column.prop)
+      if (column.order == 'descending') {
+        this.query.order = 'desc'
+      } else if (column.order == 'ascending') {
+        this.query.order = 'asc'
+      }
+      if (column.prop == 'creatorName') {
+        this.query.orderBy = ' e.creator_id'
+      } else if (column.prop == 'name') {
+        this.query.orderBy = 'e.name'
+      } else if (column.prop == 'created') {
+        this.query.orderBy = ' e.created'
+      }
+      this.list()
+    },
+    // 查询数据列表
+    list() {
+      this.query.pageSize = this.pageSize
+      this.query.pageNum = this.currentPage
+      this.query.pageSize = this.pageSize
+
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        this.query.creatorld = user.id
+        if (this.times != null && this.times.length == 2) {
+          this.query.startTimeStr = this.times[0]
+          this.query.endTimeStr = this.times[1]
+        }
+        nodeList(this.query).then(res => {
+          if (res.code == 0) {
+            this.tableData = res.data.result
+            this.length = res.data.total
+          }
+        })
+      }
     },
     // 查看按钮
-    see(row) {
-      this.name = row.name
-      this.row = row
-
+    see(id) {
       this.isanswer = true
-    },
-    // 修改按钮
-    modify() {
-      this.changeisanswe = true
-    },
-    // 删除按钮
-    det() {
-
-    },
-    // 归档按钮
-    file() {
-
+      getEnterpriseNode(id).then(res => {
+        console.log(res, '67667')
+        if (res.code == 0) {
+          this.addForm.name = res.data.name
+          this.addForm.type = res.data.typeAlias
+          this.addForm.url = res.data.url
+          this.addForm.username = res.data.username
+          this.addForm.password = res.data.password
+        }
+      })
     }
 
   }
@@ -291,6 +281,10 @@ export default {
 .dialog .el-form-item__label{
   font-size: 12px;
 
+}
+ .node .el-table th>.cell{
+  height: 50px;
+  line-height:50px;
 }
 </style>
 

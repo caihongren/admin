@@ -3,7 +3,7 @@
     <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">人员管理列表</p>
     <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="dialogFormVisibleadd=true">添加用户</el-button>
     <el-table
-      class="table"
+      style="color:#43454a;"
       :data="tableData"
       stripe
       :cell-style="rowClass"
@@ -24,7 +24,7 @@
       </el-table-column>
     </el-table>
     <div style="text-align: center;margin-top: 5%;">
-      <el-pagination :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
     <!-- 新增加弹出框 -->
     <el-dialog title="新增用户" :visible.sync="dialogFormVisibleadd" width="25%">
@@ -101,6 +101,7 @@ export default {
       limit: 10,
       length: 10,
       currentPage4: 1,
+      pageSize: 10,
       tableData: []
     }
   },
@@ -110,7 +111,7 @@ export default {
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -171,10 +172,12 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.limit = val
+
       this.allPersonnel()
     },
     handleCurrentChange(val) {
       this.offset = val
+
       this.allPersonnel()
     },
     // 获取角色
@@ -368,6 +371,9 @@ export default {
   background-color: #4283d8;
   border-color: #4283d8;
 }
-
+ .personnel .el-table th>.cell{
+  height: 50px;
+  line-height:50px;
+}
 </style>
 

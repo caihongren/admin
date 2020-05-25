@@ -28,10 +28,11 @@ export function logout(data) {
 }
 
 // 获取所有用户
-export function userList() {
+export function userList(query) {
   return request({
     url: '/account/userList',
-    method: 'get'
+    method: 'get',
+    params: query
 
   })
 }
@@ -196,7 +197,58 @@ export function tableData(query) {
     params: query
   })
 }
+// 获取企业节点列表
+export function nodeList(query) {
+  return request({
+    url: '/node/list',
+    method: 'get',
+    params: query
+  })
+}
 
+// 删除企业节点
+export function enterpriseNode(data) {
+  return request({
+    url: '/node/enterpriseNode',
+    method: 'delete',
+    data
+  })
+}
+// 修改企业节点
+export function putEnterpriseNode(data) {
+  return request({
+    url: '/node/enterpriseNode',
+    method: 'put',
+    data
+
+  })
+}
+
+// 添加企业节点
+export function postEnterpriseNode(data) {
+  return request({
+    url: '/node/enterpriseNode',
+    method: 'post',
+    data
+  })
+}
+
+// 查看企业节点
+export function getEnterpriseNode(id) {
+  return request({
+    url: '/node/enterpriseNode?id=' + id,
+    method: 'get'
+  })
+}
+
+// 连接测试
+export function nodeConnectionTest(data) {
+  return request({
+    url: '/node/connectionTest',
+    method: 'post',
+    data
+  })
+}
 // 时间格式转换
 export function formatDate(date) {
   if (date == null || date == '' || date == undefined) {

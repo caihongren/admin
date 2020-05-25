@@ -9,7 +9,7 @@
 
         <div class="avatar-wrapper">
           <!-- <img src="./../../img/个人中心.jpg" class="user-avatar"> -->
-          <div style="color:#fff;">
+          <div style="color:#fff;font-size:16px;">
             {{ name }}
           </div>
           <i class="el-icon-caret-bottom" style="color:#fff;" />
@@ -93,7 +93,7 @@ export default {
   position: relative;
   // background: #fff;
   background: #304156;
-
+background-image: linear-gradient(143deg,#304156 20%,#2a5a98 81%,#4283d8);
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
@@ -142,9 +142,9 @@ export default {
 
     .avatar-container {
       margin-right: 30px;
-
+      cursor: pointer;
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 2px;
         position: relative;
 
         .user-avatar {

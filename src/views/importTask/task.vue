@@ -8,16 +8,8 @@
         <el-form-item label="企业节点">
           <el-input v-model="formInline.user" placeholder="请输入创建者名称" />
         </el-form-item>
-        <!-- <el-form-item label="类型">
-          <el-select v-model="formInline.region" placeholder="请选择类型">
-            <el-option v-for="item in teacherOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="创建时间">
           <el-date-picker v-model="value2" style="margin-right:20px" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
-        </el-form-item>
-        <el-form-item label="任务名">
-          <el-input v-model="formInline.user" placeholder="请输入创建者名称" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" round icon="el-icon-search" @click="query">查询</el-button>
@@ -30,11 +22,11 @@
         <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">导入导出管理列表</p>
         <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addisanswer=true">新建任务</el-button>
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass">
+      <el-table :data="tableData" :cell-style="rowClass" style="color:#43454a;" stripe :header-cell-style="headClass">
         <el-table-column fixed label="序号" type="index" width="100" />
-
         <el-table-column prop="date" label="任务名" width="180" />
         <el-table-column prop="address" label="创建时间" />
+        <el-table-column prop="name" label="数据源名称" width="180" />
         <el-table-column prop="name" label="数据源名称" width="180" />
         <el-table-column prop="name" label="企业节点名称" width="180" />
         <el-table-column prop="address" label="任务类型" />
@@ -245,7 +237,7 @@ export default {
       })
     },
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -354,6 +346,10 @@ export default {
 .dialog .el-form-item__label{
   font-size: 12px;
 
+}
+ .Import .el-table th>.cell{
+  height: 50px;
+  line-height:50px;
 }
 </style>
 

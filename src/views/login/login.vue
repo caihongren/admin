@@ -11,7 +11,7 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginUser.loginName" placeholder="请输入用户名" name="loginName" type="text" tabindex="1" auto-complete="on" />
+        <el-input v-model="loginUser.loginName" placeholder="请输入账号" name="loginName" type="text" tabindex="1" auto-complete="on" @input.native="changeCode" />
       </el-form-item>
       <!-- 密码 -->
       <el-form-item prop="password">
@@ -65,15 +65,27 @@ export default {
       rules1: {
         loginName: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { min: 5, max: 18, message: '长度在5到18个字符之间', trigger: 'blur' }
+          {
+            pattern: /^[a-zA-Z0-9]{5,18}$/,
+            message: '长度在5到18个大小写字母',
+            trigger: ['blur', 'change']
+          }
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
-          { min: 6, max: 18, message: '长度在6到18个字符之间', trigger: 'blur' }
+          {
+            pattern: /^[a-zA-Z0-9_]{6,18}$/,
+            message: '长度在6到18个大小写字母和数字或者下划线组合',
+            trigger: ['blur', 'change']
+          }
         ],
         pictureCode: [
           { required: true, message: '验证码不能为空', trigger: 'blur' },
-          { min: 4, max: 4, message: '长度在4到4个字符之间', trigger: 'blur' }
+          {
+            pattern: /^[a-zA-Z0-9_]{4}$/,
+            message: '长度在4个字符,数字和英文组合',
+            trigger: ['blur', 'change']
+          }
         ]
       },
       password: 'password',
@@ -91,8 +103,15 @@ export default {
   created() {
     this.account()
   },
-  methods: {
 
+  methods: {
+    changeCode() {
+      this.$nextTick(() => {
+        if (this.loginUser.loginName !== null) {
+          this.loginUser.loginName = this.loginUser.loginName.replace(/[^\w\.\/]/ig, '')
+        }
+      })
+    },
     // 登录验证
     account() {
       account().then(res => {

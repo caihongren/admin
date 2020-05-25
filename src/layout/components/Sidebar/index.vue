@@ -1,8 +1,9 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div :class="{'has-logo':showLogo}" >
     <logo :collapse="isCollapse" />
-    <el-scrollbar wrap-class="scrollbar-wrapper">
+    <el-scrollbar wrap-class="scrollbar-wrapper" style="margin-top:10px;">
       <el-menu
+      
         :default-active="activeMenu"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
@@ -85,6 +86,9 @@ export default {
 }
 </script>
 <style>
+.el-menu-item{
+  font-size:16px;
+}
 .el-menu-item.is-active {
    background-color:#1f2d3d !important;
 }

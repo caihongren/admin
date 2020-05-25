@@ -25,10 +25,10 @@
       </el-tab-pane>
       <el-tab-pane label="登录历史" name="second">
         <div class="history">
-          <el-table :data="History" border :cell-style="rowClass" :header-cell-style="headClass">
+          <el-table :data="History" border style="color:#43454a;" :cell-style="rowClass" :header-cell-style="headClass">
             <el-table-column fixed label="序号" type="index" width="100" />
             <el-table-column prop="accountName" label="用户名" width="180" />
-            <el-table-column prop="loginTime" label="登陆时间" :formatter="formatSex" />
+            <el-table-column prop="loginTime" label="登录时间" :formatter="formatSex" />
             <el-table-column prop="logoutTime" label="退出时间" :formatter="finishTime" />
             <el-table-column prop="online" label="在线时长(分钟)" />
 
@@ -187,7 +187,7 @@ export default Vue.extend({
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#4283d8;color:#fff'
+      return 'text-align: center;background:#738498;color:#fff'
     },
     // 表格样式设置
     rowClass() {
@@ -409,5 +409,9 @@ export default Vue.extend({
   .el-table__body td {
     padding: 0;
     height: 40px;
+}
+ .mylectures .el-table th>.cell{
+  height: 50px;
+  line-height:50px;
 }
 </style>
