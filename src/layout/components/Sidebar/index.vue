@@ -1,9 +1,9 @@
 <template>
-  <div :class="{'has-logo':showLogo}" >
+  <div :class="{'has-logo':showLogo}">
     <logo :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper" style="margin-top:10px;">
       <el-menu
-      
+
         :default-active="activeMenu"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
@@ -55,7 +55,7 @@ export default {
         } else if (user.accountNumber == 'data1') {
           for (let i = 0; i < list.length; i++) {
             const item = list[i]
-            if (item.path == '/IndustryNode' || item.path == '/' || item.path == '/dataIndustryDataSource' || item.path == '/IndustryPersonal' || item.path == '/importTask') {
+            if (item.path == '/IndustryNode' || item.path == '/' || item.path == '/dataIndustryDataSource' || item.path == '/IndustryPersonal' || item.path == '/importTask' || item.path == '/mould') {
               newlist.push(item)
             }
           }

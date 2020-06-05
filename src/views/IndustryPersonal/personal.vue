@@ -112,51 +112,23 @@ export default Vue.extend({
       nickname: '',
       History: [],
       rules: {
-        name: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
-          {
-            min: 0,
-            max: 20,
-            message: '长度为限制为20位',
-            trigger: ['blur', 'change']
-          }
-        ],
-        phone: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          {
-            pattern: /^1(3|5|7|8)\d{9}$/,
-            message: '请输入正确的电话号码',
-            trigger: ['blur', 'change']
-          }
-        ],
-        number: [
-          { required: true, message: '请输入学号', trigger: 'blur' },
-          {
-            pattern: /^[0-9]{1,20}$/,
-            min: 0,
-            max: 20,
-            message: '长度为1到20 个字符的数字',
-            trigger: ['blur', 'change']
-          }
-        ],
-        age: [
-          {
-            pattern: /^[0-9]{0,2}$/,
-            message: '年龄为0到99岁',
-            trigger: ['blur', 'change']
-          }
-        ],
-        email: [
-          {
-            required: false,
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: ['blur', 'change']
-          }
-        ],
+
         oldpass: [{ validator: validatePass, trigger: ['blur', 'change'] }],
-        pass: [{ validator: validatePass, trigger: ['blur', 'change'] }],
-        checkPass: [{ validator: validatePass2, trigger: ['blur', 'change'] }]
+        pass: [
+          { validator: validatePass, trigger: ['blur', 'change'] }, {
+            pattern: /^[a-zA-Z0-9_]{6,18}$/,
+            message: '长度在6到18个大小写字母和数字或者下划线组合',
+            trigger: ['blur', 'change']
+          }
+        ],
+        checkPass: [
+          { validator: validatePass2, trigger: ['blur', 'change'] },
+          {
+            pattern: /^[a-zA-Z0-9_]{6,18}$/,
+            message: '长度在6到18个大小写字母和数字或者下划线组合',
+            trigger: ['blur', 'change']
+          }
+        ]
       },
       ruleForm: {
         // 密码提交表单
@@ -289,15 +261,13 @@ export default Vue.extend({
                   this.$alert('修改密码需重新登录', '修改密码提示', {
                     confirmButtonText: '确定',
                     confirmButtonClass: 'btnFalses',
-
                     callback: action => {
                       this.loginout()
                       this.$router.push('/login')
                     }
                   })
                 }
-              }
-              )
+              })
               .catch(() => {
                 this.$message.error({
                   showClose: true,

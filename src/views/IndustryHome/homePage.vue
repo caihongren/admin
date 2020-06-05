@@ -6,10 +6,10 @@
     </div>
     <el-row style="width:95%;margin: 0 auto;" :gutter="20">
 
-      <el-col :span="5">
+      <el-col :span="5" style="padding-right: 0px;padding-left: 0px;">
         <div style="width: 100%; height: 200px;background-color: #fff;border-radius: 10px;">
-          <div style="width:100%;background: #bdc4ce; border-radius: 10px 10px 0 0;text-align: center;">
-            <img src="../../img/图标1 (7).png" style="width:10%;display: inline-block; vertical-align: middle; ">
+          <div style="width:100%;background: #bdc4ce; border-radius: 10px 10px 0 0;text-align: center;height: 50px;line-height: 50px;font-size: 20px;">
+            <img src="../../img/图标1 (7).png" style="width:12%;display: inline-block; vertical-align: middle; ">
             <div style="display: inline-block;">存量导入任务</div>
           </div>
 
@@ -29,9 +29,9 @@
 
         </div>
         <div style="width: 100%; height: 200px;background-color: #fff;border-radius: 10px;margin-top:4%;">
-          <div style="width:100%;background: #bdc4ce; border-radius: 10px 10px 0 0;text-align: center;">
-            <img src="../../img/图标1 (10).png" style="width:10%;display: inline-block; vertical-align: middle; ">
-            <div style="display: inline-block;">存量导入任务</div>
+          <div style="width:100%;background: #bdc4ce; border-radius: 10px 10px 0 0;text-align: center;height: 50px;line-height: 50px;font-size: 20px;">
+            <img src="../../img/图标1 (10).png" style="width:12%;display: inline-block; vertical-align: middle; ">
+            <div style="display: inline-block;">实时导入任务</div>
           </div>
 
           <div style="text-align: center;font-size:30px;padding-top:20px;">26</div>
@@ -46,7 +46,7 @@
 
         </div>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="19" style="padding-right: 0px;padding-left: 20px;">
         <div class="nine">
           <div class="ddd">
             <div class="wwww">
@@ -57,14 +57,14 @@
               <div style="font-size:20px;">12345</div>
 
             </div>
-            <div class="wwww">
+            <div class="wwww" style="margin: 0px 10px 20px 15px;">
 
               <img src="./../../img/图标1 (2).png">
               <p class="text">企业节点</p>
               <div style="font-size:20px;">12345</div>
 
             </div>
-            <div class="wwww">
+            <div class="wwww" style="margin: 0px 15px 20px 5px;">
 
               <img src="./../../img/图标1 (3).png">
               <p class="text">任务总数</p>
@@ -90,14 +90,14 @@
             <div style="font-size:20px;">12345</div>
 
           </div>
-          <div class="wwww">
+          <div class="wwww" style="margin: 0px 10px 20px 15px;">
 
             <img src="./../../img/图标1 (8).png">
             <p class="text">手动停止任务</p>
             <div style="font-size:20px;">12345</div>
 
           </div>
-          <div class="wwww">
+          <div class="wwww" style="margin: 0px 15px 20px 5px;">
 
             <img src="./../../img/图标1 (9).png">
             <p class="text">归档任务</p>
@@ -115,10 +115,11 @@
         </div>
       </el-col>
     </el-row>
-    <div id="myChart" style="width: 95%; min-height: 400px;margin:10px auto; " />
+    <div id="myChart" style="width: 95%; min-height: 400px;margin:10px auto; border-radius: 10px;border-radius: 10px;" />
   </div>
 </template>
 <script>
+import { mGetDateThis } from '@/api/user.js'
 import echarts from 'echarts'
 export default {
   name: 'Hello',
@@ -134,11 +135,29 @@ export default {
     drawLine() {
       // 基于准备好的dom，初始化echarts实例
       const myChart = this.$echarts.init(document.getElementById('myChart'))
+      var category = []
+      const dottedBase = mGetDateThis(0)
+      const year = new Date().getFullYear()
+      const month = new Date().getMonth() + 1
+
+      for (var i = 1; i <= dottedBase; i++) {
+        category.push(
+          year + '-' + month + '-' + i
+        )
+      }
       var option = {
+        grid: {
+          x: 195,
+          y: 50
+        },
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        borderWidth: 10,
+        borderColor: 'pink',
         title: {
           text: '柱状图动画延迟'
         },
-        backgroundColor: '#fff',
+
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -147,14 +166,16 @@ export default {
         },
         legend: {
           data: ['line', 'bar'],
+          icon: 'roundRect',
           textStyle: {
             color: 'black'
           }
+
         },
         xAxis: {
           name: '时间', // 坐标名字
 
-          data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月', '八月', '九月', '十月', '十一月', '十二月', '八月', '九月', '十月', '十一月', '十二月', '八月', '九月', '十月', '十一月', '十二月'],
+          data: category,
           axisLine: {
             lineStyle: {
               color: 'black'
@@ -213,11 +234,11 @@ export default {
 .wwww {
   border-radius: 15px;
   border-collapse: collapse;
-  width: 23%;
+  width: 24%;
   height: 190px;
   text-align: center;
   float: left;
-  margin: 0px 20px 20px 0px;
+
   transition: all 0.4s;
   padding-top: 1%;
   position: relative;

@@ -96,7 +96,7 @@ module.exports = {
     'no-implied-eval': 2,
     'no-inner-declarations': [2, 'functions'],
     'no-invalid-regexp': 2,
-    'no-irregular-whitespace': 2,
+    'no-irregular-whitespace': 0,
     'no-iterator': 2,
     'no-label-var': 2,
     'no-labels': [2, {
@@ -126,7 +126,7 @@ module.exports = {
     'no-return-assign': [2, 'except-parens'],
     'no-self-assign': 2,
     'no-self-compare': 2,
-    'no-sequences': 2,
+    'no-sequences': 0,
     'no-shadow-restricted-names': 2,
     'no-spaced-func': 2,
     'no-sparse-arrays': 2,

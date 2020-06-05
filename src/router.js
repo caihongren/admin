@@ -24,19 +24,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/IndustryHome',
-    meta: {
-      requireAuth: true // 判断是否需要登录
-    },
     children: [
       {
         path: '/IndustryHome',
         name: '首页',
-        meta: {
-          requireAuth: true // 判断是否需要登录
-        },
         component: () => import('@/views/IndustryHome/homePage'),
         // eslint-disable-next-line no-dupe-keys
-        meta: { title: '首页', icon: 'home' }
+        meta: { requireAuth: true, title: '首页', icon: 'home' }
       }
     ]
   },
@@ -51,7 +45,7 @@ export const constantRoutes = [
         path: 'dataSource',
         name: '数据源管理',
         component: () => import('@/views/IndustryDataSource/dataSource'),
-        meta: { title: '数据源管理', icon: 'data' }
+        meta: { requireAuth: true, title: '数据源管理', icon: 'data' }
       }
     ]
   },
@@ -66,7 +60,7 @@ export const constantRoutes = [
         path: 'enterpriseNode',
         name: '企业节点管理',
         component: () => import('@/views/IndustryEnterpriseNode/enterpriseNode'),
-        meta: { title: '企业节点管理', icon: 'enterprise' }
+        meta: { requireAuth: true, title: '企业节点管理', icon: 'enterprise' }
       }
     ]
   },
@@ -80,7 +74,7 @@ export const constantRoutes = [
         path: 'Personnel',
         name: '人员管理',
         component: () => import('@/views/IndustryPersonnel/Personnel'),
-        meta: { title: '人员管理', icon: 'people' }
+        meta: { requireAuth: true, title: '人员管理', icon: 'people' }
       }
     ]
   },
@@ -95,7 +89,7 @@ export const constantRoutes = [
         path: 'Log',
         name: '日志管理',
         component: () => import('@/views/IndustryLog/Log'),
-        meta: { title: '日志管理', icon: 'journal' }
+        meta: { requireAuth: true, title: '日志管理', icon: 'journal' }
       }
     ]
   },
@@ -111,7 +105,7 @@ export const constantRoutes = [
         path: 'authorization',
         name: '授权管理',
         component: () => import('@/views/IndustryAuthorization/authorization'),
-        meta: { title: '授权管理', icon: 'grant' }
+        meta: { requireAuth: true, title: '授权管理', icon: 'grant' }
       }
     ]
   },
@@ -127,7 +121,7 @@ export const constantRoutes = [
         path: 'system',
         name: '系统管理',
         component: () => import('@/views/IndustrySystem/system'),
-        meta: { title: '系统管理', icon: 'system' }
+        meta: { requireAuth: true, title: '系统管理', icon: 'system' }
       }
     ]
   },
@@ -143,7 +137,7 @@ export const constantRoutes = [
         path: 'personal',
         name: '个人中心',
         component: () => import('@/views/IndustryPersonal/personal'),
-        meta: { title: '个人中心' }
+        meta: { requireAuth: true, title: '个人中心' }
       }
     ]
   },
@@ -157,7 +151,7 @@ export const constantRoutes = [
         path: 'dataSourceAdministration',
         name: '数据源管理',
         component: () => import('@/views/dataIndustryDataSource/dataSourceAdministration'),
-        meta: { title: '数据源管理', icon: 'data' }
+        meta: { requireAuth: true, title: '数据源管理', icon: 'data' }
       }
     ]
   },
@@ -171,11 +165,11 @@ export const constantRoutes = [
         path: 'node',
         name: '企业节点管理',
         component: () => import('@/views/IndustryNode/node'),
-        meta: { title: '企业节点管理', icon: 'enterprise' }
+        meta: { requireAuth: true, title: '企业节点管理', icon: 'enterprise' }
       }
     ]
   },
-
+  // 导入任务管理
   {
     path: '/importTask',
     component: Layout,
@@ -184,11 +178,23 @@ export const constantRoutes = [
         path: 'task',
         name: '导入任务管理',
         component: () => import('@/views/importTask/task'),
-        meta: { title: '导入任务管理', icon: 'node' }
+        meta: { requireAuth: true, title: '导入任务管理', icon: 'node' }
       }
     ]
   },
-
+  // 数据模板管理
+  {
+    path: '/mould',
+    component: Layout,
+    children: [
+      {
+        path: ' dataTemplate',
+        name: '数据模板管理',
+        component: () => import('@/views/mould/dataTemplate'),
+        meta: { requireAuth: true, title: '数据模板管理', icon: 'template' }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

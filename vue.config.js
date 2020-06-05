@@ -42,7 +42,8 @@ module.exports = {
     proxy: { // 配置跨域
       '/api': { // 要访问的跨域的api的域名
         // target: 'http://106.75.128.230:9053', // 昌平
-        target: 'http://192.168.0.17:9057', // 昌平
+        // target: 'http://192.168.0.17:9057', // 昌平
+        target: 'http://192.168.0.232', // 昌平
 
         ws: true,
         changOrigin: true,

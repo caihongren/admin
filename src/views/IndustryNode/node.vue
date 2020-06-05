@@ -31,13 +31,13 @@
         <el-table-column prop="creatorName" label="创建人" min-width="180" sortable="custom" />
         <el-table-column prop="name" label="名称" min-width="180" sortable="custom" />
         <el-table-column prop="created" label="创建时间" min-width="180" sortable="custom" />
-        <el-table-column prop="typeAlias" label="类型" min-width="180" />
+        <el-table-column prop="type" label="类型" min-width="180" :formatter="completionStatusc" sortable="custom" />
+        <el-table-column prop="interType" label="接口访问类型" min-width="180" :formatter="completionStatusc2" sortable="custom" />
         <el-table-column label="操作" min-width="250">
           <template slot-scope="scope">
             <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
             <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
-
           </template>
         </el-table-column>
       </el-table>
@@ -46,29 +46,91 @@
       </div>
     </div>
 
-    <!-- 添加数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加企业节点">
+    <!-- 添加企业节点弹窗 -->
+    <el-dialog width="40%" top="2vh" :visible.sync="addisanswer" append-to-body title="添加企业节点">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
-        <el-form-item label="企业节点名称">
+        <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
-        <el-form-item label="企业节点类型">
-          <el-select v-model="addForm.type" placeholder="请选择类型" @change="updateAdddisplay">
+        <el-form-item label="模　式">
+          <el-select v-model="addForm.type" placeholder="请选择类型" style="width:100%;" @change="update">
+            <el-option label="自建" value="BUILT" />
+            <el-option label="托管" value="ESCROW" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="访问类型">
+          <el-select v-model="addForm.interType" placeholder="请选择类型" style="width:100%;">
+            <el-option label="标识代理服务" value="LAS" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="managed" label="访问类型">
+          <el-select v-model="addForm.accessType" placeholder="请选择类型" style="width:100%;">
             <el-option label="SNMS系统" value="SNMS" />
             <el-option label="标识代理服务" value="LAS" />
           </el-select>
-          <el-button v-show="addDataShow" size="small" type="warning" @click="notDisabled">不填写用户名和密码</el-button>
-          <el-button v-show="addDataShow2" size="small" type="success" style="background:#4283d8;border:#4283d8" @click="inDisabled">填写用户名和密码</el-button>
-
         </el-form-item>
-        <el-form-item label="接口地址">
-          <el-input v-model="addForm.url" placeholder="请输入连接地址" />
+        <!-- 自建模式下 -->
+        <!-- 标识代理服务 -->
+        <el-form-item v-show="selfBuilt">
+          <el-divider content-position="center">标识代理服务</el-divider>
         </el-form-item>
-        <el-form-item label="用户名">
-          <el-input v-model="addForm.username" placeholder="请输入用户名" :disabled="isdisabledFn" />
+        <el-form-item v-show="selfBuilt" label="地　址">
+          <el-input v-model="addForm.oneselfAgentUrl" placeholder="请输入连接地址" />
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="addForm.password" placeholder="请输入密码" :disabled="isdisabledFn" />
+        <el-form-item v-show="selfBuilt">
+          <el-checkbox v-model="addForm.oneselfAgentCheck" @change="self1">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="用户名">
+          <el-input v-model="addForm.oneselfAgentUsername" placeholder="请输入用户名" :disabled="display" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="密　码">
+          <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" />
+        </el-form-item>
+        <!-- 标识基础服务 -->
+        <el-form-item v-show="selfBuilt">
+          <el-divider content-position="center">标识基础服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="地　址">
+          <el-input v-model="addForm.oneselfBasicsUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt">
+          <el-checkbox v-model="addForm.oneselfBasicsCheck" @change="self2">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="用户名">
+          <el-input v-model="addForm.oneselfBasicsUsername" placeholder="请输入用户名" :disabled="display2" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="密　码">
+          <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" />
+        </el-form-item>
+        <!-- 托管模式下 -->
+        <!-- SNMS系统 -->
+        <el-form-item v-show="managed">
+          <el-divider v-show="managed" content-position="center">SNMS系统</el-divider>
+        </el-form-item>
+        <el-form-item v-show="managed" label="地　址">
+          <el-input v-model="addForm.trusteeshipSnmsUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="用户名">
+          <el-input v-model="addForm.trusteeshipSnmsUsername" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="密　码">
+          <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" />
+        </el-form-item>
+        <!-- 标识代理服务 -->
+        <el-form-item v-show="managed">
+          <el-divider v-show="managed" content-position="center">标识代理服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="managed" label="地　址">
+          <el-input v-model="addForm.trusteeshipAgentUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="managed">
+          <el-checkbox v-model="addForm.trusteeshipAgentCheck" @change="self3">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="managed" label="用户名">
+          <el-input v-model="addForm.trusteeshipAgentUsername" placeholder="请输入用户名" :disabled="display3" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="密　码">
+          <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" />
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
@@ -83,25 +145,88 @@
       </el-form>
     </el-dialog>
     <!-- 修改数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="修改企业节点">
+    <el-dialog width="35%" top="2vh" :visible.sync="changeisanswe" append-to-body title="修改企业节点">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
-        <el-form-item label="企业节点名称">
-          <el-input v-model="addForm.name" />
+        <el-form-item label="名　称">
+          <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
-        <el-form-item label="企业节点类型">
-          <el-input v-model="addForm.type" :disabled="true" />
+        <el-form-item label="模　式">
+          <el-input v-show="false" v-model="addForm.type" :disabled="true" />
+          <el-input :value="addForm.type == 'BUILT' ? '自建模式' : addForm.type == 'ESCROW' ? '托管模式' : addForm.type" :disabled="true" />
         </el-form-item>
-        <el-form-item label="接口地址">
-          <el-input v-model="addForm.url" />
+        <el-form-item v-show="selfBuilt" label="访问类型">
+          <el-select v-model="addForm.interType" placeholder="请选择类型" style="width:100%;">
+            <el-option label="标识代理服务" value="LAS" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="用户名">
-          <el-input v-model="addForm.username" />
+        <el-form-item v-show="managed" label="访问类型">
+          <el-select v-model="addForm.accessType" placeholder="请选择类型" style="width:100%;">
+            <el-option label="SNMS系统" value="SNMS" />
+            <el-option label="标识代理服务" value="LAS" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input :key="password" ref="password" v-model="addForm.password" :type="password" />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="password === 'password' ? 'eye' : 'eye-open'" />
-          </span>
+        <!-- 自建模式下 -->
+        <!-- 标识代理服务 -->
+        <el-form-item v-show="selfBuilt">
+          <el-divider content-position="center">标识代理服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="地　址">
+          <el-input v-model="addForm.oneselfAgentUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt">
+          <el-checkbox v-model="addForm.oneselfAgentCheck" @change="self1">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="用户名">
+          <el-input v-model="addForm.oneselfAgentUsername" placeholder="请输入用户名" :disabled="display" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="密　码">
+          <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" />
+        </el-form-item>
+        <!-- 标识基础服务 -->
+        <el-form-item v-show="selfBuilt">
+          <el-divider content-position="center">标识基础服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="地　址">
+          <el-input v-model="addForm.oneselfBasicsUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt">
+          <el-checkbox v-model="addForm.oneselfBasicsCheck" @change="self2">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="用户名">
+          <el-input v-model="addForm.oneselfBasicsUsername" placeholder="请输入用户名" :disabled="display2" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="密　码">
+          <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" />
+        </el-form-item>
+        <!-- 托管模式下 -->
+        <!-- SNMS系统 -->
+        <el-form-item v-show="managed">
+          <el-divider v-show="managed" content-position="center">SNMS系统</el-divider>
+        </el-form-item>
+        <el-form-item v-show="managed" label="地　址">
+          <el-input v-model="addForm.trusteeshipSnmsUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="用户名">
+          <el-input v-model="addForm.trusteeshipSnmsUsername" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="密　码">
+          <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" />
+        </el-form-item>
+        <!-- 标识代理服务 -->
+        <el-form-item v-show="managed">
+          <el-divider v-show="managed" content-position="center">标识代理服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="managed" label="地　址">
+          <el-input v-model="addForm.trusteeshipAgentUrl" placeholder="请输入连接地址" />
+        </el-form-item>
+        <el-form-item v-show="managed">
+          <el-checkbox v-model="addForm.trusteeshipAgentCheck" @change="self3">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="managed" label="用户名">
+          <el-input v-model="addForm.trusteeshipAgentUsername" placeholder="请输入用户名" :disabled="display3" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="密　码">
+          <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" />
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
@@ -116,25 +241,85 @@
       </el-form>
     </el-dialog>
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看企业节点">
+    <el-dialog width="35%" top="2vh" :visible.sync="isanswer" append-to-body title="查看企业节点">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
-        <el-form-item label="企业节点名称">
+        <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
-        <el-form-item label="企业节点类型">
+        <el-form-item label="模　式">
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
-        <el-form-item label="接口地址">
-          <el-input v-model="addForm.url" :disabled="true" />
+        <el-form-item v-show="selfBuilt" label="访问类型">
+          <el-input v-model="addForm.interType" :disabled="true" />
         </el-form-item>
-        <el-form-item label="用户名">
-          <el-input v-model="addForm.username" :disabled="true" />
+        <el-form-item v-show="managed" label="访问类型">
+          <el-input v-model="addForm.accessType" :disabled="true" />
+
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="addForm.password" :disabled="true" />
+        <!-- 自建模式下 -->
+        <!-- 标识代理服务 -->
+        <el-form-item v-show="selfBuilt">
+          <el-divider content-position="center">标识代理服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="地　址">
+          <el-input v-model="addForm.oneselfAgentUrl" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt">
+          <el-checkbox v-model="addForm.oneselfAgentCheck" :disabled="true">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="用户名">
+          <el-input v-model="addForm.oneselfAgentUsername" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="密　码">
+          <el-input v-model="addForm.oneselfAgentPassword" :disabled="true" />
+        </el-form-item>
+        <!-- 标识基础服务 -->
+        <el-form-item v-show="selfBuilt">
+          <el-divider content-position="center">标识基础服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="地　址">
+          <el-input v-model="addForm.oneselfBasicsUrl" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt">
+          <el-checkbox v-model="addForm.oneselfBasicsCheck" :disabled="true">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="用户名">
+          <el-input v-model="addForm.oneselfBasicsUsername" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="selfBuilt" label="密　码">
+          <el-input v-model="addForm.oneselfBasicsPassword" :disabled="true" />
+        </el-form-item>
+        <!-- 托管模式下 -->
+        <!-- SNMS系统 -->
+        <el-form-item v-show="managed">
+          <el-divider v-show="managed" content-position="center">SNMS系统</el-divider>
+        </el-form-item>
+        <el-form-item v-show="managed" label="地　址">
+          <el-input v-model="addForm.trusteeshipSnmsUrl" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="用户名">
+          <el-input v-model="addForm.trusteeshipSnmsUsername" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="密　码">
+          <el-input v-model="addForm.trusteeshipSnmsPassword" :disabled="true" />
+        </el-form-item>
+        <!-- 标识代理服务 -->
+        <el-form-item v-show="managed">
+          <el-divider v-show="managed" content-position="center">标识代理服务</el-divider>
+        </el-form-item>
+        <el-form-item v-show="managed" label="地　址">
+          <el-input v-model="addForm.trusteeshipAgentUrl" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="managed">
+          <el-checkbox v-model="addForm.trusteeshipAgentCheck" :disabled="true">跳过登录验证</el-checkbox>
+        </el-form-item>
+        <el-form-item v-show="managed" label="用户名">
+          <el-input v-model="addForm.trusteeshipAgentUsername" :disabled="true" />
+        </el-form-item>
+        <el-form-item v-show="managed" label="密　码">
+          <el-input v-model="addForm.trusteeshipAgentPassword" :disabled="true" />
         </el-form-item>
       </el-form>
-
     </el-dialog>
   </div>
 </template>
@@ -151,17 +336,24 @@ export default {
   data() {
     return {
       link: false,
+      checked: false,
+      checked2: false,
+      checked3: false,
 
       times: null,
       password: '******',
 
-      isdisabledFn: false,
-      addDataShow: false,
-      addDataShow2: false,
+      display: false,
+      display2: false,
+      display3: false,
+
+      selfBuilt: false,
+      managed: false,
+      // addDataShow2: false,
 
       query: {
         putid: '',
-
+        creatorld: '',
         order: '',
         orderBy: '',
         pageNum: 1,
@@ -171,14 +363,32 @@ export default {
         type: '',
         name: ''
       },
+      // 添加企业节点数据绑定
       addForm: {
-        name: '',
-        type: '',
-        password: '',
-        url: '',
-        username: ''
+        name: '', // 名称
+        type: '', // 模式
+        interType: '', // 接口访问类型（自建）
+        accessType: '', // 接口访问类型（托管）
+        oneselfAgentUrl: '', // 自建代理url
+        oneselfAgentCheck: false, // 自建代理登录验证
+        oneselfAgentUsername: '', // 自建代理用户名
+        oneselfAgentPassword: '', // 自建代理密码
+        oneselfBasicsUrl: '', // 自建基础url
+        oneselfBasicsCheck: false, // 自建基础登录验证
+        oneselfBasicsUsername: '', // 自建基础用户名
+        oneselfBasicsPassword: '', // 自建基础密码
+        trusteeshipSnmsUrl: '', // 托管MNMSurl
+        trusteeshipSnmsUsername: '', // 托管MNMS用户名
+        trusteeshipSnmsPassword: '', // 托管MNMS密码
+        trusteeshipAgentUrl: '', // 托管代理url
+        trusteeshipAgentCheck: false, // 托管代理登录验证
+        trusteeshipAgentUsername: '', // 托管代理用户名
+        trusteeshipAgentPassword: '', // 托管代理密码
+        oneselfAgentId: '',
+        oneselfBasicsId: '',
+        trusteeshipSnmsId: '',
+        trusteeshipAgentId: ''
       },
-
       changeisanswe: false,
       addisanswer: false,
       isanswer: false,
@@ -215,9 +425,29 @@ export default {
     }
   },
   created() {
-    this.list()
+    this.list(this.query.order = 'desc', this.query.orderBy = ' e.created')
   },
   methods: {
+    // 表格状态值
+    completionStatusc(row) {
+      if (row.type == 'ESCROW') {
+        return '托管模式'
+      } else if (row.type == 'BUILT') {
+        return '自建模式'
+      }
+    },
+    completionStatusc2(row) {
+      if (row.interType == 'SNMS') {
+        return 'snms系统'
+      } else if (row.interType == 'LAS') {
+        return '标识代理服务'
+      }
+    },
+    // 新增弹出框，数据类型联动
+    update() {
+      this.selfBuilt = (this.addForm.type == 'BUILT')
+      this.managed = (this.addForm.type == 'ESCROW')
+    },
     // 重置按钮
     Reset() {
       this.query.name = ''
@@ -241,23 +471,38 @@ export default {
         this.query.orderBy = 'e.name'
       } else if (column.prop == 'created') {
         this.query.orderBy = ' e.created'
+      } else if (column.prop == 'type') {
+        this.query.orderBy = 'e.type'
+      } else if (column.prop == 'interType') {
+        this.query.orderBy = 'e.inter_type'
       }
       this.list()
     },
-    notDisabled() {
-      this.isdisabledFn = true
-      this.addDataShow2 = true
-      this.addDataShow = false
+    self1(val) {
+      console.log(val)
+      if (val == true) {
+        this.display = true
+      } else {
+        this.display = false
+      }
     },
-    inDisabled() {
-      this.addDataShow2 = false
-      this.isdisabledFn = false
-      this.addDataShow = true
+    self2(val) {
+      console.log(val)
+      if (val == true) {
+        this.display2 = true
+      } else {
+        this.display2 = false
+      }
     },
-    // 新增弹出框，数据类型联动
-    updateAdddisplay() {
-      this.addDataShow = (this.addForm.type == 'LAS')
+    self3(val) {
+      console.log(val)
+      if (val == true) {
+        this.display3 = true
+      } else {
+        this.display3 = false
+      }
     },
+
     showPwd() {
       if (this.password === 'password') {
         this.password = ''
@@ -286,7 +531,6 @@ export default {
     },
     // 查询数据列表
     list() {
-      this.query.pageSize = this.pageSize
       this.query.pageNum = this.currentPage
       this.query.pageSize = this.pageSize
 
@@ -305,13 +549,28 @@ export default {
         })
       }
     },
+    // 添加企业节点清空
     addNode() {
       this.addisanswer = true
-      this.addForm.name = ''
-      this.addForm.type = ''
-      this.addForm.password = ''
-      this.addForm.url = ''
-      this.addForm.username = ''
+      this.addForm.name = '' // 名称
+      this.addForm.type = '' // 模式
+      this.addForm.interType = '' // 接口访问类型（自建）
+      this.addForm.accessType = '' // 接口访问类型（托管）
+      this.addForm.oneselfAgentUrl = '' // 自建代理url
+      this.addForm.oneselfAgentCheck = false // 自建代理登录验证
+      this.addForm.oneselfAgentUsername = '' // 自建代理用户名
+      this.addForm.oneselfAgentPassword = '' // 自建代理密码
+      this.addForm.oneselfBasicsUrl = '' // 自建基础url
+      this.addForm.oneselfBasicsCheck = false // 自建基础登录验证
+      this.addForm.oneselfBasicsUsername = '' // 自建基础用户名
+      this.addForm.oneselfBasicsPassword = '' // 自建基础密码
+      this.addForm.trusteeshipSnmsUrl = '' // 托管MNMSurl
+      this.addForm.trusteeshipSnmsUsername = '' // 托管MNMS用户名
+      this.addForm.trusteeshipSnmsPassword = '' // 托管MNMS密码
+      this.addForm.trusteeshipAgentUrl = '' // 托管代理url
+      this.addForm.trusteeshipAgentCheck = false // 托管代理登录验证
+      this.addForm.trusteeshipAgentUsername = '' // 托管代理用户名
+      this.addForm.trusteeshipAgentPassword = '' // 托管代理密码
     },
     // 添加企业节点
     database() {
@@ -327,68 +586,100 @@ export default {
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请输入企业节点类型'
+          message: '请选择模式'
         })
-      } else if (this.addForm.url == '') {
+      } else if ((this.addForm.type == 'ESCROW' && this.addForm.accessType == '') || (this.addForm.type == 'BUILT' && this.addForm.interType == '')) {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请输入企业节点名称'
+          message: '请选择接口访问类型'
         })
-      } else {
-        if (sessionStorage.getItem('user')) {
-          const user = JSON.parse(sessionStorage.getItem('user')).id
-          this.addForm.creatorId = user
-          postEnterpriseNode(this.addForm).then(res => {
-            if (res.code == 0) {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '添加成功'
-              })
-              this.list()
-              this.addisanswer = false
-              this.addForm.name = ''
-              this.addForm.type = ''
-              this.addForm.password = ''
-              this.addForm.url = ''
-              this.addForm.username = ''
-            } else {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'error',
-                message: '添加失败'
-              })
-            }
-          })
-        }
+      } else if (
+        (this.addForm.type == 'BUILT' && (this.addForm.oneselfAgentUrl == '' || this.addForm.oneselfBasicsUrl == '')) ||
+        (this.addForm.type == 'ESCROW' && (this.addForm.trusteeshipSnmsUrl == '' || this.addForm.trusteeshipAgentUrl == ''))
+      ) {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'error',
+          message: '请输入地址'
+        })
+      } else if (
+        (this.addForm.type == 'BUILT' && this.addForm.oneselfAgentCheck == false && (this.addForm.oneselfAgentUsername == '' || this.addForm.oneselfAgentPassword == '')) ||
+        (this.addForm.type == 'BUILT' && this.addForm.oneselfBasicsCheck == false && (this.addForm.oneselfBasicsUsername == '' || this.addForm.oneselfBasicsPassword == '')) ||
+        (this.addForm.type == 'ESCROW' && this.addForm.trusteeshipAgentCheck == false && (this.addForm.trusteeshipAgentUsername == '' || this.addForm.trusteeshipAgentPassword == ''))
+      ) {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'error',
+          message: '请输入用户名密码'
+        })
+      } else if (sessionStorage.getItem('user')) {
+        postEnterpriseNode({
+          creatorId: JSON.parse(sessionStorage.getItem('user')).id,
+          name: this.addForm.name,
+          type: this.addForm.type,
+          interType: this.addForm.type == 'BUILT' ? this.addForm.interType : this.addForm.type == 'ESCROW' ? this.addForm.accessType : '',
+          interfaceTypeReqs:
+            this.addForm.type == 'BUILT'
+              ? [
+                {
+                  interType: 'LAS',
+                  url: this.addForm.oneselfAgentUrl,
+                  token: !this.addForm.oneselfAgentCheck,
+                  username: this.addForm.oneselfAgentUsername,
+                  password: this.addForm.oneselfAgentPassword
+                },
+                {
+                  interType: 'LBS',
+                  url: this.addForm.oneselfBasicsUrl,
+                  token: !this.addForm.oneselfBasicsCheck,
+                  username: this.addForm.oneselfBasicsUsername,
+                  password: this.addForm.oneselfBasicsPassword
+                }
+              ]
+              : this.addForm.type == 'ESCROW'
+                ? [
+                  {
+                    interType: 'SNMS',
+                    url: this.addForm.trusteeshipSnmsUrl,
+                    username: this.addForm.trusteeshipSnmsUsername,
+                    password: this.addForm.trusteeshipSnmsPassword
+                  },
+                  {
+                    interType: 'LAS',
+                    url: this.addForm.trusteeshipAgentUrl,
+                    token: !this.addForm.trusteeshipAgentCheck,
+                    username: this.addForm.trusteeshipAgentUsername,
+                    password: this.addForm.trusteeshipAgentPassword
+                  }
+                ]
+                : []
+        }).then(res => {
+          if (res.code == 0) {
+            this.$message({
+              showClose: true,
+              duration: 1000,
+              type: 'success',
+              message: '添加成功'
+            })
+            this.list()
+            this.addisanswer = false
+          } else {
+            this.$message({
+              showClose: true,
+              duration: 1000,
+              type: 'error',
+              message: res.msg
+            })
+          }
+        })
       }
-    },
-    // 查看按钮
-    see(id) {
-      this.isanswer = true
-      getEnterpriseNode(id).then(res => {
-        if (res.code == 0) {
-          this.addForm.name = res.data.name
-          this.addForm.type = res.data.typeAlias
-          this.addForm.url = res.data.url
-          this.addForm.username = res.data.username
-          this.addForm.password = res.data.password
-        }
-      })
     },
     // 数据库连接测试
     connectionTest() {
-      // this.$message({
-      //   showClose: true,
-      //   message: '正在链接。。。请稍后',
-      //   duration: 2000
-      // })
-      // // return;
-
       if (this.addForm.name == '') {
         this.$message({
           showClose: true,
@@ -402,56 +693,198 @@ export default {
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请输入企业节点类型'
+          message: '请选择模式'
         })
         this.link = true
-      } else if (this.addForm.url == '') {
+      } else if ((this.addForm.type == 'ESCROW' && this.addForm.accessType == '') || (this.addForm.type == 'BUILT' && this.addForm.interType == '')) {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请输入接口地址'
+          message: '请选择接口访问类型'
+        })
+        this.link = true
+      } else if (
+        (this.addForm.type == 'BUILT' && (this.addForm.oneselfAgentUrl == '' || this.addForm.oneselfBasicsUrl == '')) ||
+        (this.addForm.type == 'ESCROW' && (this.addForm.trusteeshipSnmsUrl == '' || this.addForm.trusteeshipAgentUrl == ''))
+      ) {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'error',
+          message: '请输入地址'
+        })
+        this.link = true
+      } else if (
+        (this.addForm.type == 'BUILT' && this.addForm.oneselfAgentCheck == false && (this.addForm.oneselfAgentUsername == '' || this.addForm.oneselfAgentPassword == '')) ||
+        (this.addForm.type == 'BUILT' && this.addForm.oneselfBasicsCheck == false && (this.addForm.oneselfBasicsUsername == '' || this.addForm.oneselfBasicsPassword == '')) ||
+        (this.addForm.type == 'ESCROW' && this.addForm.trusteeshipAgentCheck == false && (this.addForm.trusteeshipAgentUsername == '' || this.addForm.trusteeshipAgentPassword == ''))
+      ) {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'error',
+          message: '请输入用户名密码'
         })
         this.link = true
       } else {
-        if (sessionStorage.getItem('user')) {
-          const user = JSON.parse(sessionStorage.getItem('user')).id
-          this.addForm.creatorId = user
-          this.link = true
-          nodeConnectionTest(this.addForm).then(res => {
-            console.log(res, '678')
-            if (res.code == 0) {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '连接成功'
-              })
-              this.link = false
-            } else {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '连接失败'
-              })
-              this.link = false
-            }
-          })
-        }
+        this.link = true
+        nodeConnectionTest({
+          name: this.addForm.name,
+          type: this.addForm.type,
+          interType: this.addForm.type == 'BUILT' ? this.addForm.interType : this.addForm.type == 'ESCROW' ? this.addForm.accessType : '',
+          interfaceTypeReqs:
+            this.addForm.type == 'BUILT'
+              ? [
+                {
+                  interType: 'LAS',
+                  url: this.addForm.oneselfAgentUrl,
+                  token: !this.addForm.oneselfAgentCheck,
+                  username: this.addForm.oneselfAgentUsername,
+                  password: this.addForm.oneselfAgentPassword
+                },
+                {
+                  interType: 'LBS',
+                  url: this.addForm.oneselfBasicsUrl,
+                  token: !this.addForm.oneselfBasicsCheck,
+                  username: this.addForm.oneselfBasicsUsername,
+                  password: this.addForm.oneselfBasicsPassword
+                }
+              ]
+              : this.addForm.type == 'ESCROW'
+                ? [
+                  {
+                    interType: 'SNMS',
+                    url: this.addForm.trusteeshipSnmsUrl,
+                    username: this.addForm.trusteeshipSnmsUsername,
+                    password: this.addForm.trusteeshipSnmsPassword
+                  },
+                  {
+                    interType: 'LAS',
+                    url: this.addForm.trusteeshipAgentUrl,
+                    token: !this.addForm.trusteeshipAgentCheck,
+                    username: this.addForm.trusteeshipAgentUsername,
+                    password: this.addForm.trusteeshipAgentPassword
+                  }
+                ]
+                : []
+        }).then(res => {
+          if (res.code == 0) {
+            this.$message({
+              showClose: true,
+              duration: 1000,
+              type: 'success',
+              message: '连接成功'
+            })
+            this.link = false
+          } else {
+            this.$message({
+              showClose: true,
+              duration: 3000,
+              type: 'error',
+              message: res.msg
+            })
+            this.link = false
+          }
+        })
       }
+    },
+    // 查看按钮
+    see(id) {
+      this.isanswer = true
+      getEnterpriseNode(id).then(res => {
+        if (res.code == 0) {
+          this.addForm.name = res.data.name
+          this.addForm.type = res.data.type
+          if (res.data.type == '自建模式') {
+            this.addForm.interType = res.data.interType
+            for (var i = 0; i < res.data.interfaceTypes.length; i++) {
+              if (res.data.interfaceTypes[i].type == '标识代理服务') {
+                this.addForm.oneselfAgentUrl = res.data.interfaceTypes[i].url
+                this.addForm.oneselfAgentCheck = res.data.interfaceTypes[i].token
+                this.addForm.oneselfAgentUsername = res.data.interfaceTypes[i].username
+                this.addForm.oneselfAgentPassword = res.data.interfaceTypes[i].password
+                this.addForm.oneselfAgentId = res.data.interfaceTypes[i].id
+              } else if (res.data.interfaceTypes[i].type == '标识基础服务') {
+                this.addForm.oneselfBasicsUrl = res.data.interfaceTypes[i].url
+                this.addForm.oneselfBasicsCheck = res.data.interfaceTypes[i].token
+                this.addForm.oneselfBasicsUsername = res.data.interfaceTypes[i].username
+                this.addForm.oneselfBasicsPassword = res.data.interfaceTypes[i].password
+                this.addForm.oneselfBasicsId = res.data.interfaceTypes[i].id
+              }
+            }
+            this.selfBuilt = true
+            this.managed = false
+          } else if (res.data.type == '托管模式') {
+            this.addForm.accessType = res.data.interType
+            for (var j = 0; j < res.data.interfaceTypes.length; j++) {
+              if (res.data.interfaceTypes[j].type == 'snms系统') {
+                this.addForm.trusteeshipSnmsUrl = res.data.interfaceTypes[j].url
+                this.addForm.trusteeshipSnmsUsername = res.data.interfaceTypes[j].username
+                this.addForm.trusteeshipSnmsPassword = res.data.interfaceTypes[j].password
+                this.addForm.trusteeshipSnmsId = res.data.interfaceTypes[i].id
+              } else if (res.data.interfaceTypes[j].type == '标识代理服务') {
+                this.addForm.trusteeshipAgentUrl = res.data.interfaceTypes[j].url
+                this.addForm.trusteeshipAgentCheck = res.data.interfaceTypes[j].token
+                this.addForm.trusteeshipAgentUsername = res.data.interfaceTypes[j].username
+                this.addForm.trusteeshipAgentPassword = res.data.interfaceTypes[j].password
+                this.addForm.trusteeshipAgentId = res.data.interfaceTypes[i].id
+              }
+            }
+            this.selfBuilt = false
+            this.managed = true
+          }
+        }
+      })
     },
     // 修改初始化
     modify(id) {
       this.putid = id
       this.changeisanswe = true
       getEnterpriseNode(id).then(res => {
-        console.log(res, '0000')
-        this.addForm.name = res.data.name
-        this.addForm.type = res.data.type
-        this.addForm.url = res.data.url
-        this.addForm.username = res.data.username
-        this.addForm.password = res.data.password
+        if (res.code == 0) {
+          this.addForm.name = res.data.name
+          if (res.data.type == '自建模式') {
+            this.addForm.type = 'BUILT'
+            this.addForm.interType = res.data.interType == '标识代理服务' ? 'LAS' : ''
+            for (var i = 0; i < res.data.interfaceTypes.length; i++) {
+              if (res.data.interfaceTypes[i].type == '标识代理服务') {
+                this.addForm.oneselfAgentUrl = res.data.interfaceTypes[i].url
+                this.addForm.oneselfAgentCheck = res.data.interfaceTypes[i].token
+                this.addForm.oneselfAgentUsername = res.data.interfaceTypes[i].username
+                this.addForm.oneselfAgentPassword = res.data.interfaceTypes[i].password
+                this.addForm.oneselfAgentId = res.data.interfaceTypes[i].id
+              } else if (res.data.interfaceTypes[i].type == '标识基础服务') {
+                this.addForm.oneselfBasicsUrl = res.data.interfaceTypes[i].url
+                this.addForm.oneselfBasicsCheck = res.data.interfaceTypes[i].token
+                this.addForm.oneselfBasicsUsername = res.data.interfaceTypes[i].username
+                this.addForm.oneselfBasicsPassword = res.data.interfaceTypes[i].password
+                this.addForm.oneselfBasicsId = res.data.interfaceTypes[i].id
+              }
+            }
+            this.selfBuilt = true
+            this.managed = false
+          } else if (res.data.type == '托管模式') {
+            this.addForm.type = 'ESCROW'
+            this.addForm.accessType = res.data.interType == 'snms系统' ? 'SNMS' : res.data.interType == '标识代理服务' ? 'LAS' : ''
+            for (var j = 0; j < res.data.interfaceTypes.length; j++) {
+              if (res.data.interfaceTypes[j].type == 'snms系统') {
+                this.addForm.trusteeshipSnmsUrl = res.data.interfaceTypes[j].url
+                this.addForm.trusteeshipSnmsUsername = res.data.interfaceTypes[j].username
+                this.addForm.trusteeshipSnmsPassword = res.data.interfaceTypes[j].password
+                this.addForm.trusteeshipSnmsId = res.data.interfaceTypes[i].id
+              } else if (res.data.interfaceTypes[j].type == '标识代理服务') {
+                this.addForm.trusteeshipAgentUrl = res.data.interfaceTypes[j].url
+                this.addForm.trusteeshipAgentCheck = res.data.interfaceTypes[j].token
+                this.addForm.trusteeshipAgentUsername = res.data.interfaceTypes[j].username
+                this.addForm.trusteeshipAgentPassword = res.data.interfaceTypes[j].password
+                this.addForm.trusteeshipAgentId = res.data.interfaceTypes[i].id
+              }
+            }
+            this.selfBuilt = false
+            this.managed = true
+          }
+        }
       })
     },
     // 确定修改初始化
@@ -461,29 +894,91 @@ export default {
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请企业节点名称'
+          message: '请输入企业节点名称'
         })
       } else if (this.addForm.type == '') {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请输入企业节点类型'
+          message: '请选择模式'
         })
-      } else if (this.addForm.url == '') {
+      } else if ((this.addForm.type == 'ESCROW' && this.addForm.accessType == '') || (this.addForm.type == 'BUILT' && this.addForm.interType == '')) {
         this.$message({
           showClose: true,
           duration: 1000,
           type: 'error',
-          message: '请输入连接地址'
+          message: '请选择接口访问类型'
+        })
+      } else if (
+        (this.addForm.type == 'BUILT' && (this.addForm.oneselfAgentUrl == '' || this.addForm.oneselfBasicsUrl == '')) ||
+        (this.addForm.type == 'ESCROW' && (this.addForm.trusteeshipSnmsUrl == '' || this.addForm.trusteeshipAgentUrl == ''))
+      ) {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'error',
+          message: '请输入地址'
+        })
+      } else if (
+        (this.addForm.type == 'BUILT' && this.addForm.oneselfAgentCheck == false && (this.addForm.oneselfAgentUsername == '' || this.addForm.oneselfAgentPassword == '')) ||
+        (this.addForm.type == 'BUILT' && this.addForm.oneselfBasicsCheck == false && (this.addForm.oneselfBasicsUsername == '' || this.addForm.oneselfBasicsPassword == '')) ||
+        (this.addForm.type == 'ESCROW' && this.addForm.trusteeshipAgentCheck == false && (this.addForm.trusteeshipAgentUsername == '' || this.addForm.trusteeshipAgentPassword == ''))
+      ) {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'error',
+          message: '请输入用户名密码'
         })
       } else {
         putEnterpriseNode({
-          url: this.addForm.url,
-          username: this.addForm.username,
           id: this.putid,
           name: this.addForm.name,
-          type: this.addForm.type
+          type: this.addForm.type,
+          interType: this.addForm.type == 'BUILT' ? this.addForm.interType : this.addForm.type == 'ESCROW' ? this.addForm.accessType : '',
+          interfaceTypeReqs:
+            this.addForm.type == 'BUILT'
+              ? [
+                {
+                  interType: 'LAS',
+                  url: this.addForm.oneselfAgentUrl,
+                  token: !this.addForm.oneselfAgentCheck,
+                  username: this.addForm.oneselfAgentUsername,
+                  password: this.addForm.oneselfAgentPassword,
+                  id: this.addForm.oneselfAgentId
+                },
+                {
+                  interType: 'LBS',
+                  url: this.addForm.oneselfBasicsUrl,
+                  token: !this.addForm.oneselfBasicsCheck,
+                  username: this.addForm.oneselfBasicsUsername,
+                  password: this.addForm.oneselfBasicsPassword,
+                  id: this.addForm.oneselfBasicsId
+
+                }
+              ]
+              : this.addForm.type == 'ESCROW'
+                ? [
+                  {
+                    interType: 'SNMS',
+                    url: this.addForm.trusteeshipSnmsUrl,
+                    username: this.addForm.trusteeshipSnmsUsername,
+                    password: this.addForm.trusteeshipSnmsPassword,
+                    id: this.addForm.trusteeshipSnmsId
+
+                  },
+                  {
+                    interType: 'LAS',
+                    url: this.addForm.trusteeshipAgentUrl,
+                    token: !this.addForm.trusteeshipAgentCheck,
+                    username: this.addForm.trusteeshipAgentUsername,
+                    password: this.addForm.trusteeshipAgentPassword,
+                    id: this.addForm.trusteeshipAgentId
+
+                  }
+                ]
+                : []
         }).then(res => {
           if (res.code == 0) {
             this.$message({
@@ -492,14 +987,14 @@ export default {
               type: 'success',
               message: '修改成功'
             })
-            this.changeisanswe = false
             this.list()
+            this.changeisanswe = false
           } else {
             this.$message({
               showClose: true,
               duration: 1000,
               type: 'error',
-              message: '修改失败'
+              message: res.msg
             })
           }
         })
@@ -540,15 +1035,15 @@ export default {
 }
 </script>
 <style lang="less" scoped>
- .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 3px;
-    font-size: 16px;
-    color: #889aa4;
-    cursor: pointer;
-    user-select: none;
-  }
+.show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  font-size: 16px;
+  color: #889aa4;
+  cursor: pointer;
+  user-select: none;
+}
 .node {
   min-height: 100%;
   width: 98%;
@@ -562,43 +1057,39 @@ export default {
 }
 .head {
   background-color: #ffffff;
- border-radius: 3px;
+  border-radius: 3px;
   padding-top: 2%;
   padding-left: 1%;
   padding-right: 1%;
   margin-bottom: 10px;
-
 }
 .conter {
   background-color: #ffffff;
-  padding-left: 1%;
-  padding-right: 1%;
-
   min-height: 750px;
   border-radius: 3px;
 }
 </style>
 <style>
-.node .el-form-item__label{
-    font-size: 12px;
+.node .el-form-item__label {
+  font-size: 12px;
 }
 .node .head .el-input__inner {
   height: 33px;
   line-height: 33px;
 }
 .node .el-table__header tr,
-  .el-table__header th {
-    padding: 0;
-    height: 40px;
+.el-table__header th {
+  padding: 0;
+  height: 40px;
 }
 .node .el-table__body tr,
-  .el-table__body td {
-    padding: 0;
-    height: 40px;
+.el-table__body td {
+  padding: 0;
+  height: 40px;
 }
 
- .dialog .el-form-item{
-    margin-bottom: 15px;
+.dialog .el-form-item {
+  margin-bottom: 15px;
 }
 .dialog .el-input__inner {
   height: 33px;
@@ -608,13 +1099,12 @@ export default {
   background-color: #4283d8;
   border-color: #4283d8;
 }
-.dialog .el-form-item__label{
+.dialog .el-form-item__label {
   font-size: 12px;
-
 }
- .node .el-table th>.cell{
+.node .el-table th > .cell {
   height: 50px;
-  line-height:50px;
+  line-height: 50px;
 }
 </style>
 

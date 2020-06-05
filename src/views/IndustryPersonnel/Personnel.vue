@@ -222,18 +222,10 @@ export default {
                 this.$message.error({
                   showClose: true,
                   duration: 1000,
-                  message: res.data.msg,
+                  message: res.msg,
                   type: 'warning'
                 })
               }
-            })
-            .catch(() => {
-              this.$message.error({
-                showClose: true,
-                duration: 1000,
-                message: '请求超时，新增失败',
-                type: 'warning'
-              })
             })
         } else {
           this.$message.error({

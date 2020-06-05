@@ -24,9 +24,9 @@
     <div class="conter">
       <div style="padding:10px 0;">
         <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据源列表</p>
-        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addisanswer=true">添加数据源</el-button>
+        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="adddata">添加数据源</el-button>
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" :default-sort="{prop: 'name', order: 'descending'}" style="color:#43454a;" @sort-change="sort_change">
+      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" style="color:#43454a;" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
 
         <!-- <el-table-column v-for="(item,index) in tableDome" :key="index" :label="item.label" :prop="item.name" min-width="180" /> -->
@@ -55,27 +55,27 @@
     <!-- 添加数据源弹窗 -->
     <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
-        <el-form-item label="数据源名称">
+        <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
-        <el-form-item label="数据源类型">
-          <el-select v-model="addForm.type" placeholder="请选择类型" @change="updateAdddisplay">
+        <el-form-item label="源类型">
+          <el-select v-model="addForm.type" placeholder="请选择类型" 　style="width:100%" @change="updateAdddisplay">
             <el-option label="数据库" value="database" />
             <el-option label="文件" value="file" />
           </el-select>
         </el-form-item>
-        <el-form-item v-show="addDataShow" label="数据库类型">
-          <el-select v-model="addForm.databaseType" placeholder="请选择类型">
+        <el-form-item v-show="addDataShow" label="库类型">
+          <el-select v-model="addForm.databaseType" placeholder="请选择类型" style="width:100%">
             <el-option label="mysql" value="mysql" />
             <el-option label="oracle" value="oracle" />
             <el-option label="postgresql" value="postgresql" />
             <el-option label="sqlserver" value="sqlserver" />
           </el-select>
         </el-form-item>
-        <el-form-item v-show="addDataShow" label="数据库名称">
+        <el-form-item v-show="addDataShow" label="库名称">
           <el-input v-model="addForm.databaseName" placeholder="请输入数据库名称" />
         </el-form-item>
-        <el-form-item v-show="addDataShow" label="连接地址">
+        <el-form-item v-show="addDataShow" label="地　址">
           <el-input v-model="addForm.databaseUrl" placeholder="请输入连接地址" />
         </el-form-item>
         <el-form-item v-show="addDataShow" label="端口号">
@@ -84,16 +84,16 @@
         <el-form-item v-show="addDataShow" label="用户名">
           <el-input v-model="addForm.databaseUsername" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item v-show="addDataShow" label="密码">
+        <el-form-item v-show="addDataShow" label="密　码">
           <el-input v-model="addForm.databasePassword" placeholder="请输入密码" />
         </el-form-item>
-        <el-form-item v-show="addFileShow" label="文件">
+        <el-form-item v-show="addFileShow" label="文　件">
           <el-input v-model="addForm.data333basePassword" />
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
             <el-col v-show="addDataShow" :span="20">
-              <el-button type="warning" size="mini" round @click="connectionTest">连接测试</el-button>
+              <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
             </el-col>
             <el-col v-show="addFileShow" :span="20">
               <el-upload class="upload-demo" action="/img/add_resource" on-success="uploadSuccess" style="display: inline-block">
@@ -110,19 +110,19 @@
     <!-- 修改数据源弹窗 -->
     <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="修改数据源">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
-        <el-form-item label="数据源名称">
+        <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
-        <el-form-item label="数据源类型">
+        <el-form-item label="源类型">
           <el-input v-model="addForm.type" placeholder="请输入数据源名称" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据库类型">
+        <el-form-item label="库类型">
           <el-input v-model="addForm.databaseType" placeholder="请输入数据源名称" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据库名称">
+        <el-form-item label="库名称">
           <el-input v-model="addForm.databaseName" />
         </el-form-item>
-        <el-form-item label="连接地址">
+        <el-form-item label="地　址">
           <el-input v-model="addForm.databaseUrl" />
         </el-form-item>
         <el-form-item label="端口号">
@@ -131,7 +131,7 @@
         <el-form-item label="用户名">
           <el-input v-model="addForm.databaseUsername" />
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密　码">
           <el-input :key="password" ref="password" v-model="addForm.databasePassword" :type="password" />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="password === 'password' ? 'eye' : 'eye-open'" />
@@ -140,7 +140,7 @@
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
             <el-col :span="20">
-              <el-button type="warning" size="mini" round @click="connectionTest">连接测试</el-button>
+              <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
             </el-col>
 
             <el-col :span="4">
@@ -153,19 +153,19 @@
     <!-- 数据表格查看弹出框 -->
     <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看数据源">
       <el-form ref="addForm" :model="addForm" label-width="100px">
-        <el-form-item label="数据源名称">
+        <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据源类型">
+        <el-form-item label="源类型">
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据库类型">
+        <el-form-item label="库类型">
           <el-input v-model="addForm.databaseType" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据库名称">
+        <el-form-item label="库名称">
           <el-input v-model="addForm.databaseName" :disabled="true" />
         </el-form-item>
-        <el-form-item label="连接地址">
+        <el-form-item label="地址">
           <el-input v-model="addForm.databaseUrl" :disabled="true" />
         </el-form-item>
         <el-form-item label="端口号">
@@ -174,7 +174,7 @@
         <el-form-item label="用户名">
           <el-input v-model="addForm.databaseUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密　码">
           <el-input v-model="addForm.databasePassword" :disabled="true" />
         </el-form-item>
       </el-form>
@@ -217,6 +217,8 @@ import {
 export default {
   data() {
     return {
+      link: false,
+
       tableData: [], // 数据列表
       putid: '',
       tableLabel: [],
@@ -257,9 +259,8 @@ export default {
       offset: 0,
       limit: 10,
       length: 0, // 总条数
-      pageSize: 10, // 每页个数
       currentPage: 1, // 当前页数
-      pageNum: 1,
+
       pickerOptions: {
         shortcuts: [{
           text: '本月',
@@ -288,12 +289,24 @@ export default {
     }
   },
   created() {
-    this.list()
+    this.list(this.query.order = 'desc', this.query.orderBy = 's.created')
   },
   methods: {
+    adddata() {
+      this.addisanswer = true
+      this.addForm.name = ''
+      this.addForm.type = ''
+      this.addForm.creatorId = ''
+      this.addForm.databaseType = ''
+      this.addForm.databaseName = ''
+      this.addForm.databasePassword = ''
+      this.addForm.databasePort = ''
+      this.addForm.databaseUrl = ''
+      this.addForm.databaseUsername = ''
+    },
     // 排序功能
     sort_change(column) {
-      console.log(column.prop)
+      console.log(column.order)
       if (column.order == 'descending') {
         this.query.order = 'desc'
       } else if (column.order == 'ascending') {
@@ -355,10 +368,8 @@ export default {
     },
     // 查询数据列表
     list() {
-      this.query.pageSize = this.pageSize
-      this.query.pageNum = this.currentPage
-      this.query.pageSize = this.pageSize
-
+      this.query.pageSize = this.limit
+      this.query.pageNum = this.offset
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
         this.query.creatorld = user.id
@@ -392,6 +403,7 @@ export default {
           type: 'error',
           message: '请输入数据源名称'
         })
+        this.link = true
       } else if (this.addForm.type == '') {
         this.$message({
           showClose: true,
@@ -399,6 +411,7 @@ export default {
           type: 'error',
           message: '请输入数据源类型'
         })
+        this.link = true
       } else if (this.addForm.databaseName == '') {
         this.$message({
           showClose: true,
@@ -406,6 +419,7 @@ export default {
           type: 'error',
           message: '请输入数据库名称'
         })
+        this.link = true
       } else if (this.addForm.databaseType == '') {
         this.$message({
           showClose: true,
@@ -413,6 +427,7 @@ export default {
           type: 'error',
           message: '请输入数据源名称'
         })
+        this.link = true
       } else if (this.addForm.databaseUrl == '') {
         this.$message({
           showClose: true,
@@ -420,6 +435,7 @@ export default {
           type: 'error',
           message: '请输入连接地址'
         })
+        this.link = true
       } else if (this.addForm.databasePort == '') {
         this.$message({
           showClose: true,
@@ -427,6 +443,7 @@ export default {
           type: 'error',
           message: '请输入端口号'
         })
+        this.link = true
       } else if (this.addForm.databaseUsername == '') {
         this.$message({
           showClose: true,
@@ -434,6 +451,7 @@ export default {
           type: 'error',
           message: '请输入用户名'
         })
+        this.link = true
       } else {
         if (sessionStorage.getItem('user')) {
           const user = JSON.parse(sessionStorage.getItem('user')).id
@@ -447,6 +465,7 @@ export default {
                 type: 'success',
                 message: '连接成功'
               })
+              this.link = false
             } else {
               this.$message({
                 showClose: true,
@@ -454,6 +473,7 @@ export default {
                 type: 'success',
                 message: '连接失败'
               })
+              this.link = false
             }
           })
             .catch(() => {
@@ -466,9 +486,6 @@ export default {
             })
         }
       }
-    },
-    modifyTest() {
-
     },
     // 添加数据源
     adddatabase() {
@@ -549,7 +566,7 @@ export default {
                 showClose: true,
                 duration: 1000,
                 type: 'error',
-                message: '添加失败'
+                message: res.msg
               })
             }
           })
@@ -686,6 +703,13 @@ export default {
             })
             this.changeisanswe = false
             this.list()
+          } else {
+            this.$message({
+              showClose: true,
+              duration: 1000,
+              type: 'error',
+              message: res.msg
+            })
           }
         })
       }
@@ -758,8 +782,6 @@ export default {
 }
 .conter {
   background-color: #ffffff;
-  padding-left: 1%;
-  padding-right: 1%;
 
   min-height: 750px;
   border-radius: 3px;
