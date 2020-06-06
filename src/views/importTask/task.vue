@@ -431,7 +431,7 @@ export default {
       })
     },
     // 删除
-    modify() {
+    modify(id) {
       // const list = this.ItemSelected
       // if (list.length == 0) {
       //   this.$message({
@@ -443,7 +443,7 @@ export default {
       //   return
       // }
       deleteHandle({
-        // handles: list,
+        handles: [id],
         taskId: this.seeId
       }).then(res => {
         if (res.code == 0) {
@@ -454,6 +454,7 @@ export default {
             type: 'success'
           })
           this.ItemSelected = []
+          this.see(this.seeId)
         } else {
           this.$message({
             showClose: true,
