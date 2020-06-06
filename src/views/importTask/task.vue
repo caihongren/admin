@@ -397,20 +397,20 @@ export default {
       })
     },
     // 重新导入
-    reImport(row) {
-      const list = this.ItemSelected
-      if (list.length == 0) {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请选择导入的数据'
-        })
-        return
-      }
+    reImport(id) {
+      // const list = this.ItemSelected
+      // if (list.length == 0) {
+      //   this.$message({
+      //     showClose: true,
+      //     duration: 1000,
+      //     type: 'error',
+      //     message: '请选择导入的数据'
+      //   })
+      //   return
+      // }
       handle({
-        handles: list,
-        taskId: row
+        handles: [id],
+        taskId: this.seeId
       }).then(res => {
         if (res.code == 0) {
           this.$message({
@@ -420,6 +420,7 @@ export default {
             type: 'success'
           })
           this.ItemSelected = []
+           this.see(this.seeId)
         } else {
           this.$message({
             showClose: true,
