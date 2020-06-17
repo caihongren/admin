@@ -28,12 +28,12 @@
       </div>
       <el-table :data="tableData" style="color:#43454a;" :cell-style="rowClass" stripe :header-cell-style="headClass" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
-        <el-table-column prop="creatorName" label="创建人" min-width="180" sortable="custom" />
-        <el-table-column prop="name" label="名称" min-width="180" sortable="custom" />
-        <el-table-column prop="created" label="创建时间" min-width="180" sortable="custom" />
-        <el-table-column prop="type" label="类型" min-width="180" :formatter="completionStatusc" />
-        <el-table-column prop="interType" label="接口访问类型" min-width="180" :formatter="completionStatusc2" />
-        <el-table-column label="操作" min-width="250">
+        <el-table-column prop="creatorName" label="创建人" min-width="100" sortable="custom" />
+        <el-table-column prop="name" label="名称" min-width="100" sortable="custom" />
+        <el-table-column prop="created" label="创建时间" min-width="100" sortable="custom" />
+        <el-table-column prop="type" label="类型" min-width="100" :formatter="completionStatusc" />
+        <el-table-column prop="interType" label="接口访问类型" min-width="100" :formatter="completionStatusc2" />
+        <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
             <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
 
@@ -47,18 +47,18 @@
 
     <!-- 数据表格查看弹出框 -->
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看企业节点">
-      <el-form ref="addForm" :model="addForm" label-width="140px" class="dialog">
-        <el-form-item label="名称">
+    <el-dialog width="35%" top="4vh" :visible.sync="isanswer" append-to-body title="查看企业节点" :close-on-click-modal="false">
+      <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
+        <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
-        <el-form-item label="模式">
+        <el-form-item label="模　式">
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
-        <el-form-item v-show="selfBuilt" label="接口访问类型">
+        <el-form-item v-show="selfBuilt" label="类　型">
           <el-input v-model="addForm.interType" :disabled="true" />
         </el-form-item>
-        <el-form-item v-show="managed" label="接口访问类型">
+        <el-form-item v-show="managed" label="类　型">
           <el-input v-model="addForm.accessType" :disabled="true" />
 
         </el-form-item>
@@ -67,7 +67,7 @@
         <el-form-item v-show="selfBuilt">
           <el-divider content-position="center">标识代理服务</el-divider>
         </el-form-item>
-        <el-form-item v-show="selfBuilt" label="地址">
+        <el-form-item v-show="selfBuilt" label="地　址">
           <el-input v-model="addForm.oneselfAgentUrl" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="selfBuilt">
@@ -76,14 +76,14 @@
         <el-form-item v-show="selfBuilt" label="用户名">
           <el-input v-model="addForm.oneselfAgentUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item v-show="selfBuilt" label="密码">
+        <el-form-item v-show="selfBuilt" label="密　码">
           <el-input v-model="addForm.oneselfAgentPassword" :disabled="true" />
         </el-form-item>
         <!-- 标识基础服务 -->
         <el-form-item v-show="selfBuilt">
           <el-divider content-position="center">标识基础服务</el-divider>
         </el-form-item>
-        <el-form-item v-show="selfBuilt" label="地址">
+        <el-form-item v-show="selfBuilt" label="地　址">
           <el-input v-model="addForm.oneselfBasicsUrl" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="selfBuilt">
@@ -92,7 +92,7 @@
         <el-form-item v-show="selfBuilt" label="用户名">
           <el-input v-model="addForm.oneselfBasicsUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item v-show="selfBuilt" label="密码">
+        <el-form-item v-show="selfBuilt" label="密　码">
           <el-input v-model="addForm.oneselfBasicsPassword" :disabled="true" />
         </el-form-item>
         <!-- 托管模式下 -->
@@ -100,20 +100,20 @@
         <el-form-item v-show="managed">
           <el-divider v-show="managed" content-position="center">SNMS系统</el-divider>
         </el-form-item>
-        <el-form-item v-show="managed" label="地址">
+        <el-form-item v-show="managed" label="地　址">
           <el-input v-model="addForm.trusteeshipSnmsUrl" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="managed" label="用户名">
           <el-input v-model="addForm.trusteeshipSnmsUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item v-show="managed" label="密码">
+        <el-form-item v-show="managed" label="密　码">
           <el-input v-model="addForm.trusteeshipSnmsPassword" :disabled="true" />
         </el-form-item>
         <!-- 标识代理服务 -->
         <el-form-item v-show="managed">
           <el-divider v-show="managed" content-position="center">标识代理服务</el-divider>
         </el-form-item>
-        <el-form-item v-show="managed" label="地址">
+        <el-form-item v-show="managed" label="地　址">
           <el-input v-model="addForm.trusteeshipAgentUrl" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="managed">
@@ -122,7 +122,7 @@
         <el-form-item v-show="managed" label="用户名">
           <el-input v-model="addForm.trusteeshipAgentUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item v-show="managed" label="密码">
+        <el-form-item v-show="managed" label="密　码">
           <el-input v-model="addForm.trusteeshipAgentPassword" :disabled="true" />
         </el-form-item>
       </el-form>
@@ -182,6 +182,8 @@ export default {
       length: 0, // 总条数
       pageSize: 10, // 每页个数
       currentPage: 1, // 当前页数
+      currentPage4: 1, // 当前页数
+
       pageNum: 1,
       pickerOptions: {
         shortcuts: [{
@@ -229,7 +231,7 @@ export default {
       }
     },
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -397,10 +399,10 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-.dialog .el-button--primary {
+/* .dialog .el-button--primary {
   background-color: #4283d8;
   border-color: #4283d8;
-}
+} */
 .dialog .el-form-item__label{
   font-size: 12px;
 
@@ -409,5 +411,6 @@ export default {
   height: 50px;
   line-height:50px;
 }
+
 </style>
 

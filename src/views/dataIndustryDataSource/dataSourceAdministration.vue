@@ -28,15 +28,13 @@
       </div>
       <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" style="color:#43454a;" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
+        <el-table-column prop="creatorName" label="创建人" min-width="100" sortable="custom" />
+        <el-table-column prop="name" label="名称" min-width="100" sortable="custom" />
+        <el-table-column prop="created" label="创建时间" min-width="100" sortable="custom" />
+        <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="100" />
+        <el-table-column prop="databaseType" label="数据库类型" min-width="100" />
 
-        <!-- <el-table-column v-for="(item,index) in tableDome" :key="index" :label="item.label" :prop="item.name" min-width="180" /> -->
-        <el-table-column prop="creatorName" label="创建人" min-width="180" sortable="custom" />
-        <el-table-column prop="name" label="名称" min-width="180" sortable="custom" />
-        <el-table-column prop="created" label="创建时间" min-width="180" sortable="custom" />
-        <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="180" />
-        <el-table-column prop="databaseType" label="数据库类型" min-width="180" />
-
-        <el-table-column label="操作" width="250">
+        <el-table-column label="操作" min-width="150">
           <template slot-scope="scope">
             <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
             <el-button type="text" style="color: #4283d8;" @click="seedata(scope.row.id)">查看数据</el-button>
@@ -53,8 +51,8 @@
     </div>
 
     <!-- 添加数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源">
-      <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
+    <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源" :close-on-click-modal="false">
+      <el-form ref="addForm" :model="addForm" label-width="100px" size="mini" class="dialog">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
@@ -88,7 +86,7 @@
           <el-input v-model="addForm.databasePassword" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item v-show="addFileShow" label="文　件">
-          <el-input v-model="addForm.data333basePassword" />
+          <el-input v-model="addForm.fileName" :disabled="true" />
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
@@ -96,7 +94,7 @@
               <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
             </el-col>
             <el-col v-show="addFileShow" :span="20">
-              <el-upload class="upload-demo" action="/img/add_resource" on-success="uploadSuccess" style="display: inline-block">
+              <el-upload class="upload-demo" action="/img/add_resource" :before-upload="( file )=>{return uploading( file, 'guidance')}" style="display: inline-block">
                 <el-button type="primary" size="mini" round>上传</el-button>
               </el-upload>
             </el-col>
@@ -108,7 +106,7 @@
       </el-form>
     </el-dialog>
     <!-- 修改数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="修改数据源">
+    <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="修改数据源" :close-on-click-modal="false">
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
@@ -151,7 +149,7 @@
       </el-form>
     </el-dialog>
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看数据源">
+    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看数据源" :close-on-click-modal="false">
       <el-form ref="addForm" :model="addForm" label-width="100px">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
@@ -181,7 +179,7 @@
     </el-dialog>
 
     <!-- 产看数据表弹出框 -->
-    <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="查看数据">
+    <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="查看数据" :close-on-click-modal="false">
       <el-select v-model="itemlist" placeholder="请选择排序依据" style="width:30%" @change="addFileInput(itemlist)">
         <el-option
           v-for="item in teacherOptions"
@@ -212,7 +210,10 @@ import {
   getDatabase, // 查看数据库数据源
   putDatabase, // 修改数据库数据源
   deleteDatabase, // 删除数据库数据源
-  database // 添加数据库数据源
+  database, // 添加数据库数据源
+  Size, // 计算大小
+  add_resource// 上传文件
+
 } from '@/api/user.js'
 export default {
   data() {
@@ -239,6 +240,7 @@ export default {
         type: '',
         name: ''
       },
+      deleteId: '',
       addDataShow: false,
       addFileShow: false,
       addForm: {
@@ -250,7 +252,10 @@ export default {
         databasePassword: '',
         databasePort: '',
         databaseUrl: '',
-        databaseUsername: ''
+        databaseUsername: '',
+        fileName: '',
+        file: '',
+        id: ''
       },
 
       changeisanswe: false,
@@ -380,7 +385,7 @@ export default {
         list(this.query).then(res => {
           if (res.code == 0) {
             this.tableData = res.data.result
-            this.length = res.data.total
+            this.length = res.data.total ? res.data.total : 0
           }
         })
       }
@@ -391,8 +396,39 @@ export default {
       this.addDataShow = (this.addForm.type == 'database')
       this.addFileShow = (this.addForm.type == 'file')
     },
-    uploadSuccess(response, file, fileList) {
-      console.log(response, file, fileList)
+
+    // 上传文件
+    uploading(file, type) {
+      console.log(file, 'file')
+      console.log(type, 'type')
+
+      let sort = file.name.split('.')
+      sort = sort[sort.length - 1]
+      const size = Size(file.size)
+      if (size == '0') {
+        this.$message.error({
+          showClose: true,
+          duration: 1000,
+          message: '不允许空文件上传。',
+          type: 'warning'
+        })
+        return
+      }
+      if (type == 'guidance') {
+        // 指导书
+        if (sort == 'pdf' || sort == 'PDF') {
+          this.addForm.file = file
+          this.addForm.fileName = file.name
+        } else {
+          this.$message.error({
+            showClose: true,
+            duration: 2000,
+            message: '实验指导书只能上传pdf格式文件。',
+            type: 'warning'
+          })
+          return
+        }
+      }
     },
     // 数据库连接测试
     connectionTest() {
@@ -489,93 +525,155 @@ export default {
     },
     // 添加数据源
     adddatabase() {
-      if (this.addForm.name == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-      } else if (this.addForm.type == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据源类型'
-        })
-      } else if (this.addForm.databaseName == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据库名称'
-        })
-      } else if (this.addForm.databaseType == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-      } else if (this.addForm.databaseUrl == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入连接地址'
-        })
-      } else if (this.addForm.databasePort == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入端口号'
-        })
-      } else if (this.addForm.databaseUsername == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入用户名'
-        })
-      } else {
-        if (sessionStorage.getItem('user')) {
-          const user = JSON.parse(sessionStorage.getItem('user')).id
-          this.addForm.creatorId = user
-          database(this.addForm).then(res => {
-            if (res.code == 0) {
+      if (this.addDataShow == true) {
+        if (this.addForm.name == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源名称'
+          })
+        } else if (this.addForm.type == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源类型'
+          })
+        } else if (this.addForm.databaseName == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据库名称'
+          })
+        } else if (this.addForm.databaseType == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源名称'
+          })
+        } else if (this.addForm.databaseUrl == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入连接地址'
+          })
+        } else if (this.addForm.databasePort == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入端口号'
+          })
+        } else if (this.addForm.databaseUsername == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入用户名'
+          })
+        } else {
+          if (sessionStorage.getItem('user')) {
+            const user = JSON.parse(sessionStorage.getItem('user')).id
+            this.addForm.creatorId = user
+            database(this.addForm).then(res => {
+              if (res.code == 0) {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: 'success',
+                  message: '添加成功'
+                })
+                this.list()
+                this.addisanswer = false
+                this.addForm.name = ''
+                this.addForm.type = ''
+                this.addForm.creatorId = ''
+                this.addForm.databaseType = ''
+                this.addForm.databaseName = ''
+                this.addForm.databasePassword = ''
+                this.addForm.databasePort = ''
+                this.addForm.databaseUrl = ''
+                this.addForm.databaseUsername = ''
+              } else {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: 'error',
+                  message: res.msg
+                })
+              }
+            })
+          }
+        }
+      } else if (this.addFileShow == true) {
+        if (this.addForm.name == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源名称'
+          })
+        } else if (this.addForm.type == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源类型'
+          })
+        } else {
+          if (sessionStorage.getItem('user')) {
+            const user = JSON.parse(sessionStorage.getItem('user')).id
+            this.addForm.creatorId = user
+            if (this.addForm.file != '' && this.addForm.file != null && this.addForm.file != undefined) {
               this.$message({
                 showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '添加成功'
+                message: '正在上传文件',
+                duration: 1000
               })
-              this.list()
-              this.addisanswer = false
-              this.addForm.name = ''
-              this.addForm.type = ''
-              this.addForm.creatorId = ''
-              this.addForm.databaseType = ''
-              this.addForm.databaseName = ''
-              this.addForm.databasePassword = ''
-              this.addForm.databasePort = ''
-              this.addForm.databaseUrl = ''
-              this.addForm.databaseUsername = ''
-            } else {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'error',
-                message: res.msg
+              const fd = new FormData()
+              fd.append('file', this.addForm.file) // 传文件
+              add_resource(fd).then(res => {
+                if (res.data.code == '0') {
+                  this.$message({
+                    showClose: true,
+                    message: '文件上传成功',
+                    type: 'success',
+                    duration: 1000
+                  })
+                  database(this.addForm).then(res => {
+                    if (res.code == 0) {
+                      this.$message({
+                        showClose: true,
+                        duration: 1000,
+                        type: 'success',
+                        message: '添加成功'
+                      })
+                      this.list()
+                      this.addisanswer = false
+                      this.addForm.fileName = ''
+                    } else {
+                      this.$message({
+                        showClose: true,
+                        duration: 1000,
+                        type: 'error',
+                        message: res.msg
+                      })
+                    }
+                  })
+                }
               })
             }
-          })
+          }
         }
       }
     },
     // 表格样式设置
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -714,16 +812,22 @@ export default {
         })
       }
     },
-
-    // 删除
     det(id) {
-      this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        confirmButtonClass: 'btnFalses',
-        type: 'warning'
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
+        confirmButtonClass: 'classStyle2',
+        closeOnClickModal: false,
+        showClose: false,
+        type: 'warning'
       })
-        .then(() => {
+        .then(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+        .catch(() => {
           deleteDatabase({
             id: id
           }).then(res => {
@@ -736,14 +840,6 @@ export default {
             this.list()
           })
         })
-        .catch(() => {
-          this.$message({
-            showClose: true,
-            duration: 1000,
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
     }
 
   }
@@ -751,6 +847,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
  .show-pwd {
     position: absolute;
     right: 10px;
@@ -782,12 +879,17 @@ export default {
 }
 .conter {
   background-color: #ffffff;
-
+padding: 0 1%;
   min-height: 750px;
   border-radius: 3px;
 }
 </style>
 <style>
+.classStyle2{
+    background: #4283d8 !important;
+    color:#fff !important;
+    border:1px solid #4283d8 !important;
+}
 .dataSource .el-form-item__label {
   font-size: 12px;
 }
@@ -812,10 +914,10 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-.dialog .el-button--primary {
+/* .dialog .el-button--primary {
   background-color: #4283d8;
   border-color: #4283d8;
-}
+} */
 .dialog .el-form-item__label {
   font-size: 12px;
 }
@@ -823,5 +925,22 @@ export default {
   height: 50px;
   line-height:50px;
 }
+.xxxx .el-dialog{
+       display: flex;
+       flex-direction: column;
+       margin:0 !important;
+       position:absolute;
+       top:50%;
+       left:50%;
+       transform:translate(-50%,-50%);
+       /*height:600px;*/
+       max-height:calc(100% - 30px);
+       max-width:calc(100% - 30px);
+   }
+  .xxxx .el-dialog .el-dialog__body{
+    padding: 10px 20px;
+       flex:1;
+       overflow: auto;
+   }
 </style>
 

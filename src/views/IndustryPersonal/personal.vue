@@ -41,7 +41,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog :visible.sync="changename" append-to-body width="25%" top="15vh" title="编辑用户名" class="modify">
+    <el-dialog :visible.sync="changename" append-to-body width="25%" top="15vh" title="编辑用户名" class="modify" :close-on-click-modal="false">
       <el-input v-model="nickname" placeholder="请输入内容" clearable />
       <span slot="footer" class="dialog-footer">
         <el-button size="mini" @click="changename = false">取 消</el-button>
@@ -49,7 +49,7 @@
       </span>
     </el-dialog>
     <!-- 更改密码弹出框 -->
-    <el-dialog type="password" :visible.sync="changePasswordVisible" append-to-body width="400px" top="15vh" title="更改密码" class="modify">
+    <el-dialog type="password" :visible.sync="changePasswordVisible" append-to-body width="400px" top="15vh" title="更改密码" class="modify" :close-on-click-modal="false">
       <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="原密码" prop="oldpass">
           <el-input v-model="ruleForm.oldpass" type="password" autocomplete="off" placeholder="请输入原密码" />
@@ -159,7 +159,7 @@ export default Vue.extend({
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -260,7 +260,6 @@ export default Vue.extend({
                 if (res.code == 0) {
                   this.$alert('修改密码需重新登录', '修改密码提示', {
                     confirmButtonText: '确定',
-                    confirmButtonClass: 'btnFalses',
                     callback: action => {
                       this.loginout()
                       this.$router.push('/login')

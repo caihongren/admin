@@ -28,12 +28,12 @@
       <el-table :data="tableData" :cell-style="rowClass" style="color:#43454a;" stripe :header-cell-style="headClass">
         <el-table-column fixed label="序号" type="index" min-width="100" />
 
-        <el-table-column prop="creatorName" label="创建人" width="180" sortable />
-        <el-table-column prop="name" label="名称" min-width="180" sortable />
-        <el-table-column prop="created" label="创建时间" min-width="180" sortable />
-        <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="180" />
-        <el-table-column prop="databaseType" label="数据库类型" min-width="180" />
-        <el-table-column label="操作" min-width="250">
+        <el-table-column prop="creatorName" label="创建人" min-width="100" sortable />
+        <el-table-column prop="name" label="名称" min-width="100" sortable />
+        <el-table-column prop="created" label="创建时间" min-width="100" sortable />
+        <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="100" />
+        <el-table-column prop="databaseType" label="数据库类型" min-width="100" />
+        <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
             <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
 
@@ -45,21 +45,21 @@
       </div>
     </div>
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="数据源详情">
+    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="数据源详情" :close-on-click-modal="false">
       <el-form ref="lookForm" :model="lookForm" label-width="100px">
-        <el-form-item label="数据源名称">
+        <el-form-item label="名　称">
           <el-input v-model="lookForm.name" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据源类型">
+        <el-form-item label="源类型">
           <el-input v-model="lookForm.type" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据库类型">
+        <el-form-item label="库类型">
           <el-input v-model="lookForm.databaseType" :disabled="true" />
         </el-form-item>
-        <el-form-item label="数据库名称">
+        <el-form-item label="库名称">
           <el-input v-model="lookForm.databaseName" :disabled="true" />
         </el-form-item>
-        <el-form-item label="连接地址">
+        <el-form-item label="地　址">
           <el-input v-model="lookForm.databaseUrl" :disabled="true" />
         </el-form-item>
         <el-form-item label="端口号">
@@ -68,7 +68,7 @@
         <el-form-item label="用户名">
           <el-input v-model="lookForm.databaseUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密　码">
           <el-input v-model="lookForm.databasePassword" :disabled="true" />
         </el-form-item>
       </el-form>
@@ -190,7 +190,7 @@ export default {
       })
     },
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -294,10 +294,10 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-.dialog .el-button--primary {
+/* .dialog .el-button--primary {
   background-color: #4283d8;
   border-color: #4283d8;
-}
+} */
 .dialog .el-form-item__label {
   font-size: 12px;
 }
@@ -305,5 +305,6 @@ export default {
   height: 50px;
   line-height:50px;
 }
+
 </style>
 

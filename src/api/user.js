@@ -205,7 +205,22 @@ export function nodeList(query) {
     params: query
   })
 }
+// 获取数据源下拉列表
+export function selectList(id) {
+  return request({
+    url: '/dataSource/selectList?creatorId=' + id,
+    method: 'get'
 
+  })
+}
+// 获取企业节点下拉列表
+export function nodeSelectList(id) {
+  return request({
+    url: '/node/selectList?creatorId=' + id,
+    method: 'get'
+
+  })
+}
 // 删除企业节点
 export function enterpriseNode(data) {
   return request({
@@ -258,6 +273,14 @@ export function deleteDataTemplate(data) {
   })
 }
 
+// 删除未开始任务
+export function deleteTask(data) {
+  return request({
+    url: '/job/task',
+    method: 'delete',
+    data
+  })
+}
 // 获取数据模板详情
 export function info(id) {
   return request({
@@ -398,6 +421,49 @@ export function deleteHandle(data) {
     method: 'delete',
     data
   })
+}
+// 查看标识数据
+export function handleInfo(id) {
+  return request({
+    url: '/job/handleInfo?handleId=' + id,
+    method: 'get'
+  })
+}
+// 首页上部分数据
+export function homeTask(id) {
+  return request({
+    url: '/general/homeTask?creatorId=' + id,
+    method: 'get'
+  })
+}
+// export function queryHomeTask(query) {
+//   return request({
+//     url: '/general/homeTask',
+//     method: 'get',
+//     params: query
+
+//   })
+// }
+// 计算文件大小,根据字节计算大小
+export function Size(num) {
+  //
+  if (typeof (num) != 'number' || num <= 0) return false
+  if (num <= 1024) {
+    return num + 'B'
+  } else
+  if (num > 1024 && num <= 1024 * 1024) {
+    return (num / 1024).toFixed(2) + 'KB'
+  } else if (1024 ** 2 < num && num <= 1024 ** 3) {
+    return (num / (1024 ** 2)).toFixed(2) + 'MB'
+  } else if (1024 ** 3 < num && num <= 1024 ** 4) {
+    return (num / (1024 ** 3)).toFixed(2) + 'GB'
+  } else if (1024 ** 4 < num && num <= 1024 ** 5) {
+    return (num / (1024 ** 4)).toFixed(2) + 'TB'
+  } else if (1024 ** 5 < num && num <= 1024 ** 6) {
+    return (num / (1024 ** 5)).toFixed(2) + 'PB'
+  } else if (num >= 1024 ** 6) {
+    return '>1PB'
+  }
 }
 
 // 时间格式转换

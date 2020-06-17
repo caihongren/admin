@@ -10,12 +10,12 @@
       :header-cell-style="headClass"
     >
       <el-table-column fixed label="序号" type="index" width="100" />
-      <el-table-column prop="name" label="用户名" width="200" />
-      <el-table-column prop="role" label="角色" width="180" />
-      <el-table-column prop="accountNumber" label="账号" />
-      <el-table-column prop="state" label="状态" :formatter="completionStatusc" />
-      <el-table-column prop="created" label="创建时间" :formatter="formatSex" />
-      <el-table-column label="操作" width="250">
+      <el-table-column prop="name" label="用户名" min-width="100" />
+      <el-table-column prop="role" label="角色" min-width="100" />
+      <el-table-column prop="accountNumber" label="账号" min-width="100" />
+      <el-table-column prop="state" label="状态" min-width="100" :formatter="completionStatusc" />
+      <el-table-column prop="created" label="创建时间" min-width="100" :formatter="formatSex" />
+      <el-table-column label="操作" min-width="100">
         <template slot-scope="scope">
           <el-button type="text" round size="mini" style="color: #d05e5e;" @click="changePassword(scope.row.id)">重置密码</el-button>
           <el-button v-if="scope.row.state=='0'" type="text" style="color: #d05e5e;" round size="mini" @click="Deactivation(scope.row.id)">停用</el-button>
@@ -27,7 +27,7 @@
       <el-pagination :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
     <!-- 新增加弹出框 -->
-    <el-dialog title="新增用户" :visible.sync="dialogFormVisibleadd" width="25%">
+    <el-dialog title="新增用户" :visible.sync="dialogFormVisibleadd" width="25%" :close-on-click-modal="false">
       <el-form ref="formadd" :model="formadd" :rules="rules" label-width="70px">
         <el-form-item label="名称" prop="name">
           <el-input v-model="formadd.name" maxlength="20" placeholder="请输入名称" />
@@ -36,7 +36,7 @@
           <el-input v-model="formadd.accountNumber" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="角色">
-          <el-select v-model="formadd.roleId" placeholder="请选择角色">
+          <el-select v-model="formadd.roleId" placeholder="请选择角色" style="width:100%">
             <el-option
               v-for="item in teacherOptions"
               :key="item.value"
@@ -46,7 +46,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="defaultPassword" style="width:26%" :disabled="true" />
+          <el-input v-model="defaultPassword" style="width:100%" :disabled="true" />
         </el-form-item>
         <el-form-item>
           <div style="width: 40%;float:right">
@@ -98,10 +98,10 @@ export default {
       teacherOptions: [],
       dialogFormVisibleadd: false,
       offset: 0,
-      limit: 10,
-      length: 10,
+      limit: 15,
+      length: 0,
       currentPage4: 1,
-      pageSize: 10,
+      pageSize: 20,
       tableData: []
     }
   },
@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -144,7 +144,10 @@ export default {
       this.$confirm('此操作将重置密码', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        confirmButtonClass: 'classStyle2',
         confirmButtonClass: 'btnFalses',
+        showClose: false,
+        closeOnClickModal: false,
 
         type: 'warning'
       }).then(() => {
@@ -243,7 +246,12 @@ export default {
       this.$confirm('此操作将停用该账号, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        confirmButtonClass: 'classStyle2',
         confirmButtonClass: 'btnFalses',
+        showClose: false,
+
+        closeOnClickModal: false,
+
         type: 'warning'
       })
         .then(() => {
@@ -282,7 +290,11 @@ export default {
       this.$confirm('此操作将启动该账号, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        confirmButtonClass: 'classStyle2',
         confirmButtonClass: 'btnFalses',
+        showClose: false,
+
+        closeOnClickModal: false,
 
         type: 'warning'
       })
@@ -366,6 +378,11 @@ export default {
  .personnel .el-table th>.cell{
   height: 50px;
   line-height:50px;
+}
+.classStyle2{
+    background: #4283d8 !important;
+    color:#fff !important;
+    border:1px solid #4283d8 !important;
 }
 </style>
 

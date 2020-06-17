@@ -3,7 +3,7 @@
     <div style="background:#fff;margin:20px auto;width:98%;padding-top:2px;">
       <el-row>
         <el-col :span="23"> <p style="padding-left:30px;font-size: 22px;">新建任务</p></el-col>
-        <el-col :span="1">  <p @click="$emit('detpage')">返回</p>
+        <el-col :span="1">  <p style="cursor: pointer;" @click="$emit('detpage')">返回</p>
         </el-col>
       </el-row>
       <!-- 新建筛选 -->
@@ -26,7 +26,7 @@
         </el-form>
         <div>
           <el-button type="primary" class="bottomColor" round size="mini" @click="startNow('operation')">立即开始</el-button>
-          <el-button type="primary" style="background: #ebb563;border-color: #ebb563;" round size="mini" @click="startLater('operation')">稍后开始</el-button>
+          <el-button type="warning" round size="mini" @click="startLater('operation')">稍后开始</el-button>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
                   </el-popover>
                 </el-option>
               </el-select>
-              <el-button size="mini" class="bottomColor" @click="addisanswer=true">添加</el-button>
+              <el-button size="mini" class="bottomColor" type="primary" @click="addisanswer=true">添加</el-button>
             </el-form-item>
             <el-form-item label="数据表" prop="dataSourceList">
               <el-select v-model="operation.dataSourceList" placeholder="请选择表" @change="addlist(operation.dataSourceList)">
@@ -90,7 +90,7 @@
                   </el-popover>
                 </el-option>
               </el-select>
-              <el-button size="mini" class="bottomColor" @click="addNode=true">添加</el-button>
+              <el-button size="mini" class="bottomColor" type="primary" @click="addNode=true">添加</el-button>
             </el-form-item>
             <el-form-item label="操作类型" prop="operationType">
               <el-select v-model="operation.operationType" placeholder="请选择操作类型" @change="operationType">
@@ -102,7 +102,7 @@
               <el-select v-model="operation.dataTemplate" placeholder="请选择数据模板" style="width:61%;" @change="dataTemplateChange(operation.dataTemplate)">
                 <el-option v-for="(item,index) in templatelist" :key="index" :label="item.label" :value="item.value" />
               </el-select>
-              <el-button size="mini" class="bottomColor" @click="addTemplate=true">添加</el-button>
+              <el-button size="mini" class="bottomColor" type="primary" @click="addTemplate=true">添加</el-button>
             </el-form-item>
             <el-form-item v-show="bbb" v-if="addType" label="数据模板" prop="templateLnput" style="padding-left:10px;">
               <el-input v-model="operation.templateLnput" style="width:61%;" />
@@ -152,7 +152,7 @@
           <el-col :span="10">
             <div class="corresponding">
               <!-- <el-button size="small" style="margin-bottom: 3%;"  @click="Connection">添加</el-button> -->
-              <div v-for="(domain,index) in middle" v-show="addType" :key="index" style="text-align: center;padding-top: 15px;">
+              <div v-for="(domain,index) in middle" v-show="addType" :key="index" style="text-align: center;padding-top: 0px;">
                 <el-input v-model="domain.activeName" style="width: 40%;" :disabled="true" />--
                 <el-input v-model="domain.value" style="width: 40%;" :disabled="true" />
                 <!-- <el-button size="small" round @click.prevent="removeDomain(domain.id)">删除</el-button> -->
@@ -195,7 +195,7 @@
 
       </el-form>
       <!-- 添加数据源弹窗 -->
-      <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源">
+      <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源" :close-on-click-modal="false">
         <el-form ref="addData" :model="addData" label-width="100px" class="dialog">
           <el-form-item label="名　称">
             <el-input v-model="addData.name" placeholder="请输入数据源名称" />
@@ -243,14 +243,14 @@
                 </el-upload>
               </el-col>
               <el-col :span="4">
-                <el-button type="primary" size="mini" round @click="adddatabase">确定</el-button>
+                <el-button type="primary" round size="mini" @click="adddatabase">确定</el-button>
               </el-col>
             </el-row>
           </el-form-item>
         </el-form>
       </el-dialog>
       <!-- 添加企业节点弹窗 -->
-      <el-dialog width="40%" top="2vh" :visible.sync="addNode" append-to-body title="添加企业节点">
+      <el-dialog width="40%" top="2vh" :visible.sync="addNode" append-to-body title="添加企业节点" :close-on-click-modal="false">
         <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
           <el-form-item label="名　称">
             <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
@@ -341,14 +341,14 @@
                 <el-button type="warning" size="mini" round :loading="link">连接测试</el-button>
               </el-col>
               <el-col :span="4">
-                <el-button type="primary" size="mini" round @click="database">确定</el-button>
+                <el-button type="primary" round size="mini" @click="database">确定</el-button>
               </el-col>
             </el-row>
           </el-form-item>
         </el-form>
       </el-dialog>
       <!-- 添加数据模板弹窗 -->
-      <el-dialog width="70%" top="8vh" style="height:800px" :visible.sync="addTemplate" append-to-body title="添加数据模板">
+      <el-dialog width="70%" top="8vh" style="height:800px" :visible.sync="addTemplate" append-to-body title="添加数据模板" :close-on-click-modal="false">
         <div style="min-height:600px;position: relative;">
           <el-form ref="ruleForm" :model="ruleForm" :rules="rules" class="demo-ruleForm" size="mini" label-width="80px">
             <el-form-item label="节点" style="font-size:12px" prop="dataNode">
@@ -384,14 +384,14 @@
             </el-table>
             <el-form-item style="position: absolute;bottom: 0px; right: 5%;">
               <el-button @click="addTemplate=false">取消</el-button>
-              <el-button class="bottomColor" @click="resetForm('ruleForm')">保存</el-button>
+              <el-button class="bottomColor" type="primary" @click="resetForm('ruleForm')">保存</el-button>
             </el-form-item>
           </el-form>
         </div>
       </el-dialog>
 
       <!-- 创建一行弹出框 -->
-      <el-dialog width="35%" top="15vh" :visible.sync="establish" append-to-body title="创建一行">
+      <el-dialog width="35%" top="15vh" :visible.sync="establish" append-to-body title="创建一行" :close-on-click-modal="false">
         <el-form ref="createData" :model="createData" :rules="rules2" label-width="80px" class="demo-ruleForm" size="mini">
           <el-form-item label="中文名称" prop="chinese">
             <el-input v-model="createData.chinese" placeholder="请输入中文名称" />
@@ -415,7 +415,7 @@
           </el-form-item>
           <el-form-item style="float: right;">
             <el-button type="primary" @click="establish=false">取消</el-button>
-            <el-button @click="resetForm('ruleForm')">保存</el-button>
+            <el-button type="primary" @click="resetForm('ruleForm')">保存</el-button>
           </el-form-item>
         </el-form>
 
@@ -1020,6 +1020,9 @@ export default {
         this.$confirm('你确定删除数据类型为' + items + '的对应关系吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
+          confirmButtonClass: 'classStyle2',
+          closeOnClickModal: false,
+          showClose: false,
           type: 'warning'
         }).then(() => {
           for (let i = 0; i < this.middle.length; i++) {
@@ -1173,7 +1176,7 @@ export default {
 
     // 表格样式设置
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -1503,7 +1506,6 @@ export default {
         })
       }
     }
-
   }
 }
 </script>
@@ -1577,6 +1579,11 @@ export default {
 </style>
 
 <style>
+.classStyle2{
+    background: #4283d8 !important;
+    color:#fff !important;
+    border:1px solid #4283d8 !important;
+}
 .active {
   background-color: #4283d8;
   color: #fff;
@@ -1598,8 +1605,11 @@ export default {
 }
 .addtask .el-input.is-disabled .el-input__inner {
   color: #606266;
-  background-color: #fff;
-    border-color: #fff;
+    background-color: #f0f2f5;
+    border-color: #f0f2f5;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
 }
 .tttt .el-select {
   width: 25%;

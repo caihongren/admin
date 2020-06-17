@@ -13,18 +13,18 @@
             <div style="display: inline-block;">存量导入任务</div>
           </div>
 
-          <div style="text-align: center;font-size:30px;padding-top:20px;">26</div>
+          <div style="text-align: center;font-size:30px;padding-top:20px;">{{ taskStockCount }}</div>
           <div class="clearfix">
             <div style=" float: left;padding-left:10%">进行中</div>
-            <div style=" float: right;padding-right:10%">345</div>
+            <div style=" float: right;padding-right:10%">{{ taskStockRunCount }}</div>
           </div>
           <div class="clearfix">
             <p style=" float: left;padding-left:10%">已结束</p>
-            <p style=" float: right;padding-right:10%">345</p>
+            <p style=" float: right;padding-right:10%">{{ taskStockEndCount }}</p>
           </div>
           <div class="clearfix">
             <div style=" float: left;padding-left:10%">异常终止</div>
-            <div style=" float: right;padding-right:10%">345</div>
+            <div style=" float: right;padding-right:10%">{{ taskStockAbnormalCount }}</div>
           </div>
 
         </div>
@@ -34,14 +34,14 @@
             <div style="display: inline-block;">实时导入任务</div>
           </div>
 
-          <div style="text-align: center;font-size:30px;padding-top:20px;">26</div>
+          <div style="text-align: center;font-size:30px;padding-top:20px;">{{ taskTimeCount }}</div>
           <div class="clearfix">
             <div style=" float: left;padding-left:10%">进行中</div>
-            <div style=" float: right;padding-right:10%">345</div>
+            <div style=" float: right;padding-right:10%">{{ taskTimeRunCount }}</div>
           </div>
           <div class="clearfix">
             <p style=" float: left;padding-left:10%">手动终止</p>
-            <p style=" float: right;padding-right:10%">345</p>
+            <p style=" float: right;padding-right:10%">{{ taskTimeManualCount }}</p>
           </div>
 
         </div>
@@ -54,28 +54,28 @@
               <img src="./../../img/图标1 (1).png">
               <p class="text">数据源</p>
 
-              <div style="font-size:20px;">12345</div>
+              <div style="font-size:20px;">{{ dataSourceCount }}</div>
 
             </div>
             <div class="wwww" style="margin: 0px 10px 20px 15px;">
 
               <img src="./../../img/图标1 (2).png">
               <p class="text">企业节点</p>
-              <div style="font-size:20px;">12345</div>
+              <div style="font-size:20px;">{{ enterpriseNodeCount }}</div>
 
             </div>
             <div class="wwww" style="margin: 0px 15px 20px 5px;">
 
               <img src="./../../img/图标1 (3).png">
               <p class="text">任务总数</p>
-              <div style="font-size:20px;">12345</div>
+              <div style="font-size:20px;">{{ taskCount }}</div>
 
             </div>
             <div class="wwww">
 
               <img src="./../../img/图标1 (4).png">
               <p class="text">进行中任务</p>
-              <div style="font-size:20px;">12345</div>
+              <div style="font-size:20px;">{{ taskRunCount }}</div>
 
             </div>
 
@@ -87,28 +87,28 @@
 
             <img src="./../../img/图标1 (5).png">
             <p class="text">已结束任务</p>
-            <div style="font-size:20px;">12345</div>
+            <div style="font-size:20px;">{{ taskEndCount }}</div>
 
           </div>
           <div class="wwww" style="margin: 0px 10px 20px 15px;">
 
             <img src="./../../img/图标1 (8).png">
             <p class="text">手动停止任务</p>
-            <div style="font-size:20px;">12345</div>
+            <div style="font-size:20px;">{{ taskManualCount }}</div>
 
           </div>
           <div class="wwww" style="margin: 0px 15px 20px 5px;">
 
             <img src="./../../img/图标1 (9).png">
             <p class="text">归档任务</p>
-            <div style="font-size:20px;">12345</div>
+            <div style="font-size:20px;">{{ taskArchiveCount }}</div>
 
           </div>
           <div class="wwww">
 
             <img src="./../../img/图标1 (6).png">
             <p class="text">异常终止任务</p>
-            <div style="font-size:20px;">12345</div>
+            <div style="font-size:20px;">{{ taskAbnormalCount }}</div>
 
           </div>
 
@@ -119,19 +119,63 @@
   </div>
 </template>
 <script>
-import { mGetDateThis } from '@/api/user.js'
+import { mGetDateThis, homeTask } from '@/api/user.js'
 import echarts from 'echarts'
 export default {
-  name: 'Hello',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      creatorld: '',
+      dataSourceCount: '',
+      enterpriseNodeCount: '',
+      taskAbnormalCount: '',
+      taskArchiveCount: '',
+      taskCount: '',
+      taskEndCount: '',
+      taskManualCount: '',
+      taskStockCount: '',
+      taskStockEndCount: '',
+      taskStockRunCount: '',
+      taskTimeCount: '',
+      taskTimeManualCount: '',
+      taskTimeRunCount: '',
+      taskStockAbnormalCount: '',
+      taskRunCount: ''
     }
   },
   mounted() {
     this.drawLine()
   },
+  created() {
+    this.homeTaskList()
+  },
   methods: {
+    homeTaskList() {
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        this.creatorld = user.id
+        homeTask(user.accountNumber == 'admin' ? '' : user.id).then(res => {
+          console.log(res, '555')
+          if (res.code == 0) {
+            this.dataSourceCount = res.data.dataSourceCount// 数据源
+            this.enterpriseNodeCount = res.data.enterpriseNodeCount// 企业节点
+            this.taskAbnormalCount = res.data.taskAbnormalCount// 异常终止任务
+            this.taskArchiveCount = res.data.taskArchiveCount// 归档任务
+            this.taskCount = res.data.taskCount// 任务总数
+            this.taskEndCount = res.data.taskEndCount// 已结束任务
+            this.taskManualCount = res.data.taskManualCount// 手动停止任务
+            this.taskRunCount = res.data.taskRunCount// 进行中任务
+            this.taskStockAbnormalCount = res.data.taskStockAbnormalCount// 存量异常终止
+
+            this.taskStockCount = res.data.taskStockCount// 存量导入任务
+            this.taskStockEndCount = res.data.taskStockEndCount// 存量已结束
+            this.taskStockRunCount = res.data.taskStockRunCount// 存量进行中
+            this.taskTimeCount = res.data.taskTimeCount// 实时导入任务
+            this.taskTimeManualCount = res.data.taskTimeManualCount// 实时手动终止
+            this.taskTimeRunCount = res.data.taskTimeRunCount// 实时进行中
+          }
+        })
+      }
+    },
     drawLine() {
       // 基于准备好的dom，初始化echarts实例
       const myChart = this.$echarts.init(document.getElementById('myChart'))

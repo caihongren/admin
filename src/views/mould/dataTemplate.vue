@@ -1,6 +1,29 @@
 <template>
   <div class="node">
     <div class="head">
+      <!-- <div style="display: flex; justify-content: left; width: 100%;" :model="query">
+        <div style="display: flex;padding-right:20px;width: 30%;">
+          <span style="color: #606266;line-height: 35px;font-weight: 700;font-size: 12px;">数据模板</span>
+          <el-input v-model="query.version" placeholder="请输入数据模板名称" />
+        </div>
+        <div style="display: flex;padding-right:20px;">
+          <span style="width: 17%;color: #606266;line-height: 35px;font-weight: 700;font-size: 12px;">前缀</span>
+          <el-input v-model="query.prefix" placeholder="请输入前缀" />
+        </div>
+        <div style="display: flex;padding-right:20px;">
+          <span style="width: 22%;color: #606266;line-height: 35px;font-weight: 700;font-size: 12px;">企业节点</span>
+          <el-select v-model="query.enterpriseNodeId" placeholder="请选择企业节点">
+            <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" />
+          </el-select>
+        </div>
+        <div style="display: flex;">
+          <el-button type="primary" size="mini" round icon="el-icon-search" @click="getLists">查询</el-button>
+          <el-button type="primary" size="mini" round icon="el-icon-search" @click="getQuery">从SNMS查询</el-button>
+
+          <el-button type="warning" size="mini" round icon="el-icon-refresh" @click="Reset">重置</el-button>
+        </div>
+
+      </div> -->
       <el-form :inline="true" :model="query" class="demo-form-inline">
         <el-form-item label="数据模板" style="font-size:12px">
           <el-input v-model="query.version" placeholder="请输入数据模板名称" />
@@ -28,11 +51,11 @@
       </div>
       <el-table :data="tableData" style="color:#43454a;" :cell-style="rowClass" stripe :header-cell-style="headClass" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
-        <el-table-column prop="version" label="数据模板" min-width="180" sortable="custom" />
-        <el-table-column prop="prefix" label="所属前缀" min-width="180" sortable="custom" />
-        <el-table-column prop="enterpriseNodeName" label="所属企业节点" min-width="180" sortable="custom" />
+        <el-table-column prop="version" label="数据模板" min-width="100" sortable="custom" />
+        <el-table-column prop="prefix" label="所属前缀" min-width="100" sortable="custom" />
+        <el-table-column prop="enterpriseNodeName" label="所属企业节点" min-width="100" sortable="custom" />
 
-        <el-table-column label="操作" min-width="250">
+        <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
             <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
             <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
@@ -49,25 +72,33 @@
     <el-dialog width="70%" top="8vh" :close-on-click-modal="false" :visible.sync="addTemplate" append-to-body title="添加数据模板">
       <div style="min-height:600px;position: relative;">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="80px" size="mini">
-          <el-form-item label="节点" prop="enterpriseNodeId">
-            <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:25%">
-              <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="前缀" prop="prefix">
-            <el-input v-model="ruleForm.prefix" style="width: 25%;" />
-          </el-form-item>
-          <el-form-item label="名称" prop="version">
-            <el-input v-model="ruleForm.version " style="width: 25%;" />
-          </el-form-item>
-          <el-form-item label="简介">
-            <el-input v-model="ruleForm.description" style="width: 25%;" />
-          </el-form-item>
+
+          <el-row :gutter="20">
+            <el-col :span="9">
+              <el-form-item label="节点" prop="enterpriseNodeId">
+                <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:100%">
+                  <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="前缀" prop="prefix">
+                <el-input v-model="ruleForm.prefix" style="width: 100%;" />
+              </el-form-item>
+              <el-form-item label="名称" prop="version">
+                <el-input v-model="ruleForm.version " style="width: 100%;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="15">
+              <el-form-item label="简介">
+                <el-input v-model="ruleForm.description" type="textarea" style="width: 95%;letter-spacing: 1px;font-size: 14px;" maxlength="30" show-word-limit />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-form-item style="margin-left:-40px;">
             <el-button type="text" @click="addEstablishType(true, 'add')">添加一行</el-button>
           </el-form-item>
           <el-table :data="ruleForm.dataItems" border :cell-style="rowClass" :header-cell-style="headClass" style="color:#43454a;width: 94%; margin: 0 auto;">
-            <el-table-column fixed label="序号" type="index" min-width="100" />
+            <el-table-column fixed label="序号" type="index" width="100" />
 
             <el-table-column prop="name" label="中文名称" min-width="100" />
             <el-table-column prop="idType" label="英文名称" min-width="100" />
@@ -83,7 +114,7 @@
           </el-table>
           <el-form-item style="position: absolute;bottom: 0px; right: 5%;">
             <el-button @click="addTemplate=false">取消</el-button>
-            <el-button style=" background-color: #4283d8; border-color: #4283d8;color: #fff;" @click="addSubmission">提交</el-button>
+            <el-button type="primary" @click="addSubmission('ruleForm')">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -92,25 +123,31 @@
     <el-dialog width="70%" top="8vh" :visible.sync="upTemplate" :close-on-click-modal="false" append-to-body title="修改数据模板">
       <div style="min-height:600px;position: relative;">
         <el-form ref="ruleForm" :model="ruleForm" label-width="80px" class="demo-ruleForm" size="mini">
-          <el-form-item label="节点" style="font-size:12px" prop="enterpriseNodeId">
-            <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:25%">
-              <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" :disabled="true" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="前缀" prop="prefix">
-            <el-input v-model="ruleForm.prefix" style="width: 25%;" :disabled="true" />
-          </el-form-item>
-          <el-form-item label="名称" prop="version">
-            <el-input v-model="ruleForm.version " style="width: 25%;" :disabled="true" />
-          </el-form-item>
-          <el-form-item label="简介">
-            <el-input v-model="ruleForm.description" style="width: 25%;" />
-          </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="9">
+              <el-form-item label="节点" style="font-size:12px" prop="enterpriseNodeId">
+                <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:100%">
+                  <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" :disabled="true" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="前缀" prop="prefix">
+                <el-input v-model="ruleForm.prefix" style="width: 100%;" :disabled="true" />
+              </el-form-item>
+              <el-form-item label="名称" prop="version">
+                <el-input v-model="ruleForm.version " style="width: 100%;" :disabled="true" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="15">
+              <el-form-item label="简介">
+                <el-input v-model="ruleForm.description" type="textarea" style="width: 95%;letter-spacing: 1px;font-size: 14px;" maxlength="30" show-word-limit />
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item style="margin-left:-40px;">
             <el-button type="text" @click="addEstablishType(true, 'add')">添加一行</el-button>
           </el-form-item>
           <el-table :data="ruleForm.dataItems" border :cell-style="rowClass" :header-cell-style="headClass" style="color:#43454a;width: 94%; margin: 0 auto;">
-            <el-table-column fixed label="序号" type="index" min-width="100" />
+            <el-table-column fixed label="序号" type="index" width="100" />
             <el-table-column prop="name" label="中文名称" min-width="100" />
             <el-table-column prop="idType" label="英文名称" min-width="100" />
             <el-table-column prop="type" label="数据类型" min-width="100" />
@@ -125,7 +162,7 @@
           </el-table>
           <el-form-item style="position: absolute;bottom: 0px; right: 5%;">
             <el-button @click="upTemplate=false">取消</el-button>
-            <el-button style=" background-color: #4283d8; border-color: #4283d8;color: #fff;" @click="modifyTemplate">保存</el-button>
+            <el-button type="primary" @click="modifyTemplate">保存</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -134,22 +171,27 @@
     <el-dialog width="70%" top="8vh" :visible.sync="lookTemplate" append-to-body title="查看数据模板" :close-on-click-modal="false">
       <div style="min-height:600px;position: relative;">
         <el-form ref="ruleForm" :model="ruleForm" label-width="80px" class="demo-ruleForm" size="mini">
-          <el-form-item label="节点" style="font-size:12px">
-            <!-- <el-input v-model="ruleForm.enterpriseNodeId" style="width: 20%;" :disabled="true" /> -->
-            <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:25%">
-              <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" :disabled="true" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="前缀">
-            <el-input v-model="ruleForm.prefix" style="width: 25%;" :disabled="true" />
-          </el-form-item>
-          <el-form-item label="名称">
-            <el-input v-model="ruleForm.version " style="width: 25%;" :disabled="true" />
-          </el-form-item>
-          <el-form-item label="简介">
-            <el-input v-model="ruleForm.description" style="width: 25%;" :disabled="true" />
-          </el-form-item>
-          <el-table :data="ruleForm.dataItems" border :cell-style="rowClass" :header-cell-style="headClass" style="color:#43454a;width: 90%; margin: 0 auto;">
+          <el-row :gutter="20">
+            <el-col :span="9">
+              <el-form-item label="节点" style="font-size:12px">
+                <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:100%">
+                  <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" :disabled="true" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="前缀">
+                <el-input v-model="ruleForm.prefix" style="width: 100%;" :disabled="true" />
+              </el-form-item>
+              <el-form-item label="名称">
+                <el-input v-model="ruleForm.version " style="width: 100%;" :disabled="true" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="15">
+              <el-form-item label="简介">
+                <el-input v-model="ruleForm.description" type="textarea" style="width: 95%;letter-spacing: 1px;font-size: 14px;" :disabled="true" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-table :data="ruleForm.dataItems" border :cell-style="rowClass" :header-cell-style="headClass" style="color:#43454a;width: 94%; margin: 0 auto;">
             <el-table-column prop="name" label="中文名称" min-width="100" />
             <el-table-column prop="idType" label="英文名称" min-width="100" />
             <el-table-column prop="type" label="数据类型" min-width="100" />
@@ -184,7 +226,7 @@
         </el-form-item>
         <el-form-item style="text-align: right;">
           <el-button @click="addEstablishType(false, '')">取消</el-button>
-          <el-button style=" background-color: #4283d8; border-color: #4283d8;color: #fff;" @click="resetForm2">保存</el-button>
+          <el-button type="primary" @click="resetForm2('createData')">保存</el-button>
         </el-form-item>
       </el-form>
 
@@ -195,6 +237,7 @@
 <script>
 import {
   nodeList, // 获取企业节点
+  nodeSelectList,
   getList, // 获取数据模板列表
   deleteDataTemplate, // 删除数据模板
   info, // 获取数据模板详情
@@ -206,6 +249,7 @@ import uuid from 'uuid'
 export default {
   data() {
     return {
+      nodelistsCreatorId: '',
       addid: '',
       checked: true,
       nodelist: [], // 企业节点列表
@@ -258,9 +302,8 @@ export default {
         idType: [
           { required: true, message: '请输入英文名称', trigger: 'blur' },
           {
-            pattern: /^[a-zA-Z]$/,
-            message: '请输入英文',
-            trigger: ['blur', 'change']
+            pattern: /^[a-zA-Z]*$/,
+            message: '请输入英文'
           }
         ],
         type: [
@@ -311,7 +354,9 @@ export default {
   },
   created() {
     this.addid = uuid.v4()
-    this.nodelists() // 获取企业节点列表
+    // this.nodelists() // 获取企业节点列表
+    this.nodelists2() // 获取企业节点列表
+
     this.getLists()// 获取模板数据列表
   },
   methods: {
@@ -362,7 +407,6 @@ export default {
       this.upTemplate = true
       info(id).then(res => {
         if (res.code == 0) {
-          console.log(res, '6666')
           this.ruleForm.enterpriseNodeId = res.data.enterpriseNodeId // 企业节点
           this.ruleForm.prefix = res.data.prefix // 前缀
           this.ruleForm.version = res.data.version // 数据模板
@@ -399,6 +443,13 @@ export default {
             this.upTemplate = false
             this.getLists()
             this.ruleForm.dataItems = []
+          } else {
+            this.$message({
+              showClose: true,
+              duration: 1000,
+              type: 'error',
+              message: res.msg
+            })
           }
         })
       }
@@ -425,7 +476,6 @@ export default {
         prefix: this.query.prefix,
         version: this.query.version
       }).then(res => {
-        console.log(res, '555')
         if (res.code == 0) {
           this.lookTemplate = true
           this.ruleForm.enterpriseNodeId = res.data.enterpriseNodeId
@@ -446,15 +496,30 @@ export default {
       })
     },
     // 获取企业节点列表
-    nodelists() {
-      nodeList().then(res => {
-        if (res.code == 0) {
-          this.nodelist = []
-          for (let i = 0; i < res.data.result.length; i++) {
-            this.nodelist.push({ label: res.data.result[i].name, value: res.data.result[i].id })
+    // nodelists() {
+    //   nodeList().then(res => {
+    //     if (res.code == 0) {
+    //       this.nodelist = []
+    //       for (let i = 0; i < res.data.result.length; i++) {
+    //         this.nodelist.push({ label: res.data.result[i].name, value: res.data.result[i].name })
+    //       }
+    //     }
+    //   })
+    // },
+    nodelists2() {
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user')).id
+        this.nodelistsCreatorId = user
+        nodeSelectList(this.nodelistsCreatorId).then(res => {
+          console.log(res, '5555')
+          if (res.code == 0) {
+            this.nodelist = []
+            for (let i = 0; i < res.data.length; i++) {
+              this.nodelist.push({ label: res.data[i].name, value: res.data[i].id })
+            }
           }
-        }
-      })
+        })
+      }
     },
     // 重置按钮
     Reset() {
@@ -473,52 +538,60 @@ export default {
       this.ruleForm.dataItems = []
     },
     // 添加数据模板
-    addSubmission() {
-      if (sessionStorage.getItem('user')) {
-        const user = JSON.parse(sessionStorage.getItem('user')).id
-        this.ruleForm.creatorId = user
-        insert(this.ruleForm).then(res => {
-          if (res.code == 0) {
-            this.$message({
-              showClose: true,
-              duration: 1000,
-              type: 'success',
-              message: '添加成功'
-            })
-            this.getLists()
-            this.addTemplate = false
-          } else {
-            this.$message({
-              showClose: true,
-              duration: 1000,
-              type: 'error',
-              message: res.msg
+    addSubmission(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (sessionStorage.getItem('user')) {
+            const user = JSON.parse(sessionStorage.getItem('user')).id
+            this.ruleForm.creatorId = user
+            insert(this.ruleForm).then(res => {
+              if (res.code == 0) {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: 'success',
+                  message: '添加成功'
+                })
+                this.getLists()
+                this.addTemplate = false
+              } else {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: 'error',
+                  message: res.msg
+                })
+              }
             })
           }
-        })
-      }
+        }
+      })
     },
     // 添加一行数据
-    resetForm2() {
-      if (this.operationType == 'add') {
-        this.ruleForm.dataItems.push({
-          idType: this.createData.idType,
-          required: this.createData.required,
-          name: this.createData.name,
-          type: this.createData.type,
-          minLength: this.createData.minLength,
-          maxLength: this.createData.maxLength,
-          id: this.addid
-        })
-      } else {
-        this.ruleForm.dataItems[this.operationType].idType = this.createData.idType
-        this.ruleForm.dataItems[this.operationType].required = this.createData.required
-        this.ruleForm.dataItems[this.operationType].name = this.createData.name
-        this.ruleForm.dataItems[this.operationType].type = this.createData.type
-        this.ruleForm.dataItems[this.operationType].minLength = this.createData.minLength
-        this.ruleForm.dataItems[this.operationType].maxLength = this.createData.maxLength
-      }
-      this.addEstablishType(false, '')
+    resetForm2(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.operationType == 'add') {
+            this.ruleForm.dataItems.push({
+              idType: this.createData.idType,
+              required: this.createData.required,
+              name: this.createData.name,
+              type: this.createData.type,
+              minLength: this.createData.minLength,
+              maxLength: this.createData.maxLength,
+              id: this.addid
+            })
+          } else {
+            this.ruleForm.dataItems[this.operationType].idType = this.createData.idType
+            this.ruleForm.dataItems[this.operationType].required = this.createData.required
+            this.ruleForm.dataItems[this.operationType].name = this.createData.name
+            this.ruleForm.dataItems[this.operationType].type = this.createData.type
+            this.ruleForm.dataItems[this.operationType].minLength = this.createData.minLength
+            this.ruleForm.dataItems[this.operationType].maxLength = this.createData.maxLength
+          }
+          this.addEstablishType(false, '')
+        }
+      })
     },
     // 修改一行数据
     updataModifyLine(index) {
@@ -546,31 +619,32 @@ export default {
     },
     detLine(id1) {
       this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        confirmButtonClass: 'btnFalses',
-        type: 'warning'
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
+        confirmButtonClass: 'classStyle2',
+        closeOnClickModal: false,
+        showClose: false,
+
+        type: 'warning'
       }).then(() => {
-        for (var i = 0; i < this.ruleForm.dataItems.length; i++) {
-          const id = this.ruleForm.dataItems[i].id
-          if (id1 == id) {
-            this.ruleForm.dataItems.splice(i, 1)
-            this.$message({
-              showClose: true,
-              duration: 1000,
-              type: 'success',
-              message: '删除成功!'
-            })
-          }
-        }
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
         .catch(() => {
-          this.$message({
-            showClose: true,
-            duration: 1000,
-            type: 'info',
-            message: '已取消删除'
-          })
+          for (var i = 0; i < this.ruleForm.dataItems.length; i++) {
+            const id = this.ruleForm.dataItems[i].id
+            if (id1 == id) {
+              this.ruleForm.dataItems.splice(i, 1)
+              this.$message({
+                showClose: true,
+                duration: 1000,
+                type: 'success',
+                message: '删除成功!'
+              })
+            }
+          }
         })
     },
     // 排序功能
@@ -590,7 +664,7 @@ export default {
     },
 
     headClass() {
-      return 'text-align: center;background:#738498;color:#fff'
+      return 'text-align: center;'
     },
     // 表格样式设置
     rowClass() {
@@ -608,30 +682,31 @@ export default {
     // 删除
     det(id) {
       this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        confirmButtonClass: 'btnFalses',
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
+        confirmButtonClass: 'classStyle2',
+        closeOnClickModal: false,
+        showClose: false,
+
         type: 'warning'
-      }).then(() => {
+      }).then(() => {
+        this.$message({
+          type: 'info',
+          duration: 1000,
+
+          message: '已取消删除'
+        })
+      }).catch(() => {
         deleteDataTemplate({
           id: id
         }).then(res => {
-          if (res.code == 0) {
-            this.$message({
-              showClose: true,
-              duration: 1000,
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.getLists()
-          } else {
-            this.$message({
-              showClose: true,
-              duration: 1000,
-              type: 'error',
-              message: '删除失败'
-            })
-          }
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getLists()
         })
       })
     }
@@ -669,6 +744,7 @@ export default {
   margin-bottom: 10px;
 }
 .conter {
+  padding: 0 1%;
   background-color: #ffffff;
   min-height: 750px;
   border-radius: 3px;
@@ -700,16 +776,21 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-.dialog .el-button--primary {
+/* .dialog .el-button--primary {
   background-color: #4283d8;
   border-color: #4283d8;
-}
+} */
 .dialog .el-form-item__label {
   font-size: 12px;
 }
 .node .el-table th > .cell {
   height: 50px;
   line-height: 50px;
+}
+.classStyle2{
+    background: #4283d8 !important;
+    color:#fff !important;
+    border:1px solid #4283d8 !important;
 }
 </style>
 

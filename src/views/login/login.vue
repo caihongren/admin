@@ -11,14 +11,14 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginUser.loginName" placeholder="请输入账号" name="loginName" type="text" tabindex="1" auto-complete="on" @input.native="changeCode" />
+        <el-input v-model="loginUser.loginName" placeholder="请输入账号" name="loginName" type="text" tabindex="1" auto-complete="on" @keyup.enter.native="submitForm('loginForm')" @input.native="changeCode" />
       </el-form-item>
       <!-- 密码 -->
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :key="password" ref="password" v-model="loginUser.password" :type="password" placeholder="请输入密码" name="password" tabindex="2" auto-complete="on" />
+        <el-input :key="password" ref="password" v-model="loginUser.password" :type="password" placeholder="请输入密码" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="submitForm('loginForm')" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="password === 'password' ? 'eye' : 'eye-open'" />
         </span>
@@ -30,7 +30,7 @@
             <span class="svg-container">
               <i class="el-icon-key" style="font-weight: 700;font-size: 20px;" />
             </span>
-            <el-input :key="pictureCode" v-model="loginUser.pictureCode" placeholder="请输入验证码" name="pictureCode" type="text" tabindex="1" auto-complete="on" />
+            <el-input :key="pictureCode" v-model="loginUser.pictureCode" placeholder="请输入验证码" name="pictureCode" type="text" tabindex="1" auto-complete="on" @keyup.enter.native="submitForm('loginForm')" />
           </el-form-item>
         </el-col>
         <el-col :span="9">
@@ -154,6 +154,13 @@ export default {
               })
               this.account()
             }
+          })
+        } else {
+          this.$message.error({
+            showClose: true,
+            duration: 1000,
+            message: '您输入的账号或密码输入不正确,验证码不正确',
+            type: 'warning'
           })
         }
       })
