@@ -144,7 +144,7 @@ export default {
               localStorage.setItem('token', token)
               sessionStorage.setItem('token', token)
               sessionStorage.setItem('user', JSON.stringify(user))
-              this.$router.push({ path: this.redirect || '/' })
+              this.$router.push({ path: this.redirect ||'/IndustryHome'})
             } else {
               this.$message.error({
                 showClose: true,

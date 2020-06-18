@@ -19,20 +19,25 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
+  {
+    path: '/',
+    redirect: '/login',
+  },
   // 首页
   {
     path: '/',
     component: Layout,
-    redirect: '/IndustryHome',
-    children: [
-      {
-        path: '/IndustryHome',
-        name: '首页',
-        component: () => import('@/views/IndustryHome/homePage'),
-        // eslint-disable-next-line no-dupe-keys
-        meta: { requireAuth: true, title: '首页', icon: 'home' }
+    children: [{
+      path: '/IndustryHome',
+      name: '首页',
+      component: () => import('@/views/IndustryHome/homePage'),
+      // eslint-disable-next-line no-dupe-keys
+      meta: {
+        requireAuth: true,
+        title: '首页',
+        icon: 'home'
       }
-    ]
+    }]
   },
   // 系统管理员路由
 
@@ -40,14 +45,16 @@ export const constantRoutes = [
   {
     path: '/IndustryDataSource',
     component: Layout,
-    children: [
-      {
-        path: 'dataSource',
-        name: '数据源管理',
-        component: () => import('@/views/IndustryDataSource/dataSource'),
-        meta: { requireAuth: true, title: '数据源管理', icon: 'data' }
+    children: [{
+      path: 'dataSource',
+      name: '数据源管理',
+      component: () => import('@/views/IndustryDataSource/dataSource'),
+      meta: {
+        requireAuth: true,
+        title: '数据源管理',
+        icon: 'data'
       }
-    ]
+    }]
   },
 
   // 企业节点管理
@@ -55,28 +62,32 @@ export const constantRoutes = [
     path: '/IndustryEnterpriseNode',
     component: Layout,
     // redirect: '/IndustryEnterpriseNode',
-    children: [
-      {
-        path: 'enterpriseNode',
-        name: '企业节点管理',
-        component: () => import('@/views/IndustryEnterpriseNode/enterpriseNode'),
-        meta: { requireAuth: true, title: '企业节点管理', icon: 'enterprise' }
+    children: [{
+      path: 'enterpriseNode',
+      name: '企业节点管理',
+      component: () => import('@/views/IndustryEnterpriseNode/enterpriseNode'),
+      meta: {
+        requireAuth: true,
+        title: '企业节点管理',
+        icon: 'enterprise'
       }
-    ]
+    }]
   },
   // 人员管理
   {
     path: '/IndustryPersonnel',
     component: Layout,
     // redirect: '/IndustryPersonnel',
-    children: [
-      {
-        path: 'Personnel',
-        name: '人员管理',
-        component: () => import('@/views/IndustryPersonnel/Personnel'),
-        meta: { requireAuth: true, title: '人员管理', icon: 'people' }
+    children: [{
+      path: 'Personnel',
+      name: '人员管理',
+      component: () => import('@/views/IndustryPersonnel/Personnel'),
+      meta: {
+        requireAuth: true,
+        title: '人员管理',
+        icon: 'people'
       }
-    ]
+    }]
   },
 
   // 日志管理
@@ -84,14 +95,16 @@ export const constantRoutes = [
     path: '/IndustryLog',
     component: Layout,
     // redirect: '/IndustryLog',
-    children: [
-      {
-        path: 'Log',
-        name: '日志管理',
-        component: () => import('@/views/IndustryLog/Log'),
-        meta: { requireAuth: true, title: '日志管理', icon: 'journal' }
+    children: [{
+      path: 'Log',
+      name: '日志管理',
+      component: () => import('@/views/IndustryLog/Log'),
+      meta: {
+        requireAuth: true,
+        title: '日志管理',
+        icon: 'journal'
       }
-    ]
+    }]
   },
 
   // 授权管理
@@ -100,14 +113,16 @@ export const constantRoutes = [
     path: '/IndustryAuthorization',
     component: Layout,
     // redirect: '/IndustryAuthorization',
-    children: [
-      {
-        path: 'authorization',
-        name: '授权管理',
-        component: () => import('@/views/IndustryAuthorization/authorization'),
-        meta: { requireAuth: true, title: '授权管理', icon: 'grant' }
+    children: [{
+      path: 'authorization',
+      name: '授权管理',
+      component: () => import('@/views/IndustryAuthorization/authorization'),
+      meta: {
+        requireAuth: true,
+        title: '授权管理',
+        icon: 'grant'
       }
-    ]
+    }]
   },
 
   // 系统管理
@@ -116,14 +131,16 @@ export const constantRoutes = [
     path: '/IndustrySystem',
     component: Layout,
     // redirect: '/IndustrySystem',
-    children: [
-      {
-        path: 'system',
-        name: '系统管理',
-        component: () => import('@/views/IndustrySystem/system'),
-        meta: { requireAuth: true, title: '系统管理', icon: 'system' }
+    children: [{
+      path: 'system',
+      name: '系统管理',
+      component: () => import('@/views/IndustrySystem/system'),
+      meta: {
+        requireAuth: true,
+        title: '系统管理',
+        icon: 'system'
       }
-    ]
+    }]
   },
   // 个人中心
   {
@@ -132,78 +149,93 @@ export const constantRoutes = [
 
     hidden: true,
 
-    children: [
-      {
-        path: 'personal',
-        name: '个人中心',
-        component: () => import('@/views/IndustryPersonal/personal'),
-        meta: { requireAuth: true, title: '个人中心' }
+    children: [{
+      path: 'personal',
+      name: '个人中心',
+      component: () => import('@/views/IndustryPersonal/personal'),
+      meta: {
+        requireAuth: true,
+        title: '个人中心'
       }
-    ]
+    }]
   },
   // 数据管理员路由
   // 数据源管理
   {
     path: '/dataIndustryDataSource',
     component: Layout,
-    children: [
-      {
-        path: 'dataSourceAdministration',
-        name: '数据源管理',
-        component: () => import('@/views/dataIndustryDataSource/dataSourceAdministration'),
-        meta: { requireAuth: true, title: '数据源管理', icon: 'data' }
+    children: [{
+      path: 'dataSourceAdministration',
+      name: '数据源管理',
+      component: () => import('@/views/dataIndustryDataSource/dataSourceAdministration'),
+      meta: {
+        requireAuth: true,
+        title: '数据源管理',
+        icon: 'data'
       }
-    ]
+    }]
   },
 
   // 企业节点管理
   {
     path: '/IndustryNode',
     component: Layout,
-    children: [
-      {
-        path: 'node',
-        name: '企业节点管理',
-        component: () => import('@/views/IndustryNode/node'),
-        meta: { requireAuth: true, title: '企业节点管理', icon: 'enterprise' }
+    children: [{
+      path: 'node',
+      name: '企业节点管理',
+      component: () => import('@/views/IndustryNode/node'),
+      meta: {
+        requireAuth: true,
+        title: '企业节点管理',
+        icon: 'enterprise'
       }
-    ]
+    }]
   },
   // 导入任务管理
   {
     path: '/importTask',
     component: Layout,
-    children: [
-      {
-        path: 'task',
-        name: '导入任务管理',
-        component: () => import('@/views/importTask/task'),
-        meta: { requireAuth: true, title: '导入任务管理', icon: 'node' }
+    children: [{
+      path: 'task',
+      name: '导入任务管理',
+      component: () => import('@/views/importTask/task'),
+      meta: {
+        requireAuth: true,
+        title: '导入任务管理',
+        icon: 'node'
       }
-    ]
+    }]
   },
   // 数据模板管理
   {
     path: '/mould',
     component: Layout,
-    children: [
-      {
-        path: ' dataTemplate',
-        name: '数据模板管理',
-        component: () => import('@/views/mould/dataTemplate'),
-        meta: { requireAuth: true, title: '数据模板管理', icon: 'template' }
+    children: [{
+      path: ' dataTemplate',
+      name: '数据模板管理',
+      component: () => import('@/views/mould/dataTemplate'),
+      meta: {
+        requireAuth: true,
+        title: '数据模板管理',
+        icon: 'template'
       }
-    ]
+    }]
   },
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 export const asyncRoutes = [
 
 ]
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 

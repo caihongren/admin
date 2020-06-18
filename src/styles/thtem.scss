@@ -20,6 +20,10 @@
   &[data-color='white'] {
     $menuActiveText: #fff;
 
+    // #app 外的样式
+    &~ .el-dialog__wrapper .lianjieBtn{
+    background-color: yellow;
+    }
     // 表格表头颜色
     .el-table tr .is-leaf {
       background: #738498;

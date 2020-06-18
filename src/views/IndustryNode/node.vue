@@ -136,7 +136,7 @@
           <el-form-item style="margin-left: -80px;">
             <el-row :gutter="20">
               <el-col :span="20">
-                <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
+                <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
               </el-col>
               <el-col :span="4">
                 <el-button type="primary" size="mini" round @click="database">确定</el-button>
