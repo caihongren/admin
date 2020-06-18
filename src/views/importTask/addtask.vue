@@ -13,7 +13,7 @@
             <el-input v-model="newBuild.name" placeholder="请输入任务名称" />
           </el-form-item>
           <el-form-item label="任务类型" prop="taskType" style="margin:0 35px;">
-            <el-select v-model="newBuild.taskType" placeholder="请选择类型">
+            <el-select v-model="newBuild.taskType" placeholder="请选择类型" @change="taskTypeDataSource(newBuild.taskType)">
               <el-option label="实时导入任务" value="TIME" />
               <el-option label="存量导入任务" value="STOCK" />
             </el-select>
@@ -100,7 +100,7 @@
             </el-form-item>
             <el-form-item v-show="aaa" v-if="addType" label="数据模板" prop="dataTemplate" style="padding-left: 10px;">
               <el-select v-model="operation.dataTemplate" placeholder="请选择数据模板" style="width:61%;" @change="dataTemplateChange(operation.dataTemplate)">
-                <el-option v-for="(item,index) in templatelist" :key="index" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,index) in templatelist" :key="index" :label="item.label" :value="item" />
               </el-select>
               <el-button size="mini" class="bottomColor" type="primary" @click="addTemplate=true">添加</el-button>
             </el-form-item>
@@ -230,16 +230,20 @@
             <el-input v-model="addData.databasePassword" placeholder="请输入密码" />
           </el-form-item>
           <el-form-item v-show="addFileShow" label="文件">
-            <el-input v-model="addData.data333basePassword" />
+            <el-input v-model="addData.fileName" :disabled="true" />
           </el-form-item>
           <el-form-item style="margin-left: -80px;">
+
             <el-row :gutter="20">
+              <el-col v-show="addFileShow" :span="10">
+               <input ref="file" title="aaaa" class="fileUploaderClass" type='file' name="file" webkitdirectory style="" @change.stop="changesData" />
+              </el-col>
               <el-col v-show="addDataShow" :span="20">
                 <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
               </el-col>
-              <el-col v-show="addFileShow" :span="20">
-                <el-upload class="upload-demo" action="/img/add_resource" on-success="uploadSuccess" style="display: inline-block">
-                  <el-button type="primary" size="mini" round>上传</el-button>
+              <el-col v-show="addFileShow" :span="10">
+                <el-upload class="upload-demo" action="/img/add_resource" :before-upload="( file )=>{return uploading( file, 'guidance')}" style="display: inline-block">
+                  <el-button type="primary" size="mini" round>上传文件</el-button>
                 </el-upload>
               </el-col>
               <el-col :span="4">
@@ -428,8 +432,10 @@
 import {
   task, // 添加任务
   tableData, // 获取表结构及数据
-  list, // 获取数据源列表
-  nodeList, // 获取企业节点列表
+  selectList, // 获取数据源列表
+  Size,
+  add_resource,
+  nodeSelectList, // 获取企业节点列表
   tableList, // 获取表
   connectionTest, // 连接测试
   postEnterpriseNode, // 添加企业节点
@@ -484,6 +490,7 @@ export default {
 
       nodelist: [], // 企业节点列表
       templatelist: [], // 数据模板列表
+      templatelistMap: new Map(),
       leftCardData: [], // 左边卡片列表数据和表格数据
       selectActiveName: '', // 左边连线选中状态
       bottomstop: true, // 连线添加按钮置灰
@@ -507,7 +514,11 @@ export default {
         databasePassword: '',
         databasePort: '',
         databaseUrl: '',
-        databaseUsername: ''
+        databaseUsername: '',
+        fileName: '',
+        file: '',
+        id: '',
+        fdFile: ''
       },
       addDataShow: false, // 添加数据源类型是数据库的时候显示部分
       addFileShow: false, // 添加数据源类型是文件的时候显示部分
@@ -683,19 +694,33 @@ export default {
       aaa: false,
       bbb: false,
       addType: false,
-      deleteType: false
+      deleteType: false,
+      timeImport: false,
+      stockImport: false,
+      selectListTimeImport: {
+        creatorId: '',
+        dataBase: ''
+      }
 
     }
   },
   created() {
-    this.sourcelists() // 获取数据源列表
+    // this.sourcelists() // 获取数据源列表
     this.nodelists()// 获取企业节点列表
   },
   methods: {
+
     // 新增弹出框，数据类型联动
     operationType() {
       this.addType = (this.operation.operationType == 'ADD')
       this.deleteType = (this.operation.operationType == 'DELETE')
+    },
+    taskTypeDataSource(type) {
+      if (type == 'TIME') {
+        this.sourcelists()
+      } else if (type == 'STOCK') {
+        this.sourcelists()
+      }
     },
     Refresh() {
       snms({
@@ -760,7 +785,7 @@ export default {
                 task({
                   creatorId: user.id, // 创建人
                   dataSourceId: this.operation.dataSource, // 数据源
-                  dataTemplateId: this.operation.dataTemplate, // 数据模板id
+                  dataTemplateId: this.operation.dataTemplate.label, // 数据模板id
                   enterpriseNodeId: this.operation.node, // 企业节点
                   handle: this.operation.setDentity, // 标识列
                   name: this.newBuild.name, // 名称
@@ -846,7 +871,7 @@ export default {
                 task({
                   creatorId: user.id, // 创建人
                   dataSourceId: this.operation.dataSource, // 数据源
-                  dataTemplateId: this.operation.dataTemplate, // 数据模板id
+                  dataTemplateId: this.operation.dataTemplate.label, // 数据模板id
                   enterpriseNodeId: this.operation.node, // 企业节点
                   handle: this.operation.setDentity, // 标识列
                   name: this.newBuild.name, // 名称
@@ -887,6 +912,8 @@ export default {
     dataNodechange(id) {
       this.query.enterpriseNodeId = id
       getList(this.query).then(res => {
+        console.log(res, 'res11')
+
         this.rightCardData = []
         this.templatelist = []
         this.operation.inputPrefix = ''
@@ -908,22 +935,23 @@ export default {
           }
           for (let i = 0; i < res.data.result.length; i++) {
             this.templatelist.push({ label: res.data.result[i].version, value: res.data.result[i].id })
+
             this.aaa = true
           }
         }
       })
     },
     // 选中数据模板 展示前缀
-    dataTemplateChange(id) {
-      info(id).then(res => {
+    dataTemplateChange(row) {
+      console.log(row, 'row')
+      info(row.value).then(res => {
         if (res.code == 0) {
+          console.log(res, 'res')
           this.operation.inputPrefix = res.data.prefix
           this.rightCardData = []
-
           for (let i = 0; i < res.data.dataItems.length; i++) {
             this.rightCardData.push({ name: res.data.dataItems[i].idType, selectedState: false, requiredlist: res.data.dataItems[i].required, value: res.data.dataItems[i].id })
           }
-          console.log(this.rightCardData, 'erwe')
         }
       })
     },
@@ -1079,99 +1107,107 @@ export default {
 
     //   获取数据源列表
     sourcelists() {
-      list().then(res => {
-        if (res.code == 0) {
-          this.sourcelist = []
-          for (let i = 0; i < res.data.result.length; i++) {
-            getDatabase(res.data.result[i].id).then(res => {
-              if (res.code == 0) {
-                this.sourcelist.push(
-                  {
-                    label: res.data.name,
-                    value: res.data.id,
-                    dataSource: {
-                      name: res.data.name,
-                      type: res.data.type,
-                      databaseType: res.data.databaseType,
-                      databaseName: res.data.databaseName,
-                      databaseUrl: res.data.databaseUrl,
-                      databasePort: res.data.databasePort,
-                      databaseUsername: res.data.databaseUsername,
-                      databasePassword: res.data.databasePassword
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        this.selectListTimeImport.creatorId = user.accountNumber == 'admin' ? '' : user.id
+        this.selectListTimeImport.dataBase = this.newBuild.taskType == 'TIME' ? 'database' : ''
+        selectList(this.selectListTimeImport).then(res => {
+          if (res.code == 0) {
+            this.sourcelist = []
+            for (let i = 0; i < res.data.length; i++) {
+              getDatabase(res.data[i].id).then(res => {
+                if (res.code == 0) {
+                  this.sourcelist.push(
+                    {
+                      label: res.data.name,
+                      value: res.data.id,
+                      dataSource: {
+                        name: res.data.name,
+                        type: res.data.type,
+                        databaseType: res.data.databaseType,
+                        databaseName: res.data.databaseName,
+                        databaseUrl: res.data.databaseUrl,
+                        databasePort: res.data.databasePort,
+                        databaseUsername: res.data.databaseUsername,
+                        databasePassword: res.data.databasePassword
+                      }
                     }
-                  }
-                )
-              }
-            })
+                  )
+                }
+              })
+            }
           }
-        }
-      })
+        })
+      }
     },
     // 获取企业节点列表
     nodelists() {
-      nodeList().then(res => {
-        if (res.code == 0) {
-          this.nodelist = []
-          for (let i = 0; i < res.data.result.length; i++) {
-            getEnterpriseNode(res.data.result[i].id).then(res => {
-              if (res.code == 0) {
-                if (res.data.type == '自建模式') {
-                  const addForm1 = {}
-                  addForm1.type = res.data.type
-                  addForm1.interType = res.data.interType
-                  for (var i = 0; i < res.data.interfaceTypes.length; i++) {
-                    if (res.data.interfaceTypes[i].type == '标识代理服务') {
-                      addForm1.oneselfAgentUrl = res.data.interfaceTypes[i].url
-                      addForm1.oneselfAgentCheck = res.data.interfaceTypes[i].token
-                      addForm1.oneselfAgentUsername = res.data.interfaceTypes[i].username
-                      addForm1.oneselfAgentPassword = res.data.interfaceTypes[i].password
-                    } else if (res.data.interfaceTypes[i].type == '标识基础服务') {
-                      addForm1.oneselfBasicsUrl = res.data.interfaceTypes[i].url
-                      addForm1.oneselfBasicsCheck = res.data.interfaceTypes[i].token
-                      addForm1.oneselfBasicsUsername = res.data.interfaceTypes[i].username
-                      addForm1.oneselfBasicsPassword = res.data.interfaceTypes[i].password
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        nodeSelectList(user.accountNumber == 'admin' ? '' : user.id).then(res => {
+          if (res.code == 0) {
+            this.nodelist = []
+            for (let i = 0; i < res.data.length; i++) {
+              getEnterpriseNode(res.data[i].id).then(res => {
+                if (res.code == 0) {
+                  if (res.data.type == '自建模式') {
+                    const addForm1 = {}
+                    addForm1.type = res.data.type
+                    addForm1.interType = res.data.interType
+                    for (var i = 0; i < res.data.interfaceTypes.length; i++) {
+                      if (res.data.interfaceTypes[i].type == '标识代理服务') {
+                        addForm1.oneselfAgentUrl = res.data.interfaceTypes[i].url
+                        addForm1.oneselfAgentCheck = res.data.interfaceTypes[i].token
+                        addForm1.oneselfAgentUsername = res.data.interfaceTypes[i].username
+                        addForm1.oneselfAgentPassword = res.data.interfaceTypes[i].password
+                      } else if (res.data.interfaceTypes[i].type == '标识基础服务') {
+                        addForm1.oneselfBasicsUrl = res.data.interfaceTypes[i].url
+                        addForm1.oneselfBasicsCheck = res.data.interfaceTypes[i].token
+                        addForm1.oneselfBasicsUsername = res.data.interfaceTypes[i].username
+                        addForm1.oneselfBasicsPassword = res.data.interfaceTypes[i].password
+                      }
                     }
+                    this.nodelist.push(
+                      {
+                        label: res.data.name,
+                        value: res.data.id,
+                        addForm: addForm1
+                      }
+                    )
+                    this.selfBuilt = true
+                    this.managed = false
+                  } else if (res.data.type == '托管模式') {
+                    const addForm2 = {}
+                    addForm2.type = res.data.type
+                    addForm2.accessType = res.data.interType
+                    for (var j = 0; j < res.data.interfaceTypes.length; j++) {
+                      if (res.data.interfaceTypes[j].type == 'snms系统') {
+                        addForm2.trusteeshipSnmsUrl = res.data.interfaceTypes[j].url
+                        addForm2.trusteeshipSnmsUsername = res.data.interfaceTypes[j].username
+                        addForm2.trusteeshipSnmsPassword = res.data.interfaceTypes[j].password
+                      } else if (res.data.interfaceTypes[j].type == '标识代理服务') {
+                        addForm2.trusteeshipAgentUrl = res.data.interfaceTypes[j].url
+                        addForm2.trusteeshipAgentCheck = res.data.interfaceTypes[j].token
+                        addForm2.trusteeshipAgentUsername = res.data.interfaceTypes[j].username
+                        addForm2.trusteeshipAgentPassword = res.data.interfaceTypes[j].password
+                      }
+                    }
+                    this.nodelist.push(
+                      {
+                        label: res.data.name,
+                        value: res.data.id,
+                        addForm: addForm2
+                      }
+                    )
+                    this.selfBuilt = false
+                    this.managed = true
                   }
-                  this.nodelist.push(
-                    {
-                      label: res.data.name,
-                      value: res.data.id,
-                      addForm: addForm1
-                    }
-                  )
-                  this.selfBuilt = true
-                  this.managed = false
-                } else if (res.data.type == '托管模式') {
-                  const addForm2 = {}
-                  addForm2.type = res.data.type
-                  addForm2.accessType = res.data.interType
-                  for (var j = 0; j < res.data.interfaceTypes.length; j++) {
-                    if (res.data.interfaceTypes[j].type == 'snms系统') {
-                      addForm2.trusteeshipSnmsUrl = res.data.interfaceTypes[j].url
-                      addForm2.trusteeshipSnmsUsername = res.data.interfaceTypes[j].username
-                      addForm2.trusteeshipSnmsPassword = res.data.interfaceTypes[j].password
-                    } else if (res.data.interfaceTypes[j].type == '标识代理服务') {
-                      addForm2.trusteeshipAgentUrl = res.data.interfaceTypes[j].url
-                      addForm2.trusteeshipAgentCheck = res.data.interfaceTypes[j].token
-                      addForm2.trusteeshipAgentUsername = res.data.interfaceTypes[j].username
-                      addForm2.trusteeshipAgentPassword = res.data.interfaceTypes[j].password
-                    }
-                  }
-                  this.nodelist.push(
-                    {
-                      label: res.data.name,
-                      value: res.data.id,
-                      addForm: addForm2
-                    }
-                  )
-                  this.selfBuilt = false
-                  this.managed = true
                 }
-              }
-            })
+              })
+            }
           }
-        }
-      })
+        })
+      }
     },
 
     // 表格样式设置
@@ -1309,89 +1345,221 @@ export default {
         }
       }
     },
+    // 上传文件夹
+    changesData() {
+      console.log(this.$refs.file.files)
+      for (let i = 0; i < this.$refs.file.files.length; i++) {
+        const sort = this.$refs.file.files[i].name.split('.')
+        console.log(sort, 'sort')
+
+        sort = sort[sort.length - 1]
+      }
+      // const sort = this.$refs.file.files
+      // console.log(sort, 'sort')
+
+      // let sort = this.$refs.file.files.name.split('.')
+      // sort = sort[sort.length - 1]
+      // const size = Size(this.$refs.file.files.size)
+      // if (size == '0') {
+      //   this.$message.error({
+      //     showClose: true,
+      //     duration: 1000,
+      //     message: '不允许空文件上传。',
+      //     type: 'warning'
+      //   })
+      //   return
+      // }
+      // // 指导书
+      // if (sort == 'pdf' || sort == 'PDF') {
+      //   this.addForm.file = file
+      //   this.addForm.fileName = file.name
+      // } else {
+      //   this.$message.error({
+      //     showClose: true,
+      //     duration: 2000,
+      //     message: '实验指导书只能上传pdf格式文件。',
+      //     type: 'warning'
+      //   })
+      //   return
+      // }
+    },
+    // 上传文件
+    uploading(file, type) {
+      console.log(file, 'file')
+      let sort = file.name.split('.')
+      sort = sort[sort.length - 1]
+      const size = Size(file.size)
+      if (size == '0') {
+        this.$message.error({
+          showClose: true,
+          duration: 1000,
+          message: '不允许空文件上传。',
+          type: 'warning'
+        })
+        return
+      }
+      if (type == 'guidance') {
+        // 指导书
+        if (sort == 'pdf' || sort == 'PDF') {
+          this.addForm.file = file
+          this.addForm.fileName = file.name
+        } else {
+          this.$message.error({
+            showClose: true,
+            duration: 2000,
+            message: '只能上传pdf格式文件。',
+            type: 'warning'
+          })
+          return
+        }
+      }
+    },
     // 添加数据源
     adddatabase() {
-      if (this.addData.name == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-      } else if (this.addData.type == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据源类型'
-        })
-      } else if (this.addData.databaseName == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据库名称'
-        })
-      } else if (this.addData.databaseType == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-      } else if (this.addData.databaseUrl == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入连接地址'
-        })
-      } else if (this.addData.databasePort == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入端口号'
-        })
-      } else if (this.addData.databaseUsername == '') {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'error',
-          message: '请输入用户名'
-        })
-      } else {
-        if (sessionStorage.getItem('user')) {
-          const user = JSON.parse(sessionStorage.getItem('user')).id
-          this.addData.creatorId = user
-          database(this.addData).then(res => {
-            if (res.code == 0) {
+      if (this.addDataShow == true) {
+        if (this.addData.name == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源名称'
+          })
+        } else if (this.addData.type == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源类型'
+          })
+        } else if (this.addData.databaseName == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据库名称'
+          })
+        } else if (this.addData.databaseType == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源名称'
+          })
+        } else if (this.addData.databaseUrl == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入连接地址'
+          })
+        } else if (this.addData.databasePort == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入端口号'
+          })
+        } else if (this.addData.databaseUsername == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入用户名'
+          })
+        } else {
+          if (sessionStorage.getItem('user')) {
+            const user = JSON.parse(sessionStorage.getItem('user')).id
+            this.addData.creatorId = user
+            database(this.addData).then(res => {
+              if (res.code == 0) {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: 'success',
+                  message: '添加成功'
+                })
+                this.sourcelists() //   获取数据源列表
+                this.addisanswer = false
+                this.addData.name = ''
+                this.addData.type = ''
+                this.addData.creatorId = ''
+                this.addData.databaseType = ''
+                this.addData.databaseName = ''
+                this.addData.databasePassword = ''
+                this.addData.databasePort = ''
+                this.addData.databaseUrl = ''
+                this.addData.databaseUsername = ''
+              } else {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: 'error',
+                  message: '添加失败'
+                })
+              }
+            })
+          }
+        }
+      } else if (this.addFileShow == true) {
+        if (this.addData.name == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源名称'
+          })
+        } else if (this.addData.type == '') {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'error',
+            message: '请输入数据源类型'
+          })
+        } else {
+          if (sessionStorage.getItem('user')) {
+            const user = JSON.parse(sessionStorage.getItem('user')).id
+            this.addData.creatorId = user
+            if (this.addData.file != '' && this.addData.file != null && this.addData.file != undefined) {
               this.$message({
                 showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '添加成功'
+                message: '正在上传文件',
+                duration: 1000
               })
-              this.sourcelists() //   获取数据源列表
-              this.addisanswer = false
-              this.addData.name = ''
-              this.addData.type = ''
-              this.addData.creatorId = ''
-              this.addData.databaseType = ''
-              this.addData.databaseName = ''
-              this.addData.databasePassword = ''
-              this.addData.databasePort = ''
-              this.addData.databaseUrl = ''
-              this.addData.databaseUsername = ''
-            } else {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'error',
-                message: '添加失败'
+              const fd = new FormData()
+              fd.append('file', this.addForm.file) // 传文件
+              this.addForm.fdFile = fd
+              add_resource(this.addData).then(res => {
+                if (res.data.code == '0') {
+                  this.$message({
+                    showClose: true,
+                    message: '文件上传成功',
+                    type: 'success',
+                    duration: 1000
+                  })
+                  database(this.addData).then(res => {
+                    if (res.code == 0) {
+                      this.$message({
+                        showClose: true,
+                        duration: 1000,
+                        type: 'success',
+                        message: '添加成功'
+                      })
+                      this.sourcelists()
+                      this.addisanswer = false
+                      this.addData.fileName = ''
+                    } else {
+                      this.$message({
+                        showClose: true,
+                        duration: 1000,
+                        type: 'error',
+                        message: res.msg
+                      })
+                    }
+                  })
+                }
               })
             }
-          })
+          }
         }
       }
     },

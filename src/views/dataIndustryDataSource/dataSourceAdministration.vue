@@ -255,7 +255,8 @@ export default {
         databaseUsername: '',
         fileName: '',
         file: '',
-        id: ''
+        id: '',
+        fdFile: ''
       },
 
       changeisanswe: false,
@@ -636,7 +637,8 @@ export default {
               })
               const fd = new FormData()
               fd.append('file', this.addForm.file) // 传文件
-              add_resource(fd).then(res => {
+              this.addForm.fdFile = fd
+              add_resource(this.addForm).then(res => {
                 if (res.data.code == '0') {
                   this.$message({
                     showClose: true,

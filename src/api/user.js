@@ -206,10 +206,11 @@ export function nodeList(query) {
   })
 }
 // 获取数据源下拉列表
-export function selectList(id) {
+export function selectList(query) {
   return request({
-    url: '/dataSource/selectList?creatorId=' + id,
-    method: 'get'
+    url: '/dataSource/selectList',
+    method: 'get',
+    params: query
 
   })
 }
