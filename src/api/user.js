@@ -208,7 +208,7 @@ export function nodeList(query) {
 // 获取数据源下拉列表
 export function selectList(query) {
   return request({
-    url: '/dataSource/selectList',
+    url: '/dataSource/taskSelectList',
     method: 'get',
     params: query
 
@@ -217,7 +217,7 @@ export function selectList(query) {
 // 获取企业节点下拉列表
 export function nodeSelectList(id) {
   return request({
-    url: '/node/selectList?creatorId=' + id,
+    url: '/node/taskSelectList?creatorId=' + id,
     method: 'get'
 
   })
@@ -248,7 +248,14 @@ export function postEnterpriseNode(data) {
     data
   })
 }
-
+// 添加企业节点
+export function dataSourceFile(data) {
+  return request({
+    url: '/dataSource/dataSourceFile',
+    method: 'post',
+    data
+  })
+}
 // 查看企业节点
 export function getEnterpriseNode(id) {
   return request({

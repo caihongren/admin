@@ -27,19 +27,22 @@
         <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="adddata">添加数据源</el-button>
       </div>
       <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" style="color:#43454a;" @sort-change="sort_change">
-        <el-table-column fixed label="序号" type="index" min-width="100" />
-        <el-table-column prop="creatorName" label="创建人" min-width="100" sortable="custom" />
-        <el-table-column prop="name" label="名称" min-width="100" sortable="custom" />
-        <el-table-column prop="created" label="创建时间" min-width="100" sortable="custom" />
-        <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="100" />
-        <el-table-column prop="databaseType" label="数据库类型" min-width="100" />
-
-        <el-table-column label="操作" min-width="150">
+        <el-table-column fixed label="序号" type="index" width="100" />
+        <el-table-column prop="creatorName" label="创建人" min-width="130" sortable="custom" />
+        <el-table-column prop="name" label="名称" min-width="130" sortable="custom" />
+        <el-table-column prop="created" label="创建时间" min-width="130" sortable="custom" />
+        <el-table-column prop="type" label="类型 / 数据库类型" :formatter="completionStatusc" min-width="130">
+          <template slot-scope="scope">
+            <span>{{ completionStatusc(scope.row) }}</span>
+            <span v-if="scope.row.databaseType"> / {{ scope.row.databaseType }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" min-width="180">
           <template slot-scope="scope">
             <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
             <el-button type="text" style="color: #4283d8;" @click="seedata(scope.row.id)">查看数据</el-button>
 
-            <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
+            <el-button v-if="scope.row.type=='database'" type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
 
           </template>
@@ -85,21 +88,51 @@
         <el-form-item v-show="addDataShow" label="密　码">
           <el-input v-model="addForm.databasePassword" placeholder="请输入密码" />
         </el-form-item>
-        <el-form-item v-show="addFileShow" label="文　件">
-          <el-input v-model="addForm.fileName" :disabled="true" />
+        <el-form-item v-show="addFileShow">
+          <el-table
+            class="tableColor"
+            :cell-style="rowClass"
+            stripe
+            :header-cell-style="headClass"
+            :data="dataSourcetable"
+            style="width: 100%"
+          >
+            <el-table-column fixed label="序号" type="index" min-width="100" />
+
+            <el-table-column
+              prop="name"
+              label="文件名"
+              width="180"
+            />
+            <el-table-column
+              prop="type"
+              label="拓展名"
+              width="180"
+            />
+            <el-table-column
+              prop="size"
+              label="文件大小"
+            />
+          </el-table>
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
-            <el-col v-show="addDataShow" :span="20">
-              <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
+            <el-col v-show="addFileShow" :span="10" style="padding-left: 30px;">
+              <div class="file-upload">
+                上传文件夹
+                 <input ref="file"  class="file-upload-input"   type="file" name="file" webkitdirectory  @change.stop="changesData" />
+              </div>
             </el-col>
-            <el-col v-show="addFileShow" :span="20">
-              <el-upload class="upload-demo" action="/img/add_resource" :before-upload="( file )=>{return uploading( file, 'guidance')}" style="display: inline-block">
-                <el-button type="primary" size="mini" round>上传</el-button>
+            <el-col v-show="addDataShow" :span="20">
+              <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
+            </el-col>
+            <el-col v-show="addFileShow" :span="10">
+              <el-upload class="upload-demo" action="#" enctype="multipart/form-data" :before-upload="( file )=>{return uploading( file)}" style="display: inline-block">
+                <el-button type="primary" size="mini" round style="border: 1px solid #4283d8;background:#4283d8;">上传文件</el-button>
               </el-upload>
             </el-col>
             <el-col :span="4">
-              <el-button type="primary" size="mini" round @click="adddatabase">确定</el-button>
+              <el-button type="primary" size="mini" round class="determine" @click="adddatabase">确定</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -138,11 +171,11 @@
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
             <el-col :span="20">
-              <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
+              <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
             </el-col>
 
             <el-col :span="4">
-              <el-button type="primary" size="mini" round @click="updateDatabase">确定</el-button>
+              <el-button type="primary" size="mini" class="determine" round @click="updateDatabase">确定</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -212,7 +245,7 @@ import {
   deleteDatabase, // 删除数据库数据源
   database, // 添加数据库数据源
   Size, // 计算大小
-  add_resource// 上传文件
+  dataSourceFile// 上传文件
 
 } from '@/api/user.js'
 export default {
@@ -221,6 +254,7 @@ export default {
       link: false,
 
       tableData: [], // 数据列表
+      dataSourcetable: [],
       putid: '',
       tableLabel: [],
       tableData2: [],
@@ -254,9 +288,8 @@ export default {
         databaseUrl: '',
         databaseUsername: '',
         fileName: '',
-        file: '',
         id: '',
-        fdFile: ''
+        fileList: []
       },
 
       changeisanswe: false,
@@ -300,15 +333,21 @@ export default {
   methods: {
     adddata() {
       this.addisanswer = true
-      this.addForm.name = ''
-      this.addForm.type = ''
-      this.addForm.creatorId = ''
-      this.addForm.databaseType = ''
-      this.addForm.databaseName = ''
-      this.addForm.databasePassword = ''
-      this.addForm.databasePort = ''
-      this.addForm.databaseUrl = ''
-      this.addForm.databaseUsername = ''
+      this.dataSourcetable = []
+      this.addDataShow = false
+      this.addFileShow = false
+      const addForm = {
+        name: '',
+        type: '',
+        creatorId: '',
+        databaseType: '',
+        databaseName: '',
+        databasePassword: '',
+        databasePort: '',
+        databaseUrl: '',
+        databaseUsername: ''
+      }
+      this.addForm = addForm
     },
     // 排序功能
     sort_change(column) {
@@ -394,15 +433,43 @@ export default {
 
     // 新增弹出框，数据类型联动
     updateAdddisplay() {
+      this.dataSourcetable = [],
+      this.addForm.name = ''
+      this.addForm.creatorId = ''
+      this.addForm.databaseType = ''
+      this.addForm.databaseName = ''
+      this.addForm.databasePort = ''
+      this.addForm.databasePassword = ''
+      this.addForm.databaseUrl = ''
+      this.addForm.databaseUsername = ''
       this.addDataShow = (this.addForm.type == 'database')
       this.addFileShow = (this.addForm.type == 'file')
     },
-
+    // 上传文件夹
+    changesData() {
+      const box = this.$refs.file.files
+      this.addForm.fileList = []
+      this.dataSourcetable = []
+      for (let i = 0; i < box.length; i++) {
+        const sort = box[i].name.split('.')
+        sort = sort[sort.length - 1]
+        if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
+          this.addForm.fileList.push(box[i])
+          this.dataSourcetable.push({ name: box[i].name, type: sort, size: box[i].size + '字节' })
+        }
+      }
+      if (this.dataSourcetable.length <= 0) {
+        this.$message.error({
+          showClose: true,
+          duration: 1000,
+          message: '只能上传csv或者xls,xlsx格式文件',
+          type: 'warning'
+        })
+      }
+    },
     // 上传文件
-    uploading(file, type) {
-      console.log(file, 'file')
-      console.log(type, 'type')
-
+    uploading(file) {
+      this.dataSourcetable = []
       let sort = file.name.split('.')
       sort = sort[sort.length - 1]
       const size = Size(file.size)
@@ -415,20 +482,17 @@ export default {
         })
         return
       }
-      if (type == 'guidance') {
-        // 指导书
-        if (sort == 'pdf' || sort == 'PDF') {
-          this.addForm.file = file
-          this.addForm.fileName = file.name
-        } else {
-          this.$message.error({
-            showClose: true,
-            duration: 2000,
-            message: '实验指导书只能上传pdf格式文件。',
-            type: 'warning'
-          })
-          return
-        }
+      if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
+        this.addForm.fileList.push(file)
+        this.dataSourcetable.push({ name: file.name, type: sort, size: file.size + '字节' })
+      } else {
+        this.$message.error({
+          showClose: true,
+          duration: 2000,
+          message: '只能上传csv或者xls,xlsx格式文件。',
+          type: 'warning'
+        })
+        return
       }
     },
     // 数据库连接测试
@@ -629,43 +693,31 @@ export default {
           if (sessionStorage.getItem('user')) {
             const user = JSON.parse(sessionStorage.getItem('user')).id
             this.addForm.creatorId = user
-            if (this.addForm.file != '' && this.addForm.file != null && this.addForm.file != undefined) {
+            if (this.addForm.fileList != '' && this.addForm.fileList != null && this.addForm.fileList != undefined) {
               this.$message({
                 showClose: true,
                 message: '正在上传文件',
                 duration: 1000
               })
               const fd = new FormData()
-              fd.append('file', this.addForm.file) // 传文件
-              this.addForm.fdFile = fd
-              add_resource(this.addForm).then(res => {
-                if (res.data.code == '0') {
+              const list = this.addForm.fileList
+              fd.append('length', list.length)
+              for (let i = 0; i < list.length; i++) {
+                fd.append('fileList' + i, list[i]) // 传多个文件
+              }
+              fd.append('name', this.addForm.name ? this.addForm.name : '')
+              fd.append('type', this.addForm.type ? this.addForm.type : '')
+              fd.append('creatorId', this.addForm.creatorId)
+              dataSourceFile(fd).then(res => {
+                if (res.code == '0') {
                   this.$message({
                     showClose: true,
                     message: '文件上传成功',
                     type: 'success',
                     duration: 1000
                   })
-                  database(this.addForm).then(res => {
-                    if (res.code == 0) {
-                      this.$message({
-                        showClose: true,
-                        duration: 1000,
-                        type: 'success',
-                        message: '添加成功'
-                      })
-                      this.list()
-                      this.addisanswer = false
-                      this.addForm.fileName = ''
-                    } else {
-                      this.$message({
-                        showClose: true,
-                        duration: 1000,
-                        type: 'error',
-                        message: res.msg
-                      })
-                    }
-                  })
+                  this.list()
+                  this.addisanswer = false
                 }
               })
             }
@@ -674,13 +726,13 @@ export default {
       }
     },
     // 表格样式设置
-    headClass() {
-      return 'text-align: center;'
-    },
-    // 表格样式设置
-    rowClass() {
-      return 'text-align: center;'
-    },
+    // headClass() {
+    //   return 'text-align: center;'
+    // },
+    // // 表格样式设置
+    // rowClass() {
+    //   return 'text-align: center;'
+    // },
     // 分页
     handleSizeChange(val) {
       this.limit = val
@@ -849,7 +901,29 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
+.file-upload {
+        width: 90px;
+        height: 26px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #4283d8  ;
+        background:#4283d8 ;
+        border-radius: 21px;
+        font-size: 12px;
+        color: #fff;
+        text-align: center;
+        line-height: 26px;
+    }
+     .file-upload-input {
+        background-color: transparent;
+        position: absolute;
+        width: 9999px;
+        height: 999px;
+        top: -10px;
+        right: -10px;
+        cursor: pointer;
+    }
  .show-pwd {
     position: absolute;
     right: 10px;
@@ -865,10 +939,6 @@ export default {
   margin: 0 auto;
   padding-top: 20px;
   padding-bottom: 40px;
-}
-.dataSource .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
 }
 .head {
   background-color: #ffffff;
@@ -916,10 +986,6 @@ padding: 0 1%;
   height: 33px;
   line-height: 33px;
 }
-/* .dialog .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-} */
 .dialog .el-form-item__label {
   font-size: 12px;
 }

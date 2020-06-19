@@ -63,7 +63,7 @@
                 <span>{{ completionStatusc(scope.row) }}</span>
                  <el-progress :show-text="false" :stroke-width="5" :percentage="num(scope.row.handlePerformed,scope.row.handleTotal)" color="#4283d8" style="width: 78%;margin-left: 10px;margin-top: 8px;" />
               </div>
-              <div style="text-align: center;font-size: 12px;font-weight: 700;color: #4283d8;">已执行{{ scope.row.handlePerformed }}(失败{{ scope.row.handleFailed }}) /　总数 {{ scope.row.handleTotal }}</div>
+              <div style="text-align: center;font-size: 12px;font-weight: 700;color: #4283d8;">{{ scope.row.handlePerformed }} / {{ scope.row.handleFailed }} / {{ scope.row.handleTotal }}</div>
 
              </template>
           </el-table-column>
@@ -108,20 +108,19 @@
     <!-- 数据表格进行中查看弹出框 -->
     <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看任务" :close-on-click-modal="false">
       <el-form ref="task" :model="task" label-width="100px" class="dialog">
-        <el-form-item label="任务名称">
+        <el-form-item label="名　称">
           <el-input v-model="task.name" :disabled="true" />
         </el-form-item>
-        <el-form-item label="任务状态">
+        <el-form-item label="状　态">
           <el-input :value="task.state == 'RUN' ? '进行中' : task.state == 'PAUSE' ? '暂停' :task.state == 'END' ? '结束':task.state == 'ABNORMAL' ? '异常':task.state == 'MANUAL' ? '手动终止':task.state == 'ARCHIVE' ? '归档':task.state == 'NEW' ? '未开始': task.state" :disabled="true" />
-
         </el-form-item>
-        <el-form-item label="数据总量">
+        <el-form-item label="总　量">
           <el-input v-model="task.handleNum" :disabled="true" />
         </el-form-item>
         <el-form-item label="已完成">
           <el-input v-model="task.finishNum" :disabled="true" />
         </el-form-item>
-        <el-form-item label="剩余">
+        <el-form-item label="剩　余">
           <el-input v-model="task.lastNum" :disabled="true" />
         </el-form-item>
         <el-form-item label="已用时">
@@ -690,15 +689,6 @@ export default {
 }
 </style>
 <style>
-.log .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-}
-.btnFalses {
-  background: #4283d8 !important;
-  color: #fff !important;
-  border: #4283d8 !important;
-}
 .log .el-form-item__label {
   font-size: 12px;
 }

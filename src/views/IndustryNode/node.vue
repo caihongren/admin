@@ -139,7 +139,7 @@
                 <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
               </el-col>
               <el-col :span="4">
-                <el-button type="primary" size="mini" round @click="database">确定</el-button>
+                <el-button type="primary" size="mini" class="determine" round @click="database">确定</el-button>
               </el-col>
             </el-row>
           </el-form-item>
@@ -234,10 +234,10 @@
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
             <el-col :span="20">
-              <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
+              <el-button type="warning" class="lianjieBtn" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
             </el-col>
             <el-col :span="4">
-              <el-button type="primary" size="mini" round @click="updateDatabase">确定</el-button>
+              <el-button type="primary" size="mini" class="determine" round @click="updateDatabase">确定</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -1071,10 +1071,6 @@ export default {
   padding-top: 20px;
   padding-bottom: 40px;
 }
-.node .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-}
 .head {
   background-color: #ffffff;
   border-radius: 3px;
@@ -1121,10 +1117,6 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-/* .dialog .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-} */
 .dialog .el-form-item__label {
   font-size: 12px;
 }

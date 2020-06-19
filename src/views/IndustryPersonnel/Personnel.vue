@@ -142,15 +142,20 @@ export default {
     // 点击重置密码
     changePassword(userId) {
       this.$confirm('此操作将重置密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',
-        confirmButtonClass: 'btnFalses',
         showClose: false,
         closeOnClickModal: false,
-
         type: 'warning'
       }).then(() => {
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'info',
+          message: '已取消重置'
+        })
+      }).catch(() => {
         passwordReset({
           id: userId
         }).then(res => {
@@ -162,13 +167,6 @@ export default {
               type: 'success'
             })
           }
-        })
-      }).catch(() => {
-        this.$message({
-          showClose: true,
-          duration: 1000,
-          type: 'info',
-          message: '已取消重置'
         })
       })
     },
@@ -244,17 +242,21 @@ export default {
     // 账号停用
     Deactivation(row) {
       this.$confirm('此操作将停用该账号, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',
-        confirmButtonClass: 'btnFalses',
         showClose: false,
-
         closeOnClickModal: false,
-
         type: 'warning'
       })
         .then(() => {
+          this.$message.error({
+            type: 'info',
+            duration: 1000,
+            message: '已取消停用'
+          })
+        })
+        .catch(() => {
           accountDeactivate({
             id: row
           }).then(res => {
@@ -276,29 +278,25 @@ export default {
             }
           })
         })
-        .catch(() => {
-          this.$message({
-            showClose: true,
-            duration: 1000,
-            type: 'info',
-            message: '已取消停用'
-          })
-        })
     },
     // 账号启动
     startUp(row) {
       this.$confirm('此操作将启动该账号, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',
-        confirmButtonClass: 'btnFalses',
         showClose: false,
-
         closeOnClickModal: false,
-
         type: 'warning'
       })
         .then(() => {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'info',
+            message: '已取消'
+          })
+        }).catch(() => {
           accountEnable({
             id: row
           }).then(res => {
@@ -318,13 +316,6 @@ export default {
                 type: 'warning'
               })
             }
-          })
-        }).catch(() => {
-          this.$message({
-            showClose: true,
-            duration: 1000,
-            type: 'info',
-            message: '已取消停用'
           })
         })
     },
@@ -349,11 +340,6 @@ export default {
 }
 </style>
 <style>
-.btnFalses{
-    background: #4283d8 !important;
-    color:#fff !important;
-    border:#4283d8 !important;
-}
 .personnel .el-input__inner {
   height: 33px;
   line-height: 33px;
@@ -368,13 +354,7 @@ export default {
     padding: 0;
     height: 40px;
 }
-/* .personnel .el-dialog__header{
-  text-align: center
-} */
-.personnel .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-}
+
  .personnel .el-table th>.cell{
   height: 50px;
   line-height:50px;

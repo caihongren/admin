@@ -37,11 +37,11 @@ export default {
       const newlist = []
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
-        if (user.accountNumber == 'admin') {
+        if (user.role == 'admin') {
           for (let i = 0; i < list.length; i++) {
             const item = list[i]
             if (
-              item.path == '/' ||
+              item.path == '/IndustryHome' ||
              item.path == '/IndustryDataSource' ||
              item.path == '/IndustryEnterpriseNode' ||
              item.path == '/IndustryPersonnel' ||
@@ -52,13 +52,15 @@ export default {
               newlist.push(item)
             }
           }
-        } else if (user.accountNumber == 'data1') {
+        } else if (user.role == 'data') {
           for (let i = 0; i < list.length; i++) {
             const item = list[i]
-            if (item.path == '/IndustryNode' || item.path == '/' || item.path == '/dataIndustryDataSource' || item.path == '/IndustryPersonal' || item.path == '/importTask' || item.path == '/mould') {
+            if (item.path == '/IndustryNode' || item.path == '/IndustryHome' || item.path == '/dataIndustryDataSource' || item.path == '/IndustryPersonal' || item.path == '/importTask' || item.path == '/mould') {
               newlist.push(item)
             }
           }
+        } else {
+          console.log('该角色不存在')
         }
       }
 

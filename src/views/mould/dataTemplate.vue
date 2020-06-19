@@ -125,10 +125,11 @@
         <el-form ref="ruleForm" :model="ruleForm" label-width="80px" class="demo-ruleForm" size="mini">
           <el-row :gutter="20">
             <el-col :span="9">
-              <el-form-item label="节点" style="font-size:12px" prop="enterpriseNodeId">
-                <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:100%">
+              <el-form-item label="节点" style="font-size:12px">
+                <el-input v-model="ruleForm.enterpriseNodeName" style="width: 100%;" :disabled="true" />
+                <!-- <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:100%">
                   <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" :disabled="true" />
-                </el-select>
+                </el-select> -->
               </el-form-item>
               <el-form-item label="前缀" prop="prefix">
                 <el-input v-model="ruleForm.prefix" style="width: 100%;" :disabled="true" />
@@ -174,9 +175,11 @@
           <el-row :gutter="20">
             <el-col :span="9">
               <el-form-item label="节点" style="font-size:12px">
-                <el-select v-model="ruleForm.enterpriseNodeId" placeholder="请选择企业节点" style="width:100%">
+                <el-input v-model="ruleForm.enterpriseNodeName" style="width: 100%;" :disabled="true" />
+
+                <!-- <el-select v-model="ruleForm.enterpriseNodeN" placeholder="请选择企业节点" style="width:100%">
                   <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" :disabled="true" />
-                </el-select>
+                </el-select> -->
               </el-form-item>
               <el-form-item label="前缀">
                 <el-input v-model="ruleForm.prefix" style="width: 100%;" :disabled="true" />
@@ -271,6 +274,7 @@ export default {
         uuid: '',
         creatorId: '',
         enterpriseNodeId: '', // 企业节点
+        enterpriseNodeName: '',
         prefix: '', // 前缀
         version: '', // 数据模板
         description: '', // 简介
@@ -407,7 +411,7 @@ export default {
       this.upTemplate = true
       info(id).then(res => {
         if (res.code == 0) {
-          this.ruleForm.enterpriseNodeId = res.data.enterpriseNodeId // 企业节点
+          this.ruleForm.enterpriseNodeName = res.data.enterpriseNodeName // 企业节点
           this.ruleForm.prefix = res.data.prefix // 前缀
           this.ruleForm.version = res.data.version // 数据模板
           this.ruleForm.description = res.data.description // 简介
@@ -471,13 +475,25 @@ export default {
       }
     },
     getQuery() {
+      const ruleForm = {
+        id: '',
+        uuid: '',
+        creatorId: '',
+        enterpriseNodeId: '', // 企业节点
+        enterpriseNodeName: '',
+        prefix: '', // 前缀
+        version: '', // 数据模板
+        description: '', // 简介
+        dataItems: []
+      }
+      this.ruleForm = ruleForm
+      this.lookTemplate = true
       snms({
         enterpriseNodeId: this.query.enterpriseNodeId,
         prefix: this.query.prefix,
         version: this.query.version
       }).then(res => {
         if (res.code == 0) {
-          this.lookTemplate = true
           this.ruleForm.enterpriseNodeId = res.data.enterpriseNodeId
           this.ruleForm.prefix = res.data.prefix
           this.ruleForm.version = res.data.version
@@ -731,10 +747,6 @@ export default {
   padding-top: 20px;
   padding-bottom: 40px;
 }
-.node .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-}
 .head {
   background-color: #ffffff;
   border-radius: 3px;
@@ -776,10 +788,6 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-/* .dialog .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-} */
 .dialog .el-form-item__label {
   font-size: 12px;
 }

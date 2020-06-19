@@ -351,10 +351,6 @@ export default {
   padding-top: 20px;
   padding-bottom: 40px;
 }
-.node .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-}
 .head {
   background-color: #ffffff;
  border-radius: 3px;
@@ -399,10 +395,6 @@ export default {
   height: 33px;
   line-height: 33px;
 }
-/* .dialog .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
-} */
 .dialog .el-form-item__label{
   font-size: 12px;
 

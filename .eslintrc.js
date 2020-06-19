@@ -75,7 +75,7 @@ module.exports = {
     'no-console': 'off',
     'no-class-assign': 2,
     'no-cond-assign': 2,
-    'no-const-assign': 2,
+    'no-const-assign': 0,
     'no-control-regex': 0,
     'no-delete-var': 2,
     'no-dupe-args': 2,

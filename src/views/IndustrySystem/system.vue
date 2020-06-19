@@ -12,7 +12,7 @@
             </el-upload>
           </div>
           <div class="operation">
-            <el-button type="primary" size="small">确定</el-button>
+            <el-button type="primary" size="small" class="determine">确定</el-button>
             <el-button size="small">取消</el-button>
           </div>
 
@@ -37,7 +37,7 @@
               </div></el-col>
             </el-row>
             <div class="currentbotton">
-              <el-button size="small" type="primary">确定</el-button>
+              <el-button size="small" type="primary" class="determine">确定</el-button>
               <el-button size="small">取消</el-button>
             </div>
           </div>

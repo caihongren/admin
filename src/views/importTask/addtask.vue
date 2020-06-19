@@ -25,8 +25,8 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button type="primary" class="bottomColor" round size="mini" @click="startNow('operation')">立即开始</el-button>
-          <el-button type="warning" round size="mini" @click="startLater('operation')">稍后开始</el-button>
+          <el-button type="primary" class="determine" round size="mini" @click="startNow('operation')">立即开始</el-button>
+          <el-button type="warning" class='lianjieBtn' round size="mini" @click="startLater('operation')">稍后开始</el-button>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
                   </el-popover>
                 </el-option>
               </el-select>
-              <el-button size="mini" class="bottomColor" type="primary" @click="addisanswer=true">添加</el-button>
+              <el-button size="mini" class="bottomColor" type="primary" @click="addDatasource">添加</el-button>
             </el-form-item>
             <el-form-item label="数据表" prop="dataSourceList">
               <el-select v-model="operation.dataSourceList" placeholder="请选择表" @change="addlist(operation.dataSourceList)">
@@ -90,7 +90,7 @@
                   </el-popover>
                 </el-option>
               </el-select>
-              <el-button size="mini" class="bottomColor" type="primary" @click="addNode=true">添加</el-button>
+              <el-button size="mini" class="bottomColor" type="primary" @click="addEnterprise">添加</el-button>
             </el-form-item>
             <el-form-item label="操作类型" prop="operationType">
               <el-select v-model="operation.operationType" placeholder="请选择操作类型" @change="operationType">
@@ -229,25 +229,52 @@
           <el-form-item v-show="addDataShow" label="密　码">
             <el-input v-model="addData.databasePassword" placeholder="请输入密码" />
           </el-form-item>
-          <el-form-item v-show="addFileShow" label="文件">
-            <el-input v-model="addData.fileName" :disabled="true" />
+          <el-form-item v-show="addFileShow">
+            <el-table
+              class="tableColor"
+              :cell-style="rowClass"
+              stripe
+              :header-cell-style="headClass"
+              :data="dataSourcetable"
+              style="width: 100%"
+            >
+              <el-table-column fixed label="序号" type="index" min-width="100" />
+
+              <el-table-column
+                prop="name"
+                label="文件名"
+                width="180"
+              />
+              <el-table-column
+                prop="type"
+                label="拓展名"
+                width="180"
+              />
+              <el-table-column
+                prop="size"
+                label="文件大小"
+              />
+            </el-table>
           </el-form-item>
           <el-form-item style="margin-left: -80px;">
 
             <el-row :gutter="20">
-              <el-col v-show="addFileShow" :span="10">
-               <input ref="file" title="aaaa" class="fileUploaderClass" type='file' name="file" webkitdirectory style="" @change.stop="changesData" />
+              <el-col v-show="addFileShow" :span="10" style="padding-left: 30px;">
+                <div class="file-upload">
+                  上传文件夹
+                   <input ref="file"  class="file-upload-input"  type="file" name="file" webkitdirectory  @change.stop="changesData" />
+                </div>
               </el-col>
               <el-col v-show="addDataShow" :span="20">
-                <el-button type="warning" size="mini" round :loading="link" @click="connectionTest">连接测试</el-button>
+                <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
               </el-col>
-              <el-col v-show="addFileShow" :span="10">
-                <el-upload class="upload-demo" action="/img/add_resource" :before-upload="( file )=>{return uploading( file, 'guidance')}" style="display: inline-block">
-                  <el-button type="primary" size="mini" round>上传文件</el-button>
+              <el-col v-show="addFileShow" :span="10" style="padding-left: 30px;">
+                <el-upload class="upload-demo" action="#" enctype="multipart/form-data" :before-upload="( file )=>{return uploading( file)}" style="display: inline-block">
+                  <el-button type="primary" size="mini" round style="border: 1px solid #4283d8;background:#4283d8;">上传文件</el-button>
                 </el-upload>
               </el-col>
               <el-col :span="4">
-                <el-button type="primary" round size="mini" @click="adddatabase">确定</el-button>
+                <el-button type="primary" round size="mini" class="determine" @click="adddatabase">确定</el-button>
               </el-col>
             </el-row>
           </el-form-item>
@@ -342,10 +369,10 @@
           <el-form-item style="margin-left: -80px;">
             <el-row :gutter="20">
               <el-col :span="20">
-                <el-button type="warning" size="mini" round :loading="link">连接测试</el-button>
+                <el-button type="warning" class="lianjieBtn" size="mini" round :loading="link">连接测试</el-button>
               </el-col>
               <el-col :span="4">
-                <el-button type="primary" round size="mini" @click="database">确定</el-button>
+                <el-button type="primary" round size="mini" class="determine" @click="database">确定</el-button>
               </el-col>
             </el-row>
           </el-form-item>
@@ -434,7 +461,7 @@ import {
   tableData, // 获取表结构及数据
   selectList, // 获取数据源列表
   Size,
-  add_resource,
+  dataSourceFile,
   nodeSelectList, // 获取企业节点列表
   tableList, // 获取表
   connectionTest, // 连接测试
@@ -451,6 +478,7 @@ import {
 export default {
   data() {
     return {
+      dataSourcetable: [],
       activeNameIsValue: true,
       checked: true,
       // 新建选择
@@ -506,6 +534,7 @@ export default {
       addisanswer: false, // 添加数据源弹窗
       // 添加数据源数据绑定
       addData: {
+        fileList: [],
         name: '',
         type: '',
         creatorId: '',
@@ -516,9 +545,7 @@ export default {
         databaseUrl: '',
         databaseUsername: '',
         fileName: '',
-        file: '',
-        id: '',
-        fdFile: ''
+        id: ''
       },
       addDataShow: false, // 添加数据源类型是数据库的时候显示部分
       addFileShow: false, // 添加数据源类型是文件的时候显示部分
@@ -955,6 +982,50 @@ export default {
         }
       })
     },
+    // 添加数据员弹出框显示
+    addDatasource() {
+      this.addisanswer = true
+      const addData = {
+        fileList: [],
+        name: '',
+        type: '',
+        creatorId: '',
+        databaseType: '',
+        databaseName: '',
+        databasePassword: '',
+        databasePort: '',
+        databaseUrl: '',
+        databaseUsername: '',
+        fileName: '',
+        id: ''
+      }
+      this.addData = addData
+    },
+    addEnterprise() {
+      this.addNode = true
+      const addForm = {
+        name: '', // 名称
+        type: '', // 模式
+        interType: '', // 接口访问类型（自建）
+        accessType: '', // 接口访问类型（托管）
+        oneselfAgentUrl: '', // 自建代理url
+        oneselfAgentCheck: false, // 自建代理登录验证
+        oneselfAgentUsername: '', // 自建代理用户名
+        oneselfAgentPassword: '', // 自建代理密码
+        oneselfBasicsUrl: '', // 自建基础url
+        oneselfBasicsCheck: false, // 自建基础登录验证
+        oneselfBasicsUsername: '', // 自建基础用户名
+        oneselfBasicsPassword: '', // 自建基础密码
+        trusteeshipSnmsUrl: '', // 托管MNMSurl
+        trusteeshipSnmsUsername: '', // 托管MNMS用户名
+        trusteeshipSnmsPassword: '', // 托管MNMS密码
+        trusteeshipAgentUrl: '', // 托管代理url
+        trusteeshipAgentCheck: false, // 托管代理登录验证
+        trusteeshipAgentUsername: '', // 托管代理用户名
+        trusteeshipAgentPassword: '' // 托管代理密码
+      }
+      this.addForm = addForm
+    },
     // 选中数据源获取表
     addFileInput(id) {
       this.id3333333 = id
@@ -1347,45 +1418,28 @@ export default {
     },
     // 上传文件夹
     changesData() {
-      console.log(this.$refs.file.files)
-      for (let i = 0; i < this.$refs.file.files.length; i++) {
-        const sort = this.$refs.file.files[i].name.split('.')
-        console.log(sort, 'sort')
-
+      const box = this.$refs.file.files
+      this.addData.fileList = []
+      for (let i = 0; i < box.length; i++) {
+        const sort = box[i].name.split('.')
         sort = sort[sort.length - 1]
+        if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
+          this.addData.fileList.push(box[i])
+          this.dataSourcetable.push({ name: box[i].name, type: sort, size: box[i].size + '字节' })
+        }
       }
-      // const sort = this.$refs.file.files
-      // console.log(sort, 'sort')
-
-      // let sort = this.$refs.file.files.name.split('.')
-      // sort = sort[sort.length - 1]
-      // const size = Size(this.$refs.file.files.size)
-      // if (size == '0') {
-      //   this.$message.error({
-      //     showClose: true,
-      //     duration: 1000,
-      //     message: '不允许空文件上传。',
-      //     type: 'warning'
-      //   })
-      //   return
-      // }
-      // // 指导书
-      // if (sort == 'pdf' || sort == 'PDF') {
-      //   this.addForm.file = file
-      //   this.addForm.fileName = file.name
-      // } else {
-      //   this.$message.error({
-      //     showClose: true,
-      //     duration: 2000,
-      //     message: '实验指导书只能上传pdf格式文件。',
-      //     type: 'warning'
-      //   })
-      //   return
-      // }
+      if (this.dataSourcetable.length <= 0) {
+        this.$message.error({
+          showClose: true,
+          duration: 1000,
+          message: '只能上传csv或者xls,xlsx格式文件',
+          type: 'warning'
+        })
+      }
     },
     // 上传文件
-    uploading(file, type) {
-      console.log(file, 'file')
+    uploading(file) {
+      this.addData.fileList = []
       let sort = file.name.split('.')
       sort = sort[sort.length - 1]
       const size = Size(file.size)
@@ -1398,20 +1452,17 @@ export default {
         })
         return
       }
-      if (type == 'guidance') {
-        // 指导书
-        if (sort == 'pdf' || sort == 'PDF') {
-          this.addForm.file = file
-          this.addForm.fileName = file.name
-        } else {
-          this.$message.error({
-            showClose: true,
-            duration: 2000,
-            message: '只能上传pdf格式文件。',
-            type: 'warning'
-          })
-          return
-        }
+      if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
+        this.addData.fileList.push(file)
+        this.dataSourcetable.push({ name: file.name, type: sort, size: file.size + '字节' })
+      } else {
+        this.$message.error({
+          showClose: true,
+          duration: 2000,
+          message: '只能上传csv或者xls,xlsx格式文件。',
+          type: 'warning'
+        })
+        return
       }
     },
     // 添加数据源
@@ -1519,43 +1570,32 @@ export default {
           if (sessionStorage.getItem('user')) {
             const user = JSON.parse(sessionStorage.getItem('user')).id
             this.addData.creatorId = user
-            if (this.addData.file != '' && this.addData.file != null && this.addData.file != undefined) {
+            if (this.addData.fileList != [] && this.addData.fileList != null && this.addData.fileList != undefined) {
               this.$message({
                 showClose: true,
                 message: '正在上传文件',
                 duration: 1000
               })
               const fd = new FormData()
-              fd.append('file', this.addForm.file) // 传文件
-              this.addForm.fdFile = fd
-              add_resource(this.addData).then(res => {
-                if (res.data.code == '0') {
+              console.log(this.addData.fileList)
+              const list = this.addData.fileList
+              fd.append('length', list.length)
+              for (let i = 0; i < list.length; i++) {
+                fd.append('fileList' + i, list[i]) // 传多个文件
+              }
+              fd.append('name', this.addData.name ? this.addData.name : '')
+              fd.append('type', this.addData.type ? this.addData.type : '')
+              fd.append('creatorId', this.addData.creatorId)
+              dataSourceFile(fd).then(res => {
+                if (res.code == '0') {
                   this.$message({
                     showClose: true,
                     message: '文件上传成功',
                     type: 'success',
                     duration: 1000
                   })
-                  database(this.addData).then(res => {
-                    if (res.code == 0) {
-                      this.$message({
-                        showClose: true,
-                        duration: 1000,
-                        type: 'success',
-                        message: '添加成功'
-                      })
-                      this.sourcelists()
-                      this.addisanswer = false
-                      this.addData.fileName = ''
-                    } else {
-                      this.$message({
-                        showClose: true,
-                        duration: 1000,
-                        type: 'error',
-                        message: res.msg
-                      })
-                    }
-                  })
+                  this.sourcelists()
+                  this.addisanswer = false
                 }
               })
             }
@@ -1681,6 +1721,31 @@ export default {
 //  .boxCard::-webkit-scrollbar {
 //         display: none;
 //     }
+.file-upload {
+        width: 90px;
+        height: 26px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #4283d8  ;
+        background:#4283d8 ;
+        border-radius: 21px;
+        font-size: 12px;
+        color: #fff;
+        text-align: center;
+        line-height: 26px;
+        margin-top: 5px;
+    }
+     .file-upload-input {
+        background-color: transparent;
+        position: absolute;
+        width: 9999px;
+        height: 999px;
+        top: -10px;
+        right: -10px;
+        cursor: pointer;
+    }
+
 .corresponding::-webkit-scrollbar {
   display: none;
 }
@@ -1690,11 +1755,6 @@ export default {
 
   position: relative;
 }
-  .bottomColor {
-    background-color: #4283d8;
-    border-color: #4283d8;
-    color: #fff;
-  }
 .addtask {
   background-color: #fff;
   width: 98%;

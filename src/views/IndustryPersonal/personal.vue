@@ -325,11 +325,6 @@ export default Vue.extend({
 }
 </style>
 <style>
-.btnFalses {
-  background: #4283d8 !important;
-  color: #fff !important;
-  border: #4283d8 !important;
-}
 .mylectures .el-tabs__nav-wrap::after {
   height: 0px;
 }
@@ -360,10 +355,6 @@ export default Vue.extend({
 .mylectures .el-tabs__item:hover{
   color: #4283d8;
 
-}
-.modify .el-button--primary {
-  background-color: #4283d8;
-  border-color: #4283d8;
 }
 .mylectures .el-input__inner {
   height: 33px;

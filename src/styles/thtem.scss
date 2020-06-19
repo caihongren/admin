@@ -22,7 +22,19 @@
 
     // #app 外的样式
     &~ .el-dialog__wrapper .lianjieBtn{
-    background-color: yellow;
+      background-color: #ebb563;
+
+      border-color: #ebb563;
+    }
+    &~ .el-dialog__wrapper .determine{
+      background-color: #4283d8;
+
+      border-color: #4283d8;
+    }
+    &~ .el-dialog__wrapper .dialog  .tableColor tr   {
+      // background-color: #738498 !important;
+
+      // color: rgb(255, 255, 255);
     }
     // 表格表头颜色
     .el-table tr .is-leaf {

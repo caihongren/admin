@@ -138,13 +138,22 @@ export default {
         if (valid) {
           sessionStorage.clear()
           login(this.loginUser).then(res => {
+            console.log(res, 'ffff')
             if (res.code == 0) {
               const token = res.data.token
               const user = res.data.accountEntity
               localStorage.setItem('token', token)
               sessionStorage.setItem('token', token)
               sessionStorage.setItem('user', JSON.stringify(user))
-              this.$router.push({ path: this.redirect ||'/IndustryHome'})
+              // if (res.data.role == 'admin') {
+              //   alert(1111)
+              //   this.$router.push({ path: this.redirect || '/IndustryHome' })
+              // } else if (res.data.role == 'data') {
+              //   alert(1333111)
+
+              //   this.$router.push({ path: this.redirect || '/IndustryHome' })
+              // }
+              this.$router.push({ path: this.redirect || '/IndustryHome' })
             } else {
               this.$message.error({
                 showClose: true,

@@ -25,7 +25,7 @@ export const constantRoutes = [
   },
   // 首页
   {
-    path: '/',
+    path: '/IndustryHome',
     component: Layout,
     children: [{
       path: '/IndustryHome',
