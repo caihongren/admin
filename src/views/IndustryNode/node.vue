@@ -23,8 +23,8 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">企业节点列表</p>
-        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addNode()">添加企业节点</el-button>
+        <p class="tableList" style="float:left;padding-left: 10px;">企业节点列表</p>
+        <el-button type="text" icon="el-icon-plus" class="tableButton" style="float:right;padding-top: 18px;" @click="addNode()">添加企业节点</el-button>
       </div>
       <el-table :data="tableData" style="color:#43454a;" :cell-style="rowClass" stripe :header-cell-style="headClass" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
@@ -35,8 +35,8 @@
         <el-table-column prop="interType" label="接口访问类型" min-width="100" :formatter="completionStatusc2" sortable="custom" />
         <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
-            <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
+            <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
+            <el-button type="text" class="tableButton" @click="modify(scope.row.id)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -356,7 +356,7 @@ export default {
 
       query: {
         putid: '',
-        creatorld: '',
+        creatorId: '',
         order: '',
         orderBy: '',
         pageNum: 1,
@@ -462,7 +462,6 @@ export default {
     },
     // 排序功能
     sort_change(column) {
-      console.log(column.prop)
       if (column.order == 'descending') {
         this.query.order = 'desc'
       } else if (column.order == 'ascending') {
@@ -482,7 +481,6 @@ export default {
       this.list()
     },
     self1(val) {
-      console.log(val, 'self1')
       if (val == true) {
         this.display = true
       } else {
@@ -490,7 +488,6 @@ export default {
       }
     },
     self2(val) {
-      console.log(val, 'self2')
       if (val == true) {
         this.display2 = true
       } else {
@@ -498,7 +495,6 @@ export default {
       }
     },
     self3(val) {
-      console.log(val, 'self3')
       if (val == true) {
         this.display3 = true
       } else {
@@ -539,7 +535,7 @@ export default {
 
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
-        this.query.creatorld = user.id
+        this.query.creatorId = user.id
         if (this.times != null && this.times.length == 2) {
           this.query.startTimeStr = this.times[0]
           this.query.endTimeStr = this.times[1]

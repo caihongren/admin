@@ -23,19 +23,25 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据源列表</p>
+        <p class="tableList" style="float:left;padding-left: 10px;">数据源列表</p>
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" style="color:#43454a;" stripe :header-cell-style="headClass">
+      <el-table :data="tableData" style="color:#43454a;" stripe>
         <el-table-column fixed label="序号" type="index" min-width="100" />
 
         <el-table-column prop="creatorName" label="创建人" min-width="100" sortable />
         <el-table-column prop="name" label="名称" min-width="100" sortable />
         <el-table-column prop="created" label="创建时间" min-width="100" sortable />
-        <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="100" />
-        <el-table-column prop="databaseType" label="数据库类型" min-width="100" />
+        <el-table-column prop="type" label="类型 / 数据库类型" :formatter="completionStatusc" min-width="100">
+          <template slot-scope="scope">
+            <span>{{ completionStatusc(scope.row) }}</span>
+            <span v-if="scope.row.databaseType"> / {{ scope.row.databaseType }}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column prop="type" label="类型" :formatter="completionStatusc" min-width="100" />
+        <el-table-column prop="databaseType" label="数据库类型" min-width="100" /> -->
         <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
+            <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
 
           </template>
         </el-table-column>
@@ -73,11 +79,47 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- 文件表格查看弹出框 -->
+    <el-dialog width="35%" :visible.sync="isanswerFile" append-to-body title="查看文件数据源" :close-on-click-modal="false">
+      <el-form ref="lookForm" :model="lookForm" label-width="100px">
+        <el-form-item label="名　称">
+          <el-input v-model="lookForm.name" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="源类型">
+          <el-input v-model="lookForm.type" :disabled="true" />
+        </el-form-item>
+        <el-form-item>
+          <el-table
+            class="tableColor"
+            stripe
+            :data="dataSourcetable"
+            style="width: 100%"
+          >
+            <el-table-column fixed label="序号" type="index" min-width="100" />
+            <el-table-column
+              prop="name"
+              label="文件名"
+              width="180"
+            />
+            <el-table-column
+              prop="type"
+              label="拓展名"
+              width="180"
+            />
+            <el-table-column
+              prop="size"
+              label="文件大小"
+            />
+          </el-table>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
 import {
   list, // 获取数据源列表
+  Size, // 计算大小
 
   getDatabase // 查看数据库数据源
 } from '@/api/user.js'
@@ -85,6 +127,7 @@ export default {
   data() {
     return {
       times: null,
+      dataSourcetable: [],
 
       query: {
         order: '',
@@ -125,6 +168,7 @@ export default {
         resource: '',
         desc: ''
       },
+      isanswerFile: false,
       changeisanswe: false,
       addisanswer: false,
       isanswer: false,
@@ -169,7 +213,7 @@ export default {
     completionStatusc(row) {
       if (row.type == 'database') {
         return '数据库'
-      } else if (row.state == 'file') {
+      } else if (row.type == 'file') {
         return '文件'
       }
     },
@@ -189,13 +233,13 @@ export default {
         }
       })
     },
-    headClass() {
-      return 'text-align: center;'
-    },
-    // 表格样式设置
-    rowClass() {
-      return 'text-align: center;'
-    },
+    // headClass() {
+    //   return 'text-align: center;'
+    // },
+    // // 表格样式设置
+    // rowClass() {
+    //   return 'text-align: center;'
+    // },
     // 分页
     // 分页
     handleSizeChange(val) {
@@ -220,17 +264,27 @@ export default {
     },
     // 查看按钮
     see(id) {
-      this.isanswer = true
+      this.dataSourcetable = []
       getDatabase(id).then(res => {
-        if (res.code == 0) {
+        if (res.data.type == '数据库') {
+          this.isanswer = true
+          if (res.code == 0) {
+            this.lookForm.name = res.data.name
+            this.lookForm.type = res.data.type
+            this.lookForm.databaseType = res.data.databaseType
+            this.lookForm.databaseName = res.data.databaseName
+            this.lookForm.databaseUrl = res.data.databaseUrl
+            this.lookForm.databasePort = res.data.databasePort
+            this.lookForm.databaseUsername = res.data.databaseUsername
+            this.lookForm.databasePassword = res.data.databasePassword
+          }
+        } else if (res.data.type == '文件') {
+          this.isanswerFile = true
           this.lookForm.name = res.data.name
           this.lookForm.type = res.data.type
-          this.lookForm.databaseType = res.data.databaseType
-          this.lookForm.databaseName = res.data.databaseName
-          this.lookForm.databaseUrl = res.data.databaseUrl
-          this.lookForm.databasePort = res.data.databasePort
-          this.lookForm.databaseUsername = res.data.databaseUsername
-          this.lookForm.databasePassword = res.data.databasePassword
+          for (let i = 0; i < res.data.files.length; i++) {
+            this.dataSourcetable.push({ name: res.data.files[i].fileName, type: res.data.files[i].fileType, size: Size(res.data.files[i].fileSize) })
+          }
         }
       })
     }

@@ -21,7 +21,7 @@ export const constantRoutes = [
   },
   {
     path: '/',
-    redirect: '/login',
+    redirect: '/login'
   },
   // 首页
   {
@@ -61,7 +61,6 @@ export const constantRoutes = [
   {
     path: '/IndustryEnterpriseNode',
     component: Layout,
-    // redirect: '/IndustryEnterpriseNode',
     children: [{
       path: 'enterpriseNode',
       name: '企业节点管理',
@@ -77,7 +76,6 @@ export const constantRoutes = [
   {
     path: '/IndustryPersonnel',
     component: Layout,
-    // redirect: '/IndustryPersonnel',
     children: [{
       path: 'Personnel',
       name: '人员管理',
@@ -94,7 +92,6 @@ export const constantRoutes = [
   {
     path: '/IndustryLog',
     component: Layout,
-    // redirect: '/IndustryLog',
     children: [{
       path: 'Log',
       name: '日志管理',
@@ -112,7 +109,6 @@ export const constantRoutes = [
   {
     path: '/IndustryAuthorization',
     component: Layout,
-    // redirect: '/IndustryAuthorization',
     children: [{
       path: 'authorization',
       name: '授权管理',
@@ -130,7 +126,6 @@ export const constantRoutes = [
   {
     path: '/IndustrySystem',
     component: Layout,
-    // redirect: '/IndustrySystem',
     children: [{
       path: 'system',
       name: '系统管理',
@@ -246,30 +241,4 @@ export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
-
-// const router = new Router({
-//   routes: [{
-//     path: '/',
-//     redirect: '/login'
-//   },
-//   // 登录注册
-//   {
-//     path: '/login',
-//     name: 'login',
-//     component: login,
-//     meta: {
-//       title: '登录'
-//     }
-//   },
-//   {
-//     path: '/IndustryHome',
-//     name: 'IndustryHome',
-//     component: () => import('@/views/IndustryHome/homePage'),
-//     meta: { title: '首页', icon: 'form' }
-//   }
-
-//     // 授权管理
-
-//   ]
-// })
 export default router

@@ -46,7 +46,7 @@
       </div>
       <div class="conter">
         <div style="padding:10px 0;">
-          <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">任务日志管理列表</p>
+          <p class="tableList" style="padding-left: 10px;">任务日志管理列表</p>
         </div>
         <el-table :data="tableData" :cell-style="rowClass" style="color:#43454a;" stripe :header-cell-style="headClass" @sort-change="sort_change">
           <el-table-column fixed label="序号" type="index" width="60" />
@@ -69,7 +69,7 @@
           </el-table-column>
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
-              <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
+              <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
 
               <el-button v-if="scope.row.state == 'NEW'" type="text" style="color: #4283d8;" @click="tabelDelete(scope.row.id)">删除</el-button>
             </template>
@@ -84,7 +84,7 @@
     <div v-if="Sign">
       <div class="SignIn">
         <div style="padding:10px 0;">
-          <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">登录日志管理列表</p>
+          <p class="tableList" style="padding-left: 10px;">登录日志管理列表</p>
         </div>
         <el-table style="color:#43454a;" :data="History" stripe :cell-style="rowClass" :header-cell-style="headClass">
           <el-table-column fixed label="序号" type="index" width="100" />
@@ -224,6 +224,8 @@ import {
   deleteTask
 
 } from '@/api/user.js'
+
+var time = ''
 export default {
   data() {
     return {
@@ -328,6 +330,14 @@ export default {
 
       tableData: []
     }
+  },
+  beforeDestroy() { // 组件销毁前调用
+    clearInterval(time)
+  },
+  mounted() {
+    time = setInterval(() => {
+      this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false)
+    }, 1000)// 获取导入任务列表
   },
   created() {
     // 获取历史登录
@@ -455,7 +465,6 @@ export default {
           this.length1 = res.data.total
         }
       })
-      // }
     },
     // 获取导入任务列表
     seeLists() {

@@ -52,9 +52,7 @@ export default {
           duration: 1000,
           message: '请输入内容'
         })
-      } else {
-        console.log('发送授权码', value)
-      }
+      } 
     }
   }
 }

@@ -7,12 +7,24 @@
             <img :src="dialogImageUrl" alt style="width:100%;height:100%">
           </div>
           <div class="upload">
-            <el-upload action="/img/add_resource" :before-upload="beforeUploadimg" :on-remove="handleRemove">
+            <el-upload
+              ref="upload"
+              class="upload-demo"
+              :limit="1"
+              list-type="picture"
+              :show-file-list="false"
+              :on-change="handlePictureCardPreview"
+              :with-credentials="true"
+              :before-upload="beforeUpload"
+              :auto-upload="true"
+              accept=".png,.jpg,.gif,.svg"
+              action=""
+            >
               <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
             </el-upload>
           </div>
           <div class="operation">
-            <el-button type="primary" size="small" class="determine">确定</el-button>
+            <el-button type="primary" size="small" class="determine" @click="ImgUploadSectionFile">确定</el-button>
             <el-button size="small">取消</el-button>
           </div>
 
@@ -28,13 +40,15 @@
             <p class="current">选择主题</p>
             <el-row :gutter="20">
               <el-col :span="11"><div style="width:50%;">
-                <img src="./../../img/个人中心.jpg" alt style="width:100%;">
+                <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="defaultTheme">
                 <p style="text-align: center;">默认主题</p>
-              </div></el-col>
+              </div>
+              </el-col>
               <el-col :span="11"><div style="width:50%;">
-                <img src="./../../img/个人中心.jpg" alt style="width:100%;">
+                <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="scienceTheme">
                 <p style="text-align: center;">科技主题</p>
-              </div></el-col>
+              </div>
+              </el-col>
             </el-row>
             <div class="currentbotton">
               <el-button size="small" type="primary" class="determine">确定</el-button>
@@ -49,65 +63,84 @@
 <script>
 import Vue from 'vue'
 import {
-  resource
+  postLogo,
+  logo,
+  putThemeStyle,
+  Size
 } from '@/api/user.js'
 export default Vue.extend({
   components: {},
 
   data() {
     return {
-      dialogImageUrl: require('./../../img/个人中心.jpg'),
-
+      // dialogImageUrl: require('./../../img/个人中心.jpg'),
+      fileList: [],
+      dialogImageUrl: '', // 上传图片后的图片地址
+      uploadImgBase64: '', // 存储将图片转化为base64后的字符
       imageUrl: ''
 
     }
   },
   created() {
-
+    this.getLogo()
   },
   mounted() {
 
   },
   methods: {
-    beforeUploadimg(file) {
-      const isJPG = file.type
-      if (isJPG.indexOf('image/') == -1) {
-        this.$message.error('只能上传图片')
-        return false // 屏蔽了action的默认上传
-      } else {
-        const fd = new FormData()
-        fd.append('file', file) // 传图片
+    theme() {
+      putThemeStyle({
+        // DEFAULT:
+        // TECHNOLOGY:
+      }).then(res => {
+        if (res.code == 0) {
 
-        fd.append('resourceTypeId', '')
-        fd.append('resourceTypeName', 'annex')
-        // fd.append('id',this.srid);//传其他参数
-        resource(fd).then(res => {
-          // 图片验证
-
-          this.dialogImageUrl = res.data.object.path
-          // "http://192.168.2.223:8081/static/annex/4919ab72-350b-42bc-be46-50d061f1ac71tonglifanglogo.png";
-
-          // this.dialogImageUrl = file.url;
-          this.dialogVisibleImg = true
-          this.addtest.iconId = res.data.object.id
-        })
-        return false // 屏蔽了action的默认上传
-      }
+        }
+      })
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+    getLogo() {
+      logo().then(res => {
+        if (res.code == 0) {
+          console.log(res, 'tupian')
+        }
+      })
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+    beforeUpload(file) {
+      this.fileList = file
+    },
+    ImgUploadSectionFile(param) {
+      console.log(param, 'param')
+      const formData = new FormData()// formdata格式
+      formData.append('logo', this.fileList)
+      postLogo(formData).then(res => {
+        if (res.code == 0) { // 成功
+          console.log(res)
+        }
+      })
+    },
+    // 文件改变时勾子函数
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+    },
+    // 默认主题
+    defaultTheme() {
+      putThemeStyle({
+        // DEFAULT:
+      }).then(res => {
+        if (res.code == 0) {
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+        }
+      })
+    },
+    // 科技主题
+    scienceTheme() {
+      putThemeStyle({
+        // TECHNOLOGY:
+      }).then(res => {
+        if (res.code == 0) {
+
+        }
+      })
     }
   }
 
@@ -169,26 +202,11 @@ export default Vue.extend({
   font-size: 14px;
   line-height: 40px;
 }
-.system .el-tabs__active-bar {
-  background-color: #4283d8;
-}
-
 .system .el-form-item__label {
   line-height: 60px;
 }
 .system .el-form-item__content {
   line-height: 60px;
-}
-.system .el-tabs__item:hover {
-  color: #4283d8;
-}
-.system .el-button--primary {
-  background-color: #ebb563;
-  border-color: #ebb563;
-}
-.system .el-button--info {
-  background-color: #4283d8;
-  border-color: #4283d8;
 }
 .el-upload {
   margin-top: 3%;

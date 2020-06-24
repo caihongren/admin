@@ -42,8 +42,8 @@
       </div>
       <div class="conter">
         <div style="padding:10px 0;">
-          <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">导入导出管理列表</p>
-          <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addTask">新建任务</el-button>
+          <p class="tableList" style="float:left;padding-left: 10px;">导入导出管理列表</p>
+          <el-button type="text" icon="el-icon-plus" class="tableButton" style="float:right;padding-top: 18px;" @click="addTask">新建任务</el-button>
         </div>
         <el-table :data="tableData" :cell-style="rowClass" style="color:#43454a;" stripe :header-cell-style="headClass" @sort-change="sort_change">
           <el-table-column fixed label="序号" type="index" width="100" />
@@ -56,16 +56,16 @@
             <template slot-scope="scope">
               <div style="display: flex; justify-content: left; width: 100%;margin-top: 5px;">
                 <span>{{ completionStatusc(scope.row) }}</span>
-                 <el-progress :show-text="false" :stroke-width="5" :percentage="num(scope.row.handlePerformed,scope.row.handleTotal)" color="#4283d8" style="width: 78%;margin-left: 10px;margin-top: 8px;" />
+                 <el-progress :show-text="false" :stroke-width="5" :percentage="num(scope.row.handlePerformed,scope.row.handleTotal)" style="width: 78%;margin-left: 10px;margin-top: 8px;" />
               </div>
-              <div style="text-align: center;font-size: 12px;font-weight: 700;color: #4283d8;">{{ scope.row.handlePerformed }}　/　{{ scope.row.handleFailed }} /　 {{ scope.row.handleTotal }}</div>
+              <div class="tableButton" style="text-align: center;font-size: 12px;font-weight: 700;">{{ scope.row.handlePerformed }}　/　{{ scope.row.handleFailed }} /　 {{ scope.row.handleTotal }}</div>
              </template>
           </el-table-column>
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
-              <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
-              <el-button v-if="scope.row.state == 'END'" type="text" style="color: #4283d8;" @click="file(scope.row.id)">归档</el-button>
-              <el-button v-if="scope.row.state == 'NEW'" type="text" style="color: #4283d8;" @click="tabelDelete(scope.row.id)">删除</el-button>
+              <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
+              <el-button v-if="scope.row.state == 'END'" type="text" class="tableButton" @click="file(scope.row.id)">归档</el-button>
+              <el-button v-if="scope.row.state == 'NEW'" type="text" style="color: #d05e5e;" @click="tabelDelete(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -202,9 +202,9 @@
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <el-button type="text" style="color: #4283d8;" @click="seeData(scope.row.id)">查看数据</el-button>
-              <el-button type="text" style="color: #4283d8;" @click="reImport(scope.row.id)">重新导入</el-button>
-              <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">删除</el-button>
+              <el-button type="text" class="tableButton" @click="seeData(scope.row.id)">查看数据</el-button>
+              <el-button type="text" class="tableButton" @click="reImport(scope.row.id)">重新导入</el-button>
+              <el-button type="text" class="tableButton" @click="modify(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -243,8 +243,6 @@
 </template>
 <script>
 import {
-  nodeList, // 获取企业节点
-  list, // 获取数据源列表
   taskList, // 获取任务列表
   resume, // 任务恢复
   pause, // 任务暂停
@@ -263,6 +261,7 @@ import {
 } from '@/api/user.js'
 import addtask from './addtask'
 
+var time = ''
 export default {
   components: {
     addtask
@@ -362,8 +361,19 @@ export default {
       tableData: []
     }
   },
+  beforeDestroy() { // 组件销毁前调用
+    clearInterval(time)
+  },
+  mounted() {
+    time = setInterval(() => {
+      this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false)
+    }, 1000)// 获取导入任务列表
+  },
   created() {
-    this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false) // 获取导入任务列表
+    // time = setInterval(() => {
+    //   this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false)
+    // }, 1000)// 获取导入任务列表
+
     // this.nodelists() // 获取企业节点列表
     this.nodelists2() // 获取企业节点列表
 
@@ -998,6 +1008,7 @@ export default {
     // 查看按钮
     see(id) {
       this.seeId = id
+
       taskInfo(id).then(res => {
         if (res.code == 0 && res.data && res.data.state) {
           if (res.data.state == 'END' || res.data.state == 'ARCHIVE') {

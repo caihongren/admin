@@ -21,11 +21,27 @@
     $menuActiveText: #fff;
 
     // #app 外的样式
+  // 表格按钮颜色
+    .tableButton{
+      color: #4283d8;
+      // color: #f11722;
+
+    }
+    .el-progress-bar__inner{
+      // color: #f11722;
+    }
+    // 表格名字颜色
+    .tableList{
+      border-left: 5px solid #4283d8;color: #4283d8;
+
+    }
+      // 黄色按钮
     &~ .el-dialog__wrapper .lianjieBtn{
       background-color: #ebb563;
 
       border-color: #ebb563;
     }
+    // 确定按钮
     &~ .el-dialog__wrapper .determine{
       background-color: #4283d8;
 

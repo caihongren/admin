@@ -26,7 +26,7 @@
         </el-form>
         <div>
           <el-button type="primary" class="determine" round size="mini" @click="startNow('operation')">立即开始</el-button>
-          <el-button type="warning" class='lianjieBtn' round size="mini" @click="startLater('operation')">稍后开始</el-button>
+          <el-button type="warning" class="lianjieBtn" round size="mini" @click="startLater('operation')">稍后开始</el-button>
         </div>
       </div>
     </div>
@@ -44,12 +44,22 @@
                     <el-button slot="reference" style="width:100%;border:0px;text-align: left;">{{ item.label }}</el-button>
                     <slot name="header">
                       <p> 数据源类型:　{{ item.dataSource.type }}</p>
+                      <p v-show="item.type=='数据库'"> 数据库类型:　{{ item.dataSource.databaseType }}</p>
+                      <p v-show="item.type=='数据库'"> 数据库名称:　{{ item.dataSource.databaseName }}</p>
+                      <p v-show="item.type=='数据库'"> 连接地址:　{{ item.dataSource.databaseUrl }}</p>
+                      <p v-show="item.type=='数据库'"> 端口号:　{{ item.dataSource.databasePort }}</p>
+                    </slot>
+                  </el-popover>
+                  <!-- <el-popover v-show="item.type=='文件'" placement="right" width="200" trigger="hover">
+                    <el-button slot="reference" style="width:100%;border:0px;text-align: left;">{{ item.label }}</el-button>
+                    <slot name="header">
+                      <p> 数据源类型:　{{ item.dataSource.type }}</p>
                       <p> 数据库类型:　{{ item.dataSource.databaseType }}</p>
                       <p> 数据库名称:　{{ item.dataSource.databaseName }}</p>
                       <p> 连接地址:　{{ item.dataSource.databaseUrl }}</p>
                       <p> 端口号:　{{ item.dataSource.databasePort }}</p>
                     </slot>
-                  </el-popover>
+                  </el-popover> -->
                 </el-option>
               </el-select>
               <el-button size="mini" class="bottomColor" type="primary" @click="addDatasource">添加</el-button>
@@ -408,7 +418,7 @@
               <el-table-column prop="databaseType" label="必须填" min-width="100" />
               <el-table-column label="操作" width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
+                  <el-button type="text" class="tableButton"  @click="modify(scope.row.id)">修改</el-button>
                   <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
@@ -759,7 +769,6 @@ export default {
           for (var i = 0; i < res.data.items.length; i++) {
             this.rightCardData.push({ name: res.data.items[i].idType, requiredlist: res.data.items[i].required, value: res.data.items[i].id })
           }
-          console.log(this.rightCardData, 'this.rightCardData')
         }
       })
     },
@@ -939,8 +948,6 @@ export default {
     dataNodechange(id) {
       this.query.enterpriseNodeId = id
       getList(this.query).then(res => {
-        console.log(res, 'res11')
-
         this.rightCardData = []
         this.templatelist = []
         this.operation.inputPrefix = ''
@@ -970,10 +977,8 @@ export default {
     },
     // 选中数据模板 展示前缀
     dataTemplateChange(row) {
-      console.log(row, 'row')
       info(row.value).then(res => {
         if (res.code == 0) {
-          console.log(res, 'res')
           this.operation.inputPrefix = res.data.prefix
           this.rightCardData = []
           for (let i = 0; i < res.data.dataItems.length; i++) {
@@ -1146,7 +1151,6 @@ export default {
         this.rightCardData[i].selectedState = false
         for (let j = 0; j < this.middle.length; j++) {
           if (this.middle[j].value == this.rightCardData[i].name) {
-            console.log(this.middle[j].value)
             this.rightCardData[i].selectedState = true
           }
         }
@@ -1188,22 +1192,39 @@ export default {
             for (let i = 0; i < res.data.length; i++) {
               getDatabase(res.data[i].id).then(res => {
                 if (res.code == 0) {
-                  this.sourcelist.push(
-                    {
-                      label: res.data.name,
-                      value: res.data.id,
-                      dataSource: {
-                        name: res.data.name,
+                  if (res.data.type == '数据库') {
+                    this.sourcelist.push(
+                      {
+                        label: res.data.name,
+                        value: res.data.id,
                         type: res.data.type,
-                        databaseType: res.data.databaseType,
-                        databaseName: res.data.databaseName,
-                        databaseUrl: res.data.databaseUrl,
-                        databasePort: res.data.databasePort,
-                        databaseUsername: res.data.databaseUsername,
-                        databasePassword: res.data.databasePassword
+
+                        dataSource: {
+                          name: res.data.name,
+                          type: res.data.type,
+                          databaseType: res.data.databaseType,
+                          databaseName: res.data.databaseName,
+                          databaseUrl: res.data.databaseUrl,
+                          databasePort: res.data.databasePort,
+                          databaseUsername: res.data.databaseUsername,
+                          databasePassword: res.data.databasePassword
+                        }
                       }
-                    }
-                  )
+                    )
+                  } else if (res.data.type == '文件') {
+                    this.sourcelist.push(
+                      {
+                        label: res.data.name,
+                        value: res.data.id,
+                        type: res.data.type,
+                        dataSource: {
+                          name: res.data.name,
+                          type: res.data.type
+
+                        }
+                      }
+                    )
+                  }
                 }
               })
             }
@@ -1290,7 +1311,6 @@ export default {
       return 'text-align: center;'
     },
     self1(val) {
-      console.log(val)
       if (val == true) {
         this.display = true
       } else {
@@ -1298,7 +1318,6 @@ export default {
       }
     },
     self2(val) {
-      console.log(val)
       if (val == true) {
         this.display2 = true
       } else {
@@ -1306,7 +1325,6 @@ export default {
       }
     },
     self3(val) {
-      console.log(val)
       if (val == true) {
         this.display3 = true
       } else {
@@ -1386,7 +1404,6 @@ export default {
           const user = JSON.parse(sessionStorage.getItem('user')).id
           this.addData.creatorId = user
           connectionTest(this.addData).then(res => {
-            console.log(res, '678')
             if (res.code == 0) {
               this.$message({
                 showClose: true,
@@ -1425,7 +1442,7 @@ export default {
         sort = sort[sort.length - 1]
         if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
           this.addData.fileList.push(box[i])
-          this.dataSourcetable.push({ name: box[i].name, type: sort, size: box[i].size + '字节' })
+          this.dataSourcetable.push({ name: box[i].name, type: sort, size: Size(box[i].size)})
         }
       }
       if (this.dataSourcetable.length <= 0) {
@@ -1454,7 +1471,7 @@ export default {
       }
       if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
         this.addData.fileList.push(file)
-        this.dataSourcetable.push({ name: file.name, type: sort, size: file.size + '字节' })
+        this.dataSourcetable.push({ name: file.name, type: sort, size: Size(file.size)})
       } else {
         this.$message.error({
           showClose: true,
@@ -1577,7 +1594,6 @@ export default {
                 duration: 1000
               })
               const fd = new FormData()
-              console.log(this.addData.fileList)
               const list = this.addData.fileList
               fd.append('length', list.length)
               for (let i = 0; i < list.length; i++) {

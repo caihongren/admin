@@ -23,7 +23,7 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">企业节点列表</p>
+        <p class="tableList" style="padding-left: 10px;">企业节点列表</p>
 
       </div>
       <el-table :data="tableData" style="color:#43454a;" :cell-style="rowClass" stripe :header-cell-style="headClass" @sort-change="sort_change">
@@ -35,7 +35,7 @@
         <el-table-column prop="interType" label="接口访问类型" min-width="100" :formatter="completionStatusc2" />
         <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
+            <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
 
           </template>
         </el-table-column>
@@ -140,7 +140,7 @@ export default {
       times: null,
       query: {
         putid: '',
-
+        creatorId: '',
         order: '',
         orderBy: '',
         pageNum: 1,
@@ -258,7 +258,6 @@ export default {
     },
     // 排序功能
     sort_change(column) {
-      console.log(column.prop)
       if (column.order == 'descending') {
         this.query.order = 'desc'
       } else if (column.order == 'ascending') {
@@ -281,7 +280,7 @@ export default {
 
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
-        this.query.creatorld = user.id
+        this.query.creatorId = user.id
         if (this.times != null && this.times.length == 2) {
           this.query.startTimeStr = this.times[0]
           this.query.endTimeStr = this.times[1]

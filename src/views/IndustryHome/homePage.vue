@@ -119,12 +119,12 @@
   </div>
 </template>
 <script>
-import { mGetDateThis, homeTask } from '@/api/user.js'
+import { mGetDateThis, homeTask, handleDataECharts } from '@/api/user.js'
 import echarts from 'echarts'
 export default {
   data() {
     return {
-      creatorld: '',
+      creatorId: '',
       dataSourceCount: '',
       enterpriseNodeCount: '',
       taskAbnormalCount: '',
@@ -139,22 +139,24 @@ export default {
       taskTimeManualCount: '',
       taskTimeRunCount: '',
       taskStockAbnormalCount: '',
-      taskRunCount: ''
+      taskRunCount: '',
+      value: [],
+      data: []
     }
   },
   mounted() {
     this.drawLine()
   },
   created() {
+    this.getChart()
     this.homeTaskList()
   },
   methods: {
     homeTaskList() {
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
-        this.creatorld = user.id
+        this.creatorId = user.id
         homeTask(user.accountNumber == 'admin' ? '' : user.id).then(res => {
-          console.log(res, '555')
           if (res.code == 0) {
             this.dataSourceCount = res.data.dataSourceCount// 数据源
             this.enterpriseNodeCount = res.data.enterpriseNodeCount// 企业节点
@@ -173,6 +175,24 @@ export default {
             this.taskTimeManualCount = res.data.taskTimeManualCount// 实时手动终止
             this.taskTimeRunCount = res.data.taskTimeRunCount// 实时进行中
           }
+        })
+      }
+    },
+    getChart() {
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        this.creatorId = user.id
+        handleDataECharts(user.accountNumber == 'admin' ? '' : user.id).then(res => {
+          if (res.code == 0) {
+            this.value = []
+            this.data = []
+            for (let i = 0; i < res.data.length; i++) {
+              const item = res.data[i]
+              this.value.push(item.value)
+              this.data.push(item.data)
+            }
+          }
+          this.drawLine() // 初始化图标对象
         })
       }
     },
@@ -199,7 +219,7 @@ export default {
         borderWidth: 10,
         borderColor: 'pink',
         title: {
-          text: '柱状图动画延迟'
+          text: '标识统计'
         },
 
         tooltip: {
@@ -237,6 +257,7 @@ export default {
           }
         },
         series: [{
+          name: '标识统计',
           type: 'bar',
           barWidth: 15,
           itemStyle: {
@@ -251,7 +272,7 @@ export default {
               ]
             )
           },
-          data: [120, 200, 150, 80, 70, 110, 130, 150, 80, 70, 110, 130, 130, 150, 80, 70, 110, 130, 130, 150, 80, 70, 110, 130, 130, 150, 80, 70, 110, 130]
+          data: this.value
         }]
       }
       myChart.setOption(option)

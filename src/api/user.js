@@ -444,6 +444,44 @@ export function homeTask(id) {
     method: 'get'
   })
 }
+// 获取首页ECharts
+export function handleDataECharts(id) {
+  return request({
+    url: '/general/handleDataECharts?creatorId=' + id,
+    method: 'get'
+  })
+}
+// 获取logo
+export function logo() {
+  return request({
+    url: '/general/logo',
+    method: 'get'
+  })
+}
+
+// 上传logo
+export function postLogo(data) {
+  return request({
+    url: '/general/logo ',
+    method: 'post',
+    data
+  })
+}
+// 获取主题风格
+export function themeStyle() {
+  return request({
+    url: '/general/themeStyle',
+    method: 'get'
+  })
+}
+// 切换主题风格
+export function putThemeStyle(data) {
+  return request({
+    url: '/general/themeStyle',
+    method: 'put',
+    data
+  })
+}
 // export function queryHomeTask(query) {
 //   return request({
 //     url: '/general/homeTask',

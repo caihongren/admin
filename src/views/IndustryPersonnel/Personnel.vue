@@ -1,6 +1,6 @@
 <template>
   <div class="personnel">
-    <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">人员管理列表</p>
+    <p class="tableList" style="float:left;padding-left: 10px;">人员管理列表</p>
     <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="dialogFormVisibleadd=true">添加用户</el-button>
     <el-table
       style="color:#43454a;"
@@ -19,7 +19,7 @@
         <template slot-scope="scope">
           <el-button type="text" round size="mini" style="color: #d05e5e;" @click="changePassword(scope.row.id)">重置密码</el-button>
           <el-button v-if="scope.row.state=='0'" type="text" style="color: #d05e5e;" round size="mini" @click="Deactivation(scope.row.id)">停用</el-button>
-          <el-button v-if="scope.row.state=='1'" type="text" style="color: #4283d8;" round size="mini" @click="startUp(scope.row.id)">启动</el-button>
+          <el-button v-if="scope.row.state=='1'" type="text" class="tableButton" round size="mini" @click="startUp(scope.row.id)">启动</el-button>
         </template>
       </el-table-column>
     </el-table>

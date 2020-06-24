@@ -46,8 +46,8 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据模板列表</p>
-        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="addNode()">添加数据模板</el-button>
+        <p class="tableList" style="float:left;padding-left: 10px;">数据模板列表</p>
+        <el-button type="text" icon="el-icon-plus" class="tableButton" style="float:right;padding-top: 18px;" @click="addNode()">添加数据模板</el-button>
       </div>
       <el-table :data="tableData" style="color:#43454a;" :cell-style="rowClass" stripe :header-cell-style="headClass" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" min-width="100" />
@@ -57,8 +57,8 @@
 
         <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
-            <el-button type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
+            <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
+            <el-button type="text" class="tableButton" @click="modify(scope.row.id)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -107,7 +107,7 @@
             <el-table-column prop="maxLength" label="最大长度" min-width="100" />
             <el-table-column label="操作" width="120">
               <template slot-scope="scope">
-                <el-button type="text" style="color: #4283d8;" @click="updataModifyLine(scope.$index)">修改</el-button>
+                <el-button type="text" class="tableButton" @click="updataModifyLine(scope.$index)">修改</el-button>
                 <el-button type="text" style="color: #d05e5e;" @click="detLine(scope.row.id)">删除</el-button>
               </template>
             </el-table-column>
@@ -239,7 +239,6 @@
 </template>
 <script>
 import {
-  nodeList, // 获取企业节点
   nodeSelectList,
   getList, // 获取数据模板列表
   deleteDataTemplate, // 删除数据模板
@@ -270,6 +269,7 @@ export default {
 
       // 添加数据模板数据绑定
       ruleForm: {
+        order: '',
         id: '',
         uuid: '',
         creatorId: '',
@@ -333,6 +333,7 @@ export default {
       },
       query: {
         putid: '',
+        creatorId: '',
         order: '',
         orderBy: '',
         pageNum: 1,
@@ -412,11 +413,14 @@ export default {
       info(id).then(res => {
         if (res.code == 0) {
           this.ruleForm.enterpriseNodeName = res.data.enterpriseNodeName // 企业节点
+          this.ruleForm.enterpriseNodeId = res.data.enterpriseNodeId // 企业节点
+
           this.ruleForm.prefix = res.data.prefix // 前缀
           this.ruleForm.version = res.data.version // 数据模板
           this.ruleForm.description = res.data.description // 简介
           for (var i = 0; i < res.data.dataItems.length; i++) {
             this.ruleForm.dataItems.push({
+
               id: res.data.dataItems[i].id,
               idType: res.data.dataItems[i].idType,
               required: res.data.dataItems[i].required,
@@ -434,6 +438,21 @@ export default {
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
         this.ruleForm.creatorId = user.id
+        const list = this.ruleForm.dataItems
+        const dataList = []
+        for (var i = 0; i < list.length; i++) {
+          dataList.push({
+            order: i,
+            id: list[i].id,
+            idType: list[i].idType,
+            required: list[i].required,
+            name: list[i].name,
+            type: list[i].type,
+            minLength: list[i].minLength,
+            maxLength: list[i].maxLength
+          })
+        }
+        this.ruleForm.dataItems = dataList,
         this.ruleForm.id = this.putid2id
         update(this.ruleForm).then(res => {
           if (res.code == 0) {
@@ -465,7 +484,7 @@ export default {
       this.query.pageNum = this.offset
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
-        this.query.creatorld = user.id
+        this.query.creatorId = user.id
         getList(this.query).then(res => {
           if (res.code == 0) {
             this.tableData = res.data.result
@@ -527,7 +546,6 @@ export default {
         const user = JSON.parse(sessionStorage.getItem('user')).id
         this.nodelistsCreatorId = user
         nodeSelectList(this.nodelistsCreatorId).then(res => {
-          console.log(res, '5555')
           if (res.code == 0) {
             this.nodelist = []
             for (let i = 0; i < res.data.length; i++) {
@@ -665,7 +683,6 @@ export default {
     },
     // 排序功能
     sort_change(column) {
-      console.log(column.order)
       if (column.order == 'desc') {
         this.query.order = 'desc'
       } else if (column.order == 'asc') {

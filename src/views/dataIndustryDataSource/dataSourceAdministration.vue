@@ -23,10 +23,10 @@
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p style="float:left;border-left: 5px solid #4283d8;padding-left: 10px;color: #4283d8;">数据源列表</p>
-        <el-button type="text" icon="el-icon-plus" style="float:right;color: #4283d8;padding-top: 18px;" @click="adddata">添加数据源</el-button>
+        <p class="tableList" style="float:left;padding-left: 10px;">数据源列表</p>
+        <el-button type="text" icon="el-icon-plus" class="tableButton" style="float:right;padding-top: 18px;" @click="adddata">添加数据源</el-button>
       </div>
-      <el-table :data="tableData" :cell-style="rowClass" stripe :header-cell-style="headClass" style="color:#43454a;" @sort-change="sort_change">
+      <el-table :data="tableData" stripe style="color:#43454a;" @sort-change="sort_change">
         <el-table-column fixed label="序号" type="index" width="100" />
         <el-table-column prop="creatorName" label="创建人" min-width="130" sortable="custom" />
         <el-table-column prop="name" label="名称" min-width="130" sortable="custom" />
@@ -39,10 +39,10 @@
         </el-table-column>
         <el-table-column label="操作" min-width="180">
           <template slot-scope="scope">
-            <el-button type="text" style="color: #4283d8;" @click="see(scope.row.id)">查看</el-button>
-            <el-button type="text" style="color: #4283d8;" @click="seedata(scope.row.id)">查看数据</el-button>
+            <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
+            <el-button type="text" class="tableButton" @click="seedata(scope.row.id)">查看数据</el-button>
 
-            <el-button v-if="scope.row.type=='database'" type="text" style="color: #4283d8;" @click="modify(scope.row.id)">修改</el-button>
+            <el-button v-if="scope.row.type=='database'" class="tableButton" type="text" @click="modify(scope.row.id)">修改</el-button>
             <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
 
           </template>
@@ -91,9 +91,9 @@
         <el-form-item v-show="addFileShow">
           <el-table
             class="tableColor"
-            :cell-style="rowClass"
+
             stripe
-            :header-cell-style="headClass"
+
             :data="dataSourcetable"
             style="width: 100%"
           >
@@ -120,7 +120,7 @@
             <el-col v-show="addFileShow" :span="10" style="padding-left: 30px;">
               <div class="file-upload">
                 上传文件夹
-                 <input ref="file"  class="file-upload-input"   type="file" name="file" webkitdirectory  @change.stop="changesData" />
+                 <input ref="file"  class="file-upload-input"   type="file" name="file" webkitdirectory  @change.stop="changesData($event)" />
               </div>
             </el-col>
             <el-col v-show="addDataShow" :span="20">
@@ -210,7 +210,41 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
+    <!-- 文件表格查看弹出框 -->
+    <el-dialog width="35%" :visible.sync="isanswerFile" append-to-body title="查看文件数据源" :close-on-click-modal="false">
+      <el-form ref="addForm" :model="addForm" label-width="100px">
+        <el-form-item label="名　称">
+          <el-input v-model="addForm.name" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="源类型">
+          <el-input v-model="addForm.type" :disabled="true" />
+        </el-form-item>
+        <el-form-item>
+          <el-table
+            class="tableColor"
+            stripe
+            :data="dataSourcetable"
+            style="width: 100%"
+          >
+            <el-table-column fixed label="序号" type="index" min-width="100" />
+            <el-table-column
+              prop="name"
+              label="文件名"
+              width="180"
+            />
+            <el-table-column
+              prop="type"
+              label="拓展名"
+              width="180"
+            />
+            <el-table-column
+              prop="size"
+              label="文件大小"
+            />
+          </el-table>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!-- 产看数据表弹出框 -->
     <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="查看数据" :close-on-click-modal="false">
       <el-select v-model="itemlist" placeholder="请选择排序依据" style="width:30%" @change="addFileInput(itemlist)">
@@ -222,7 +256,7 @@
         />
       </el-select>
 
-      <el-table :data="tableDatas" :cell-style="rowClass" stripe :header-cell-style="headClass" style="margin:20px  0;">
+      <el-table :data="tableDatas" stripe style="margin:20px  0;">
         <el-table-column
           v-for="(item, index) in tableLabel"
           :key="index"
@@ -252,7 +286,7 @@ export default {
   data() {
     return {
       link: false,
-
+      isanswerFile: false,
       tableData: [], // 数据列表
       dataSourcetable: [],
       putid: '',
@@ -265,6 +299,7 @@ export default {
       password: '******',
       times: null,
       query: {
+        creatorId: '',
         order: '',
         orderBy: '',
         pageNum: 1,
@@ -351,7 +386,6 @@ export default {
     },
     // 排序功能
     sort_change(column) {
-      console.log(column.order)
       if (column.order == 'descending') {
         this.query.order = 'desc'
       } else if (column.order == 'ascending') {
@@ -417,7 +451,7 @@ export default {
       this.query.pageNum = this.offset
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user'))
-        this.query.creatorld = user.id
+        this.query.creatorId = user.id
         if (this.times != null && this.times.length == 2) {
           this.query.startTimeStr = this.times[0]
           this.query.endTimeStr = this.times[1]
@@ -434,7 +468,6 @@ export default {
     // 新增弹出框，数据类型联动
     updateAdddisplay() {
       this.dataSourcetable = [],
-      this.addForm.name = ''
       this.addForm.creatorId = ''
       this.addForm.databaseType = ''
       this.addForm.databaseName = ''
@@ -455,7 +488,7 @@ export default {
         sort = sort[sort.length - 1]
         if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
           this.addForm.fileList.push(box[i])
-          this.dataSourcetable.push({ name: box[i].name, type: sort, size: box[i].size + '字节' })
+          this.dataSourcetable.push({ name: box[i].name, type: sort, size: Size(box[i].size) })
         }
       }
       if (this.dataSourcetable.length <= 0) {
@@ -467,6 +500,7 @@ export default {
         })
       }
     },
+
     // 上传文件
     uploading(file) {
       this.dataSourcetable = []
@@ -484,7 +518,7 @@ export default {
       }
       if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
         this.addForm.fileList.push(file)
-        this.dataSourcetable.push({ name: file.name, type: sort, size: file.size + '字节' })
+        this.dataSourcetable.push({ name: file.name, type: sort, size: Size(file.size) })
       } else {
         this.$message.error({
           showClose: true,
@@ -558,7 +592,6 @@ export default {
           const user = JSON.parse(sessionStorage.getItem('user')).id
           this.addForm.creatorId = user
           connectionTest(this.addForm).then(res => {
-            console.log(res, '678')
             if (res.code == 0) {
               this.$message({
                 showClose: true,
@@ -755,17 +788,26 @@ export default {
     },
     // 查看按钮
     see(id) {
-      this.isanswer = true
       getDatabase(id).then(res => {
-        if (res.code == 0) {
+        if (res.data.type == '数据库') {
+          this.isanswer = true
+          if (res.code == 0) {
+            this.addForm.name = res.data.name
+            this.addForm.type = res.data.type
+            this.addForm.databaseType = res.data.databaseType
+            this.addForm.databaseName = res.data.databaseName
+            this.addForm.databaseUrl = res.data.databaseUrl
+            this.addForm.databasePort = res.data.databasePort
+            this.addForm.databaseUsername = res.data.databaseUsername
+            this.addForm.databasePassword = res.data.databasePassword
+          }
+        } else if (res.data.type == '文件') {
+          this.isanswerFile = true
           this.addForm.name = res.data.name
           this.addForm.type = res.data.type
-          this.addForm.databaseType = res.data.databaseType
-          this.addForm.databaseName = res.data.databaseName
-          this.addForm.databaseUrl = res.data.databaseUrl
-          this.addForm.databasePort = res.data.databasePort
-          this.addForm.databaseUsername = res.data.databaseUsername
-          this.addForm.databasePassword = res.data.databasePassword
+          for (let i = 0; i < res.data.files.length; i++) {
+            this.dataSourcetable.push({ name: res.data.files[i].fileName, type: res.data.files[i].fileType, size: Size(res.data.files[i].fileSize) })
+          }
         }
       })
     },
