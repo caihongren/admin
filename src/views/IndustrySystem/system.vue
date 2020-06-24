@@ -4,7 +4,7 @@
       <el-tab-pane label="LOGO管理">
         <div class="LOGO">
           <div style="width:500px;height:300px;margin: 0 auto;">
-            <img :src="dialogImageUrl" alt style="width:100%;height:100%">
+            <img :src="dialogImageUrl" alt style="width:100%;height:100%" />
           </div>
           <div class="upload">
             <el-upload
@@ -17,42 +17,48 @@
               :with-credentials="true"
               :before-upload="beforeUpload"
               :auto-upload="true"
-              accept=".png,.jpg,.gif,.svg"
-              action=""
+              accept=".png, .jpg, .gif, .svg"
+              action
             >
               <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
             </el-upload>
           </div>
           <div class="operation">
-            <el-button type="primary" size="small" class="determine" @click="ImgUploadSectionFile">确定</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              class="determine"
+              @click="ImgUploadSectionFile"
+            >确定</el-button>
             <el-button size="small">取消</el-button>
           </div>
-
         </div>
       </el-tab-pane>
       <el-tab-pane label="主题风格管理">
         <div class="theme">
           <p class="current">当前主提</p>
           <div style="width:500px;height:250px;">
-            <img src="./../../img/个人中心.jpg" alt style="width:100%;height:100%">
+            <img src="./../../img/个人中心.jpg" alt style="width:100%;height:100%" />
           </div>
           <div style="width: 100%;margin-top:4%;">
             <p class="current">选择主题</p>
             <el-row :gutter="20">
-              <el-col :span="11"><div style="width:50%;">
-                <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="defaultTheme">
-                <p style="text-align: center;">默认主题</p>
-              </div>
+              <el-col :span="11">
+                <div style="width:50%;">
+                  <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="lookTheme(0)" />
+                  <p style="text-align: center;">默认主题</p>
+                </div>
               </el-col>
-              <el-col :span="11"><div style="width:50%;">
-                <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="scienceTheme">
-                <p style="text-align: center;">科技主题</p>
-              </div>
+              <el-col :span="11">
+                <div style="width:50%;">
+                  <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="lookTheme(1)" />
+                  <p style="text-align: center;">科技主题</p>
+                </div>
               </el-col>
             </el-row>
             <div class="currentbotton">
-              <el-button size="small" type="primary" class="determine">确定</el-button>
-              <el-button size="small">取消</el-button>
+              <el-button size="small" type="primary" class="determine" @click="scienceTheme()">确定</el-button>
+              <el-button size="small" @click="detcolor()">取消</el-button>
             </div>
           </div>
         </div>
@@ -61,13 +67,9 @@
   </div>
 </template>
 <script>
-import Vue from 'vue'
-import {
-  postLogo,
-  logo,
-  putThemeStyle,
-  Size
-} from '@/api/user.js'
+import Vue from "vue";
+import store from "../../store/index.js";
+import { postLogo, logo, putThemeStyle, Size } from "@/api/user.js";
 export default Vue.extend({
   components: {},
 
@@ -75,18 +77,18 @@ export default Vue.extend({
     return {
       // dialogImageUrl: require('./../../img/个人中心.jpg'),
       fileList: [],
-      dialogImageUrl: '', // 上传图片后的图片地址
-      uploadImgBase64: '', // 存储将图片转化为base64后的字符
-      imageUrl: ''
-
-    }
+      dialogImageUrl: "", // 上传图片后的图片地址
+      uploadImgBase64: "", // 存储将图片转化为base64后的字符
+      imageUrl: "",
+      oldColor: ""
+    };
   },
   created() {
-    this.getLogo()
+    this.getColor();
+    this.getLogo();
   },
-  mounted() {
+  mounted() {},
 
-  },
   methods: {
     theme() {
       putThemeStyle({
@@ -94,57 +96,67 @@ export default Vue.extend({
         // TECHNOLOGY:
       }).then(res => {
         if (res.code == 0) {
-
         }
-      })
+      });
     },
     getLogo() {
       logo().then(res => {
         if (res.code == 0) {
-          console.log(res, 'tupian')
+          console.log(res, "tupian");
         }
-      })
+      });
     },
     beforeUpload(file) {
-      this.fileList = file
+      this.fileList = file;
     },
     ImgUploadSectionFile(param) {
-      console.log(param, 'param')
-      const formData = new FormData()// formdata格式
-      formData.append('logo', this.fileList)
+      console.log(param, "param");
+      const formData = new FormData(); // formdata格式
+      formData.append("logo", this.fileList);
       postLogo(formData).then(res => {
-        if (res.code == 0) { // 成功
-          console.log(res)
+        if (res.code == 0) {
+          // 成功
+          console.log(res);
         }
-      })
+      });
     },
     // 文件改变时勾子函数
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
+      this.dialogImageUrl = file.url;
     },
-    // 默认主题
-    defaultTheme() {
-      putThemeStyle({
-        // DEFAULT:
-      }).then(res => {
-        if (res.code == 0) {
-
-        }
-      })
-    },
-    // 科技主题
+ 
+    // 确定
     scienceTheme() {
       putThemeStyle({
-        // TECHNOLOGY:
+          color: this.$store.state.color
       }).then(res => {
         if (res.code == 0) {
-
+          this.getColor()
         }
-      })
+      });
+    },
+    // 预览主题
+    lookTheme(type) {
+      let list = ["DEFAULT", "TECHNOLOGY"];
+      if (type >= 0 && type <= 1) {
+        console.log(list[type]);
+        this.$store.state.color = list[type];
+        console.log(this.$store.state.color);
+      } else {
+        return;
+      }
+    },
+    // 取消或者退出
+    detcolor() {
+      this.$store.state.color = this.oldColor;
+    },
+    // 获取到原先的主题
+    getColor() {
+      console.log(this.$store.getters.color);
+      this.oldColor = this.$store.state.color;
     }
   }
-
-})
+});
 </script>
 <style lang="less" scoped>
 .system {
@@ -164,7 +176,7 @@ export default Vue.extend({
       padding-bottom: 10px;
     }
   }
-  .currentbotton{
+  .currentbotton {
     margin-left: 25%;
   }
 }
@@ -221,8 +233,8 @@ export default Vue.extend({
   margin-right: 0%;
   padding: 10px 30px;
 }
-.currentbotton .el-button--small{
-   margin-top: 4%;
+.currentbotton .el-button--small {
+  margin-top: 4%;
   margin-left: 5%;
   margin-right: 0%;
   padding: 10px 30px;

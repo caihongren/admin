@@ -1,5 +1,5 @@
 #app {
-  &[data-color='black'] {
+  &[data-color='DEFAULT'] {
     $dataBgColor: #304156;
     $dataTextColor: '';
 
@@ -17,7 +17,7 @@
 
   }
 
-  &[data-color='white'] {
+  &[data-color='TECHNOLOGY'] {
     $menuActiveText: #fff;
 
     // #app 外的样式

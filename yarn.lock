@@ -9231,6 +9231,11 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
+simple-uploader.js@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.npm.taobao.org/simple-uploader.js/download/simple-uploader.js-0.5.4.tgz#f858ed1fefeddc58d46a724d5a6c77040b0b29bb"
+  integrity sha1-+FjtH+/t3FjUanJNWmx3BAsLKbs=
+
 sisteransi@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-0.1.1.tgz#5431447d5f7d1675aac667ccd0b865a4994cb3ce"
@@ -10425,6 +10430,13 @@ vue-router@3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.6.tgz#2e4f0f9cbb0b96d0205ab2690cfe588935136ac3"
   integrity sha512-Ox0ciFLswtSGRTHYhGvx2L44sVbTPNS+uD2kRISuo8B39Y79rOo0Kw0hzupTmiVtftQYCZl87mwldhh2L9Aquw==
+
+vue-simple-uploader@^0.7.4:
+  version "0.7.4"
+  resolved "https://registry.npm.taobao.org/vue-simple-uploader/download/vue-simple-uploader-0.7.4.tgz#8cf6033fdae05b39f898146cc961213a38606259"
+  integrity sha1-jPYDP9rgWzn4mBRsyWEhOjhgYlk=
+  dependencies:
+    simple-uploader.js "^0.5.4"
 
 vue-style-loader@^4.1.0:
   version "4.1.2"
