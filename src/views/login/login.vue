@@ -1,8 +1,13 @@
 <template>
   <div class="login-container">
-
-    <el-form ref="loginForm" :model="loginUser" :rules="rules1" class="login-form" auto-complete="on" label-position="left">
-
+    <el-form
+      ref="loginForm"
+      :model="loginUser"
+      :rules="rules1"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
       <div class="title-container">
         <h3 class="title">工业互联网标识数据对接系统</h3>
       </div>
@@ -11,14 +16,33 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginUser.loginName" placeholder="请输入账号" name="loginName" type="text" tabindex="1" auto-complete="on" @keyup.enter.native="submitForm('loginForm')" @input.native="changeCode" />
+        <el-input
+          v-model="loginUser.loginName"
+          placeholder="请输入账号"
+          name="loginName"
+          type="text"
+          tabindex="1"
+          auto-complete="on"
+          @keyup.enter.native="submitForm('loginForm')"
+          @input.native="changeCode"
+        />
       </el-form-item>
       <!-- 密码 -->
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :key="password" ref="password" v-model="loginUser.password" :type="password" placeholder="请输入密码" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="submitForm('loginForm')" />
+        <el-input
+          :key="password"
+          ref="password"
+          v-model="loginUser.password"
+          :type="password"
+          placeholder="请输入密码"
+          name="password"
+          tabindex="2"
+          auto-complete="on"
+          @keyup.enter.native="submitForm('loginForm')"
+        />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="password === 'password' ? 'eye' : 'eye-open'" />
         </span>
@@ -30,16 +54,30 @@
             <span class="svg-container">
               <i class="el-icon-key" style="font-weight: 700;font-size: 20px;" />
             </span>
-            <el-input :key="pictureCode" v-model="loginUser.pictureCode" placeholder="请输入验证码" name="pictureCode" type="text" tabindex="1" auto-complete="on" @keyup.enter.native="submitForm('loginForm')" />
+            <el-input
+              :key="pictureCode"
+              v-model="loginUser.pictureCode"
+              placeholder="请输入验证码"
+              name="pictureCode"
+              type="text"
+              tabindex="1"
+              auto-complete="on"
+              @keyup.enter.native="submitForm('loginForm')"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="9">
           <div style="border: 1px solid #dddddd; height:50px;cursor: pointer;" title="点击刷新验证码">
-            <img :src="pictureCode" alt="" height="100%;" width="100%" @click="account">
+            <img :src="pictureCode" alt height="100%;" width="100%" @click="account">
           </div>
         </el-col>
       </el-row>
-      <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="submitForm('loginForm')">登录</el-button>
+
+      <el-button
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        @click="submitForm('loginForm')"
+      >登录</el-button>
     </el-form>
   </div>
 </template>
@@ -99,15 +137,19 @@ export default {
   created() {
     this.account()
   },
-
+  mounted() {},
   methods: {
     changeCode() {
       this.$nextTick(() => {
         if (this.loginUser.loginName !== null) {
-          this.loginUser.loginName = this.loginUser.loginName.replace(/[^\w\.\/]/ig, '')
+          this.loginUser.loginName = this.loginUser.loginName.replace(
+            /[^\w\.\/]/gi,
+            ''
+          )
         }
       })
     },
+
     // 登录验证
     account() {
       account().then(res => {
@@ -135,21 +177,14 @@ export default {
           sessionStorage.clear()
           login(this.loginUser).then(res => {
             if (res.code == 0) {
-              // logo().then(res => {
-              //   if (res.code == 0) {
-              //     let str = res.data.replace(/\. +/g, '')
-              //     str = str.replace(/[\r\n]/g, '')
-              //     this.$store.state.theme = str
-              //     console.log(this.$store.state.theme, 'this.$store.state.theme')
-
-              //     console.log(res, 'tupian')
-              //   }
-              // })
+              logo().then(res => {
+                if (res.code == 0) {
+                  console.log(res, 'tupian')
+                }
+              })
               themeStyle().then(res => {
                 if (res.code == 0) {
-                  if (res.code == 0) {
-                    this.this.$store.state.color = res.datda
-                  }
+                  console.log(res, 'fengge')
                 }
               })
               const token = res.data.token
@@ -237,11 +272,11 @@ $light_gray: #5a7ea2;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-image:url('./../../img/loginbeijin.jpg');
+  background-image: url("./../../img/loginbeijin.jpg");
   overflow: hidden;
 
   .login-form {
-   position: relative;
+    position: relative;
     width: 520px;
     max-width: 100%;
     padding: 40px 35px 0;
