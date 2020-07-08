@@ -49,7 +49,7 @@
       <el-col :span="19" style="padding-right: 0px;padding-left: 20px;">
         <div class="nine">
           <div class="ddd">
-            <div class="wwww">
+            <div class="divIcon">
 
               <img src="./../../img/图标1 (1).png">
               <p class="text">数据源</p>
@@ -57,21 +57,21 @@
               <div style="font-size:20px;">{{ dataSourceCount }}</div>
 
             </div>
-            <div class="wwww" style="margin: 0px 10px 20px 15px;">
+            <div class="divIcon" style="margin: 0px 10px 20px 15px;">
 
               <img src="./../../img/图标1 (2).png">
               <p class="text">企业节点</p>
               <div style="font-size:20px;">{{ enterpriseNodeCount }}</div>
 
             </div>
-            <div class="wwww" style="margin: 0px 15px 20px 5px;">
+            <div class="divIcon" style="margin: 0px 15px 20px 5px;">
 
               <img src="./../../img/图标1 (3).png">
               <p class="text">任务总数</p>
               <div style="font-size:20px;">{{ taskCount }}</div>
 
             </div>
-            <div class="wwww">
+            <div class="divIcon">
 
               <img src="./../../img/图标1 (4).png">
               <p class="text">进行中任务</p>
@@ -83,28 +83,28 @@
 
         </div>
         <div style="margin-top:20px">
-          <div class="wwww">
+          <div class="divIcon">
 
             <img src="./../../img/图标1 (5).png">
             <p class="text">已结束任务</p>
             <div style="font-size:20px;">{{ taskEndCount }}</div>
 
           </div>
-          <div class="wwww" style="margin: 0px 10px 20px 15px;">
+          <div class="divIcon" style="margin: 0px 10px 20px 15px;">
 
             <img src="./../../img/图标1 (8).png">
             <p class="text">手动停止任务</p>
             <div style="font-size:20px;">{{ taskManualCount }}</div>
 
           </div>
-          <div class="wwww" style="margin: 0px 15px 20px 5px;">
+          <div class="divIcon" style="margin: 0px 15px 20px 5px;">
 
             <img src="./../../img/图标1 (9).png">
             <p class="text">归档任务</p>
             <div style="font-size:20px;">{{ taskArchiveCount }}</div>
 
           </div>
-          <div class="wwww">
+          <div class="divIcon">
 
             <img src="./../../img/图标1 (6).png">
             <p class="text">异常终止任务</p>
@@ -296,7 +296,7 @@ export default {
   width: 100%;
   min-height: 200px;
 }
-.wwww {
+.divIcon {
   border-radius: 15px;
   border-collapse: collapse;
   width: 24%;
@@ -328,7 +328,7 @@ export default {
     color:#8a8787;
   }
 }
-.wwww:hover {
+.divIcon:hover {
   border: none;
   z-index: 1;
   box-shadow: 0 8px 50px rgba(0, 0, 0, 0.2);

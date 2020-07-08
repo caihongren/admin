@@ -4,7 +4,7 @@
       <el-tab-pane label="LOGO管理">
         <div class="LOGO">
           <div style="width:500px;height:300px;margin: 0 auto;">
-            <img :src="dialogImageUrl" alt style="width:100%;height:100%" />
+            <img :src="dialogImageUrl" alt style="width:100%;height:100%">
           </div>
           <div class="upload">
             <el-upload
@@ -20,6 +20,9 @@
               accept=".png, .jpg, .gif, .svg"
               action
             >
+              <p style="color:#e6a23c;font-size:12px;">建议上传比列4:1的图片，否则变形</p>
+
+              <p style="color:red;font-size:12px;">仅允许上传png, jpg, gif, svg文件格式，且文件大小不超过100kb</p>
               <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
             </el-upload>
           </div>
@@ -38,21 +41,21 @@
         <div class="theme">
           <p class="current">当前主提</p>
           <div style="width:500px;height:250px;">
-            <img src="./../../img/个人中心.jpg" alt style="width:100%;height:100%" />
+            <img :src="bbb" alt style="width:100%;height:100%">
           </div>
           <div style="width: 100%;margin-top:4%;">
             <p class="current">选择主题</p>
             <el-row :gutter="20">
               <el-col :span="11">
                 <div style="width:50%;">
-                  <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="lookTheme(0)" />
-                  <p style="text-align: center;">默认主题</p>
+                  <img :src="defaultPiuck" alt style="width:100%;" :class="{'pageBackground':page=='DEFAULT'}" @click="lookTheme(0)">
+                  <p style="text-align: center;" :class="{'pageColor':page=='DEFAULT'}">默认主题</p>
                 </div>
               </el-col>
               <el-col :span="11">
                 <div style="width:50%;">
-                  <img src="./../../img/个人中心.jpg" alt style="width:100%;" @click="lookTheme(1)" />
-                  <p style="text-align: center;">科技主题</p>
+                  <img :src="sciencePiuck" alt style="width:100%;" :class="{'pageBackground':page=='TECHNOLOGY'}" @click="lookTheme(1)">
+                  <p style="text-align: center;" :class="{'pageColor':page=='TECHNOLOGY'}">科技主题</p>
                 </div>
               </el-col>
             </el-row>
@@ -67,98 +70,151 @@
   </div>
 </template>
 <script>
-import Vue from "vue";
-import store from "../../store/index.js";
-import { postLogo, logo, putThemeStyle, Size } from "@/api/user.js";
+import Vue from 'vue'
+import store from '../../store/index.js'
+import { postLogo, logo, putThemeStyle, themeStyle, Size } from '@/api/user.js'
 export default Vue.extend({
   components: {},
 
   data() {
     return {
-      // dialogImageUrl: require('./../../img/个人中心.jpg'),
-      fileList: [],
-      dialogImageUrl: "", // 上传图片后的图片地址
-      uploadImgBase64: "", // 存储将图片转化为base64后的字符
-      imageUrl: "",
-      oldColor: ""
-    };
+      fileList: {},
+      dialogImageUrl: '', // 上传图片后的图片地址
+      imageUrl: '',
+      oldColor: '',
+      page: '',
+      defaultPiuck: require('./../../img/个人中心.jpg'),
+      sciencePiuck: require('./../../img/loginbeijin.jpg'),
+      bbb: ''
+
+    }
   },
   created() {
-    this.getColor();
-    this.getLogo();
+    this.themeStyle()
+    this.getColor()
+    this.getLogo()
+    // this.lookTheme()
   },
   mounted() {},
 
   methods: {
-    theme() {
-      putThemeStyle({
-        // DEFAULT:
-        // TECHNOLOGY:
-      }).then(res => {
-        if (res.code == 0) {
-        }
-      });
-    },
     getLogo() {
       logo().then(res => {
         if (res.code == 0) {
-          console.log(res, "tupian");
+          this.dialogImageUrl = res.data
         }
-      });
+      })
     },
     beforeUpload(file) {
-      this.fileList = file;
+      console.log(file, 'beforeUpload')
+      const isLt2M = file.size / 1024 < 100
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 100kb!')
+      } else {
+        this.fileList = file
+      }
+      return isLt2M
     },
     ImgUploadSectionFile(param) {
-      console.log(param, "param");
-      const formData = new FormData(); // formdata格式
-      formData.append("logo", this.fileList);
+      if (this.fileList == '' || this.fileList == 'undefined') {
+        this.$message({
+          showClose: true,
+          type: 'error',
+          message: '上传文件为空',
+          duration: 1000
+        })
+        return
+      }
+      const formData = new FormData() // formdata格式
+      formData.append('logo', this.fileList.raw)
+      console.log(this.fileList, 'befo222reUpload')
       postLogo(formData).then(res => {
         if (res.code == 0) {
-          // 成功
-          console.log(res);
+          this.$confirm('更换logo需重新登录, 是否继续?', '提示', {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$router.push('/login')
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消重新登录，再次登录方可看到更换的logo'
+            })
+          })
         }
-      });
+      })
     },
     // 文件改变时勾子函数
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
+      console.log(file, 'file')
+      const aaa = this.beforeUpload(file)
+      if (aaa) {
+        this.dialogImageUrl = file.url
+      }
     },
- 
-    // 确定
+    themeStyle() {
+      themeStyle().then(res => {
+        if (res.code == 0) {
+          console.log(res, '6')
+          if (res.data == 'DEFAULT') {
+            this.bbb = this.defaultPiuck
+            this.lookTheme(0)
+            console.log(this.bbb, 'this.bbb')
+          } else if (res.data == 'TECHNOLOGY') {
+            this.bbb = this.sciencePiuck
+            this.lookTheme(1)
+          }
+        }
+      })
+    },
+    // 主题风格确定按钮
     scienceTheme() {
       putThemeStyle({
-          color: this.$store.state.color
+        style: this.$store.state.color
       }).then(res => {
         if (res.code == 0) {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'success',
+            message: '主题更改成功'
+          })
+          this.themeStyle()
           this.getColor()
         }
-      });
+      })
     },
     // 预览主题
     lookTheme(type) {
-      let list = ["DEFAULT", "TECHNOLOGY"];
+      const list = ['DEFAULT', 'TECHNOLOGY']
       if (type >= 0 && type <= 1) {
-        console.log(list[type]);
-        this.$store.state.color = list[type];
-        console.log(this.$store.state.color);
+        this.$store.state.color = list[type]
+        this.page = this.$store.state.color
       } else {
-        return;
+        return
       }
     },
     // 取消或者退出
     detcolor() {
-      this.$store.state.color = this.oldColor;
+      this.$store.state.color = this.oldColor
     },
     // 获取到原先的主题
     getColor() {
-      console.log(this.$store.getters.color);
-      this.oldColor = this.$store.state.color;
+      this.oldColor = this.$store.state.color
     }
   }
-});
+})
 </script>
 <style lang="less" scoped>
+.pageBackground{
+border: 1px solid rgb(172, 106, 32);
+padding:20px;
+  box-shadow: 5px 5px 10px 10px rgba(190,200,220,0.5)
+}
+.pageColor{
+color:#4283d8;
+}
 .system {
   width: 98%;
   margin: 2% auto;

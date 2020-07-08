@@ -54,10 +54,13 @@
     </div>
 
     <!-- 添加数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源" :close-on-click-modal="false">
+    <el-dialog v-if="addisanswer" width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源" :close-on-click-modal="false" @close="closeDialog">
       <el-form ref="addForm" :model="addForm" label-width="100px" size="mini" class="dialog">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
+        </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" placeholder="请输入描述" />
         </el-form-item>
         <el-form-item label="源类型">
           <el-select v-model="addForm.type" placeholder="请选择类型" 　style="width:100%" @change="updateAdddisplay">
@@ -89,30 +92,12 @@
           <el-input v-model="addForm.databasePassword" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item v-show="addFileShow">
-          <el-table
-            class="tableColor"
-
-            stripe
-
-            :data="dataSourcetable"
-            style="width: 100%"
-          >
+          <el-table class="tableColor" stripe :data="dataSourcetable" style="width: 100%">
             <el-table-column fixed label="序号" type="index" min-width="100" />
 
-            <el-table-column
-              prop="name"
-              label="文件名"
-              width="180"
-            />
-            <el-table-column
-              prop="type"
-              label="拓展名"
-              width="180"
-            />
-            <el-table-column
-              prop="size"
-              label="文件大小"
-            />
+            <el-table-column prop="name" label="文件名" width="180" />
+            <el-table-column prop="type" label="拓展名" width="180" />
+            <el-table-column prop="size" label="文件大小" />
           </el-table>
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
@@ -120,14 +105,14 @@
             <el-col v-show="addFileShow" :span="10" style="padding-left: 30px;">
               <div class="file-upload">
                 上传文件夹
-                 <input ref="file"  class="file-upload-input"   type="file" name="file" webkitdirectory  @change.stop="changesData($event)" />
+                <input ref="file"   class="file-upload-input"   type="file"  name="file"  webkitdirectory  @change="changesData()" />
               </div>
             </el-col>
             <el-col v-show="addDataShow" :span="20">
               <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
             </el-col>
             <el-col v-show="addFileShow" :span="10">
-              <el-upload class="upload-demo" action="#" enctype="multipart/form-data" :before-upload="( file )=>{return uploading( file)}" style="display: inline-block">
+              <el-upload class="upload-demo" action="#" enctype="multipart/form-data" :before-upload="uploading" style="display: inline-block">
                 <el-button type="primary" size="mini" round style="border: 1px solid #4283d8;background:#4283d8;">上传文件</el-button>
               </el-upload>
             </el-col>
@@ -143,6 +128,9 @@
       <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
+        </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" />
         </el-form-item>
         <el-form-item label="源类型">
           <el-input v-model="addForm.type" placeholder="请输入数据源名称" :disabled="true" />
@@ -187,6 +175,9 @@
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" :disabled="true" />
+        </el-form-item>
         <el-form-item label="源类型">
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
@@ -216,31 +207,18 @@
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" :disabled="true" />
+        </el-form-item>
         <el-form-item label="源类型">
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
         <el-form-item>
-          <el-table
-            class="tableColor"
-            stripe
-            :data="dataSourcetable"
-            style="width: 100%"
-          >
+          <el-table class="tableColor" stripe :data="dataSourcetable" style="width: 100%">
             <el-table-column fixed label="序号" type="index" min-width="100" />
-            <el-table-column
-              prop="name"
-              label="文件名"
-              width="180"
-            />
-            <el-table-column
-              prop="type"
-              label="拓展名"
-              width="180"
-            />
-            <el-table-column
-              prop="size"
-              label="文件大小"
-            />
+            <el-table-column prop="name" label="文件名" width="180" />
+            <el-table-column prop="type" label="拓展名" width="180" />
+            <el-table-column prop="size" label="文件大小" />
           </el-table>
         </el-form-item>
       </el-form>
@@ -248,22 +226,11 @@
     <!-- 产看数据表弹出框 -->
     <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="查看数据" :close-on-click-modal="false">
       <el-select v-model="itemlist" placeholder="请选择排序依据" style="width:30%" @change="addFileInput(itemlist)">
-        <el-option
-          v-for="item in teacherOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
+        <el-option v-for="item in teacherOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
 
       <el-table :data="tableDatas" stripe style="margin:20px  0;">
-        <el-table-column
-          v-for="(item, index) in tableLabel"
-          :key="index"
-          :prop="item"
-          min-width="60"
-          :label="item"
-        />
+        <el-table-column v-for="(item, index) in tableLabel" :key="index" :prop="item" min-width="60" :label="item" />
       </el-table>
     </el-dialog>
   </div>
@@ -309,10 +276,12 @@ export default {
         type: '',
         name: ''
       },
+      closeDialogNull: '',
       deleteId: '',
       addDataShow: false,
       addFileShow: false,
       addForm: {
+        introduction: '',
         name: '',
         type: '',
         creatorId: '',
@@ -372,6 +341,7 @@ export default {
       this.addDataShow = false
       this.addFileShow = false
       const addForm = {
+        introduction: '', // 描述
         name: '',
         type: '',
         creatorId: '',
@@ -407,10 +377,14 @@ export default {
       this.lookdata = true
       tableList(id).then(res => {
         if (res.code == 0) {
-          if (res.data.length > 0) this.addFileInput(res.data[0])
-          this.teacherOptions = []
-          for (let i = 0; i < res.data.length; i++) {
-            this.teacherOptions.push({ label: res.data[i], value: res.data[i] })
+          console.log(res, 'res111')
+          if (res.data.length > 0) {
+            this.teacherOptions = []
+            for (let i = 0; i < res.data.length; i++) {
+              this.teacherOptions.push({ label: res.data[i], value: res.data[i] })
+            }
+            this.itemlist = res.data[0]
+            this.addFileInput(res.data[0])
           }
         }
       })
@@ -422,6 +396,8 @@ export default {
         id: this.id333
       }).then(res => {
         if (res.code == 0) {
+          // console.log(res, 'res')
+
           this.tableDatas = res.data.data
           this.tableLabel = res.data.title
         }
@@ -478,9 +454,21 @@ export default {
       this.addDataShow = (this.addForm.type == 'database')
       this.addFileShow = (this.addForm.type == 'file')
     },
+    closeDialog() {
+      console.log('23213232')
+
+      // this.$router.go(0)
+      // console.log('23213232')
+      // this.$refs.file.files = null
+    },
     // 上传文件夹
-    changesData() {
+    changesData() {
+      console.log('3333333')
+      // this.closeDialogNull = this.$refs.file.files
+      // console.log(this.closeDialogNull, 'this.$refs.file.value')
+
       const box = this.$refs.file.files
+      console.log(box)
       this.addForm.fileList = []
       this.dataSourcetable = []
       for (let i = 0; i < box.length; i++) {
@@ -503,11 +491,13 @@ export default {
 
     // 上传文件
     uploading(file) {
+      // console.log(file, '444')
+      this.addForm.fileList = []
       this.dataSourcetable = []
       let sort = file.name.split('.')
       sort = sort[sort.length - 1]
       const size = Size(file.size)
-      if (size == '0') {
+      if (size == 0) {
         this.$message.error({
           showClose: true,
           duration: 1000,
@@ -687,15 +677,6 @@ export default {
                 })
                 this.list()
                 this.addisanswer = false
-                this.addForm.name = ''
-                this.addForm.type = ''
-                this.addForm.creatorId = ''
-                this.addForm.databaseType = ''
-                this.addForm.databaseName = ''
-                this.addForm.databasePassword = ''
-                this.addForm.databasePort = ''
-                this.addForm.databaseUrl = ''
-                this.addForm.databaseUsername = ''
               } else {
                 this.$message({
                   showClose: true,
@@ -727,11 +708,6 @@ export default {
             const user = JSON.parse(sessionStorage.getItem('user')).id
             this.addForm.creatorId = user
             if (this.addForm.fileList != '' && this.addForm.fileList != null && this.addForm.fileList != undefined) {
-              this.$message({
-                showClose: true,
-                message: '正在上传文件',
-                duration: 1000
-              })
               const fd = new FormData()
               const list = this.addForm.fileList
               fd.append('length', list.length)
@@ -743,6 +719,7 @@ export default {
               fd.append('creatorId', this.addForm.creatorId)
               dataSourceFile(fd).then(res => {
                 if (res.code == '0') {
+                  this.closeDialogNull = null
                   this.$message({
                     showClose: true,
                     message: '文件上传成功',
@@ -751,6 +728,13 @@ export default {
                   })
                   this.list()
                   this.addisanswer = false
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: res.msg,
+                    type: 'error',
+                    duration: 1000
+                  })
                 }
               })
             }
@@ -792,7 +776,9 @@ export default {
         if (res.data.type == '数据库') {
           this.isanswer = true
           if (res.code == 0) {
+            console.log(res, '777')
             this.addForm.name = res.data.name
+            this.addForm.introduction = res.data.introduction
             this.addForm.type = res.data.type
             this.addForm.databaseType = res.data.databaseType
             this.addForm.databaseName = res.data.databaseName
@@ -817,6 +803,7 @@ export default {
       this.changeisanswe = true
       getDatabase(id).then(res => {
         this.addForm.name = res.data.name
+        this.addForm.introduction = res.data.introduction
         this.addForm.type = res.data.type
         this.addForm.databaseType = res.data.databaseType
         this.addForm.databaseName = res.data.databaseName
@@ -878,6 +865,7 @@ export default {
         })
       } else {
         putDatabase({
+          introduction: this.addForm.introduction,
           databaseName: this.addForm.databaseName,
           databasePassword: this.addForm.databasePassword,
           databasePort: this.addForm.databasePort,
@@ -909,21 +897,21 @@ export default {
       }
     },
     det(id) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '取消',
-        cancelButtonText: '确定',
+      this.$confirm('此操作将永久删除该数据源, 是否继续?', '提示', {
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',
         closeOnClickModal: false,
         showClose: false,
-        type: 'warning'
+        type: 'warning'
       })
-        .then(() => {
+        .then(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: 'info',
+            message: '已取消删除'
           })
         })
-        .catch(() => {
+        .catch(() => {
           deleteDatabase({
             id: id
           }).then(res => {
@@ -944,37 +932,37 @@ export default {
 </script>
 <style lang="less" scoped>
 .file-upload {
-        width: 90px;
-        height: 26px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid #4283d8  ;
-        background:#4283d8 ;
-        border-radius: 21px;
-        font-size: 12px;
-        color: #fff;
-        text-align: center;
-        line-height: 26px;
-    }
-     .file-upload-input {
-        background-color: transparent;
-        position: absolute;
-        width: 9999px;
-        height: 999px;
-        top: -10px;
-        right: -10px;
-        cursor: pointer;
-    }
- .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 3px;
-    font-size: 16px;
-    color: #889aa4;
-    cursor: pointer;
-    user-select: none;
-  }
+  width: 90px;
+  height: 26px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #4283d8;
+  background: #4283d8;
+  border-radius: 21px;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  line-height: 26px;
+}
+.file-upload-input {
+  background-color: transparent;
+  position: absolute;
+  width: 9999px;
+  height: 999px;
+  top: -10px;
+  right: -10px;
+  cursor: pointer;
+}
+.show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  font-size: 16px;
+  color: #889aa4;
+  cursor: pointer;
+  user-select: none;
+}
 .dataSource {
   min-height: 100%;
   width: 98%;
@@ -989,20 +977,19 @@ export default {
   padding-left: 1%;
   padding-right: 1%;
   margin-bottom: 10px;
-
 }
 .conter {
   background-color: #ffffff;
-padding: 0 1%;
+  padding: 0 1%;
   min-height: 750px;
   border-radius: 3px;
 }
 </style>
 <style>
-.classStyle2{
-    background: #4283d8 !important;
-    color:#fff !important;
-    border:1px solid #4283d8 !important;
+.classStyle2 {
+  background: #4283d8 !important;
+  color: #fff !important;
+  border: 1px solid #4283d8 !important;
 }
 .dataSource .el-form-item__label {
   font-size: 12px;
@@ -1031,26 +1018,26 @@ padding: 0 1%;
 .dialog .el-form-item__label {
   font-size: 12px;
 }
- .dataSource .el-table th>.cell{
+.dataSource .el-table th > .cell {
   height: 50px;
-  line-height:50px;
+  line-height: 50px;
 }
-.xxxx .el-dialog{
-       display: flex;
-       flex-direction: column;
-       margin:0 !important;
-       position:absolute;
-       top:50%;
-       left:50%;
-       transform:translate(-50%,-50%);
-       /*height:600px;*/
-       max-height:calc(100% - 30px);
-       max-width:calc(100% - 30px);
-   }
-  .xxxx .el-dialog .el-dialog__body{
-    padding: 10px 20px;
-       flex:1;
-       overflow: auto;
-   }
+.xxxx .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /*height:600px;*/
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+}
+.xxxx .el-dialog .el-dialog__body {
+  padding: 10px 20px;
+  flex: 1;
+  overflow: auto;
+}
 </style>
 

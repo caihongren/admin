@@ -1,13 +1,12 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div :class="{'has-logo':showLogo}" class="wwww">
     <logo :collapse="isCollapse" />
-    <el-scrollbar wrap-class="scrollbar-wrapper" style="margin-top:10px;">
+    <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
 
         :default-active="activeMenu"
         :collapse="isCollapse"
-        :background-color="variables.menuBg"
-        :text-color="variables.menuText"
+
         :unique-opened="false"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
@@ -16,6 +15,7 @@
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
+
   </div>
 </template>
 
@@ -91,8 +91,8 @@ export default {
 .el-menu-item{
   font-size:16px;
 }
-.el-menu-item.is-active {
-   background-color:#1f2d3d !important;
-}
+/* .wwww{
+  background-image:url("./../../../img/loginbeijin.jpg")
+} */
 </style>
 

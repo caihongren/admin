@@ -50,16 +50,6 @@
                       <p v-show="item.type=='数据库'"> 端口号:　{{ item.dataSource.databasePort }}</p>
                     </slot>
                   </el-popover>
-                  <!-- <el-popover v-show="item.type=='文件'" placement="right" width="200" trigger="hover">
-                    <el-button slot="reference" style="width:100%;border:0px;text-align: left;">{{ item.label }}</el-button>
-                    <slot name="header">
-                      <p> 数据源类型:　{{ item.dataSource.type }}</p>
-                      <p> 数据库类型:　{{ item.dataSource.databaseType }}</p>
-                      <p> 数据库名称:　{{ item.dataSource.databaseName }}</p>
-                      <p> 连接地址:　{{ item.dataSource.databaseUrl }}</p>
-                      <p> 端口号:　{{ item.dataSource.databasePort }}</p>
-                    </slot>
-                  </el-popover> -->
                 </el-option>
               </el-select>
               <el-button size="mini" class="bottomColor" type="primary" @click="addDatasource">添加</el-button>
@@ -71,6 +61,16 @@
             </el-form-item>
             <el-form-item label="标　识" prop="setDentity">
               <span v-model="operation.setDentity" style="border:1px solid #dcdfe6;;width:25%;padding-left:10px;display:inline-block;border-radius: 3px;">{{ operation.inputPrefix }}　／　{{ operation.setDentity }}</span>
+            </el-form-item>
+            <el-form-item v-if="this.newBuild.taskType=='TIME'" label="时间点" style="margin-left: 10px;">
+
+              <el-input v-model="operation.updateAt" style="width:25%" />
+
+            </el-form-item>
+            <el-form-item v-if="this.newBuild.taskType=='TIME'" label="时间戳" prop="updateBasis">
+              <!-- <span v-model="operation.setDentity" style="border:1px solid #dcdfe6;;width:25%;padding-left:10px;display:inline-block;border-radius: 3px;">{{ operation.updateBasis }}</span> -->
+              <el-input v-model="operation.updateBasis" style="width:25%;height: 40px;" :disabled="true" />
+
             </el-form-item>
           </el-col>
           <el-col :span="7" class="tttwwt">
@@ -102,7 +102,7 @@
               </el-select>
               <el-button size="mini" class="bottomColor" type="primary" @click="addEnterprise">添加</el-button>
             </el-form-item>
-            <el-form-item label="操作类型" prop="operationType">
+            <el-form-item v-show="this.newBuild.taskType=='STOCK'" label="操作类型" prop="operationType">
               <el-select v-model="operation.operationType" placeholder="请选择操作类型" @change="operationType">
                 <el-option label="添加" value="ADD" />
                 <el-option label="删除" value="DELETE" />
@@ -134,9 +134,10 @@
               <el-card class="boxCard">
                 <div v-for="(item,index) in leftCardData" :key="index" :class="{active: selectActiveName == item}">
                   <el-row>
-                    <el-col :span="20">
+                    <el-col :span="16">
                       <div class="rightLists" @click="clickSelect(item)">{{ item }}</div>
                     </el-col>
+                    <!-- 标识 -->
                     <el-col :span="4">
                       <div class="stars">
                         <div v-if="operation.setDentity == item">
@@ -146,8 +147,19 @@
                         </div>
                         <div v-if="operation.setDentity != item" title="设置为标识列" @click="operation.setDentity = item">
                           <svg t="1590550499072" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2109" width="16" height="16">
-                            <path d="M733.653 918.642c-12.368 0-25.232-2.968-36.116-8.905l-184.043-96.474-183.548 96.969c-11.379 5.937-23.747 8.905-36.611 8.905-15.337 0-30.674-4.453-43.042-12.863-23.747-16.326-36.116-44.032-31.169-71.737l35.621-209.274L99.894 473.872c-20.284-19.79-27.211-47.99-17.811-74.211 9.4-26.221 32.158-44.526 60.358-48.484L353.2 320.503l91.527-186.022C457.095 109.25 484.305 92.924 513 92.924c29.19 0 55.905 16.326 68.274 41.558L672.8 320.503l210.758 30.674c28.2 3.958 51.453 22.758 60.358 48.484 9.4 26.221 2.474 54.916-17.811 74.705L771.253 625.262l35.621 209.274c4.947 27.705-7.421 55.411-31.169 71.737-11.873 7.916-26.715 12.369-42.052 12.369zM513.495 743.504c8.905 0 17.316 1.979 25.232 5.937l190.969 100.432c0.989 0.495 2.474 0.99 3.958 0.99 1.979 0 3.463-0.495 4.947-1.484s2.474-2.968 2.474-4.453l-37.105-217.19c-2.968-16.821 2.969-34.137 14.842-46.011l160.295-156.337c0.989-0.989 1.979-2.474 1.484-4.453-0.495-1.484-2.968-3.463-5.937-3.958L655.98 385.314c-17.316-2.474-32.653-13.358-40.074-29.19l-94.99-192.948c-0.989-1.979-3.958-3.463-6.926-3.463s-5.937 1.484-6.926 3.958l-94.99 192.948c-7.916 15.832-22.758 26.221-40.074 29.19l-219.664 31.663c-2.968 0.495-5.442 2.474-5.937 3.958-0.495 1.484 0 2.968 1.484 4.453l160.295 156.832c12.368 11.874 17.811 29.19 14.842 46.011l-37.105 216.695c-0.495 1.484 0.495 3.463 2.474 4.947 1.484 0.989 2.968 1.484 4.947 1.484 1.484 0 2.968-0.495 4.453-0.989l190.474-100.432c7.916-4.453 16.326-6.927 25.232-6.927z" p-id="2110" data-spm-anchor-id="a313x.7781069.0.i0" class="" fill="#4283d8" />
+                            <path d="M733.653 918.642c-12.368 0-25.232-2.968-36.116-8.905l-184.043-96.474-183.548 96.969c-11.379 5.937-23.747 8.905-36.611 8.905-15.337 0-30.674-4.453-43.042-12.863-23.747-16.326-36.116-44.032-31.169-71.737l35.621-209.274L99.894 473.872c-20.284-19.79-27.211-47.99-17.811-74.211 9.4-26.221 32.158-44.526 60.358-48.484L353.2 320.503l91.527-186.022C457.095 109.25 484.305 92.924 513 92.924c29.19 0 55.905 16.326 68.274 41.558L672.8 320.503l210.758 30.674c28.2 3.958 51.453 22.758 60.358 48.484 9.4 26.221 2.474 54.916-17.811 74.705L771.253 625.262l35.621 209.274c4.947 27.705-7.421 55.411-31.169 71.737-11.873 7.916-26.715 12.369-42.052 12.369zM513.495 743.504c8.905 0 17.316 1.979 25.232 5.937l190.969 100.432c0.989 0.495 2.474 0.99 3.958 0.99 1.979 0 3.463-0.495 4.947-1.484s2.474-2.968 2.474-4.453l-37.105-217.19c-2.968-16.821 2.969-34.137 14.842-46.011l160.295-156.337c0.989-0.989 1.979-2.474 1.484-4.453-0.495-1.484-2.968-3.463-5.937-3.958L655.98 385.314c-17.316-2.474-32.653-13.358-40.074-29.19l-94.99-192.948c-0.989-1.979-3.958-3.463-6.926-3.463s-5.937 1.484-6.926 3.958l-94.99 192.948c-7.916 15.832-22.758 26.221-40.074 29.19l-219.664 31.663c-2.968 0.495-5.442 2.474-5.937 3.958-0.495 1.484 0 2.968 1.484 4.453l160.295 156.832c12.368 11.874 17.811 29.19 14.842 46.011l-37.105 216.695c-0.495 1.484 0.495 3.463 2.474 4.947 1.484 0.989 2.968 1.484 4.947 1.484 1.484 0 2.968-0.495 4.453-0.989l190.474-100.432c7.916-4.453 16.326-6.927 25.232-6.927z" p-id="2110" data-spm-anchor-id="a313x.7781069.0.i0" class="" fill="#d25d18" />
                           </svg>
+                        </div>
+                      </div>
+                    </el-col>
+                    <!-- 黄色对勾 -->
+                    <el-col :span="4">
+                      <div class="stars">
+                        <div v-if="operation.updateBasis == item">
+                          <svg t="1593513002609" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9938" data-spm-anchor-id="a313x.7781069.0.i28" width="16" height="16"><path d="M146.211994 844.07324l366.562069-631.635813 363.63783 633.355954z" fill="#d81e06" p-id="9939" data-spm-anchor-id="a313x.7781069.0.i24" class="" /><path d="M512.602049 246.840249l333.879389 581.579707-670.683017-1.548127L512.602049 246.840249m0.172014-68.805645L116.281539 861.102637l789.888795 1.892156-393.396271-684.960189z" fill="#d81e06" p-id="9940" data-spm-anchor-id="a313x.7781069.0.i25" class="" /></svg>
+                        </div>
+                        <div v-if="operation.updateBasis != item" title="设置时间戳" @click="operation.updateBasis = item">
+                          <svg t="1593513002609" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9938" data-spm-anchor-id="a313x.7781069.0.i28" width="16" height="16"><path d="M146.211994 844.07324l366.562069-631.635813 363.63783 633.355954z" fill="#ffffff" p-id="9939" data-spm-anchor-id="a313x.7781069.0.i24" class="selected" /><path d="M512.602049 246.840249l333.879389 581.579707-670.683017-1.548127L512.602049 246.840249m0.172014-68.805645L116.281539 861.102637l789.888795 1.892156-393.396271-684.960189z" fill="#d25d18" p-id="9940" data-spm-anchor-id="a313x.7781069.0.i25" class="" /></svg>
                         </div>
                       </div>
                     </el-col>
@@ -210,12 +222,16 @@
           <el-form-item label="名　称">
             <el-input v-model="addData.name" placeholder="请输入数据源名称" />
           </el-form-item>
+          <el-form-item label="描　述">
+            <el-input v-model="addData.introduction" placeholder="请输入描述" />
+          </el-form-item>
           <el-form-item label="源类型">
             <el-select v-model="addData.type" placeholder="请选择类型" style="width: 100%;" @change="updateAdddisplay">
               <el-option label="数据库" value="database" />
               <el-option label="文件" value="file" />
             </el-select>
           </el-form-item>
+
           <el-form-item v-show="addDataShow" label="库类型">
             <el-select v-model="addData.databaseType" placeholder="请选择类型" style="width: 100%;">
               <el-option label="mysql" value="mysql" />
@@ -295,6 +311,9 @@
         <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
           <el-form-item label="名　称">
             <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
+          </el-form-item>
+          <el-form-item label="描　述">
+            <el-input v-model="addData.introduction" placeholder="请输入描述" />
           </el-form-item>
           <el-form-item label="模　式">
             <el-select v-model="addForm.type" placeholder="请选择类型" style="width: 100%;" @change="update">
@@ -418,7 +437,7 @@
               <el-table-column prop="databaseType" label="必须填" min-width="100" />
               <el-table-column label="操作" width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" class="tableButton"  @click="modify(scope.row.id)">修改</el-button>
+                  <el-button type="text" class="tableButton" @click="modify(scope.row.id)">修改</el-button>
                   <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
@@ -520,7 +539,9 @@ export default {
         templateLnput: '', // 模板输入框
 
         inputPrefix: '', // 前缀
-        operationType: ''// 操作类型
+        operationType: 'ADD', // 操作类型
+        updateBasis: '', // 时间戳
+        updateAt: ''// 时间点
       },
       sourcelist: [], // 数据源列表
       surfacelist: [], // 表列表
@@ -544,6 +565,7 @@ export default {
       addisanswer: false, // 添加数据源弹窗
       // 添加数据源数据绑定
       addData: {
+        introduction: '',
         fileList: [],
         name: '',
         type: '',
@@ -633,6 +655,9 @@ export default {
         ],
         setDentity: [
           { required: true, message: '请选择标识', trigger: 'change' }
+        ],
+        updateBasis: [
+          { required: true, message: '请选择时间戳', trigger: 'change' }
         ],
         node: [
           { required: true, message: '请选择企业节点', trigger: 'change' }
@@ -730,8 +755,8 @@ export default {
       Relation: [],
       aaa: false,
       bbb: false,
-      addType: false,
-      deleteType: false,
+      addType: true,
+      deleteType: true,
       timeImport: false,
       stockImport: false,
       selectListTimeImport: {
@@ -827,6 +852,8 @@ export default {
                   name: this.newBuild.name, // 名称
                   operatingType: this.operation.operationType, // 操作类型 ADD添加 DELETE删除
                   prefix: this.operation.inputPrefix, // 前缀
+                  updateBasis: this.operation.updateBasis, // 时间戳
+                  updateAt: this.operation.updateAt, // 时间点
                   state: 'RUN', // 状态 新建NEW 进行中RUN
                   table: this.operation.dataSourceList, // 表名
                   taskType: this.newBuild.taskType, // 任务类型，TIME实时 STOCK存量
@@ -913,6 +940,8 @@ export default {
                   name: this.newBuild.name, // 名称
                   operatingType: this.operation.operationType, // 操作类型 ADD添加 DELETE删除
                   prefix: this.operation.inputPrefix, // 前缀
+                  updateBasis: this.operation.updateBasis, // 时间戳
+                  updateAt: this.operation.updateAt, // 时间点
                   state: 'NEW', // 状态 新建NEW 进行中RUN
                   table: this.operation.dataSourceList, // 表名
                   taskType: this.newBuild.taskType, // 任务类型，TIME实时 STOCK存量
@@ -962,7 +991,7 @@ export default {
             this.operation.dataTemplate = res.data.result[0].version
             this.aaa = true
             this.bbb = false
-            // this.dataTemplateChange(res.data.result[0].id)
+            // this.dataTemplateChange(res.data[0])
           } else {
             this.aaa = false
             this.bbb = true
@@ -991,6 +1020,7 @@ export default {
     addDatasource() {
       this.addisanswer = true
       const addData = {
+        introduction: '',
         fileList: [],
         name: '',
         type: '',
@@ -1442,7 +1472,7 @@ export default {
         sort = sort[sort.length - 1]
         if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
           this.addData.fileList.push(box[i])
-          this.dataSourcetable.push({ name: box[i].name, type: sort, size: Size(box[i].size)})
+          this.dataSourcetable.push({ name: box[i].name, type: sort, size: Size(box[i].size) })
         }
       }
       if (this.dataSourcetable.length <= 0) {
@@ -1471,7 +1501,7 @@ export default {
       }
       if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
         this.addData.fileList.push(file)
-        this.dataSourcetable.push({ name: file.name, type: sort, size: Size(file.size)})
+        this.dataSourcetable.push({ name: file.name, type: sort, size: Size(file.size) })
       } else {
         this.$message.error({
           showClose: true,
@@ -1847,8 +1877,8 @@ export default {
   padding: 0;
   /* min-height: 200px; */
 }
-.addtask .el-input.is-disabled .el-input__inner {
-  color: #606266;
+.corresponding .el-input.is-disabled .el-input__inner {
+  /* color: #606266; */
     background-color: #f0f2f5;
     border-color: #f0f2f5;
     height: 25px;

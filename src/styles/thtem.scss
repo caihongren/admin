@@ -1,94 +1,212 @@
 #app {
-  &[data-color='DEFAULT'] {
-    $dataBgColor: #304156;
-    $dataTextColor: '';
-
-    .navbar {
-      background-color: $dataBgColor;
-    }
-
-    .el-scrollbar {
-      background-color: $dataBgColor;
-
-      .submenu-title-noDropdown {
-        background-color: $dataBgColor !important;
-      }
-    }
-
-  }
-
   &[data-color='TECHNOLOGY'] {
-    $menuActiveText: #fff;
 
-    // #app 外的样式
-  // 表格按钮颜色
-    .tableButton{
-      color: #4283d8;
-      // color: #f11722;
+    // 首页字体 颜色
+    .el-breadcrumb__inner,
+    .el-breadcrumb__inner a {
+      font-weight: 400 !important;
+      color: #fff;
+    }
 
+    // 用户名颜色
+    .adminName {
+      color: #fff;
+      font-size: 16px;
     }
-    .el-progress-bar__inner{
-      // color: #f11722;
-    }
-    // 表格名字颜色
-    .tableList{
-      border-left: 5px solid #4283d8;color: #4283d8;
 
+    // 用户名右边下拉小图标颜色
+    .el-icon-caret-bottom {
+      color: #fff;
     }
-      // 黄色按钮
-    &~ .el-dialog__wrapper .lianjieBtn{
-      background-color: #ebb563;
 
-      border-color: #ebb563;
+    // 面包屑动态导航文字颜色
+    .el-breadcrumb__inner {
+      color: #fff;
     }
-    // 确定按钮
-    &~ .el-dialog__wrapper .determine{
-      background-color: #4283d8;
 
-      border-color: #4283d8;
+    // logo底色
+    .sidebar-logo-container {
+      background: #304156;
     }
-    &~ .el-dialog__wrapper .dialog  .tableColor tr   {
-      // background-color: #738498 !important;
 
-      // color: rgb(255, 255, 255);
-    }
     // 表格表头颜色
     .el-table tr .is-leaf {
       background: #738498;
       color: rgb(255, 255, 255);
     }
 
+    // 进度条颜色
+    .el-progress-bar__inner {
+      background-color: #4283d8;
+    }
+
+    // 按钮黄色部分
+    .navbar {
+      background-image: linear-gradient(143deg, #304156 20%, #2a5a98 81%, #4283d8);
+
+      // 缩小放大首页左边小图标
+      .hamburger-container {
+        font-size: 24px;
+        padding-top: 3px;
+        color: #fff;
+      }
+    }
+
+    .el-scrollbar__wrap {
+      // background-image:url('./../img/tonglifanglogo.png');
+    }
+
+    .wwww {
+      background-image: url("./../img/loginbeijin.jpg")
+    }
+
+    //    导航栏背景色
+    .el-menu {
+      background-color: rgba(0, 0, 0, 0)
+    }
+
+    //    导航栏背景色
+
+    // .el-scrollbar {
+    //   background-color: #304156 !important;
+    //    导航栏字体颜色
+
+    .submenu-title-noDropdown {
+      color: #fff;
+      // background-color: #304156 !important;
+    }
+
+    .submenu-title-noDropdown :hover {
+      color: red;
+      // background-color: #304156 !important;
+    }
+
+    //    导航栏点击背景色
+    .is-active {
+      background-color: #cbd4dd !important;
+    }
+
+    //    导航栏hover背景色
+
+    #app .sidebar-container .submenu-title-noDropdown:hover,
+    #app .sidebar-container .el-submenu__title:hover {
+      background-color: #fff !important;
+      color: #304156;
+
+    }
+
+    // }
+
+
+  }
+
+  &[data-color='DEFAULT'] {
+
+    // 首页字体 颜色
+    .el-breadcrumb__inner,
+    .el-breadcrumb__inner a {
+      font-weight: 400 !important;
+      color: #fff;
+    }
+
+    // 用户名颜色
+    .adminName {
+      color: #fff;
+      font-size: 16px;
+    }
+
+    // 用户名右边下拉小图标颜色
+    .el-icon-caret-bottom {
+      color: #fff;
+    }
+
+    // #app 外的样式
+    // 表格按钮颜色
+    .tableButton {
+      color: #4283d8;
+    }
+
+    // 进度条颜色
+    .el-progress-bar__inner {
+      background-color: #4283d8;
+    }
+
+    .el-progress-bar__inner {
+      // color: #f11722;
+    }
+
+    // 表格名字颜色
+    .tableList {
+      border-left: 5px solid #4283d8;
+      color: #4283d8;
+    }
+
+    // 黄色按钮
+    &~.el-dialog__wrapper .lianjieBtn {
+      background-color: #ebb563;
+      border-color: #ebb563;
+    }
+
+    // 确定按钮
+    &~.el-dialog__wrapper .determine {
+      background-color: #4283d8;
+      border-color: #4283d8;
+    }
+
+    // 表格表头颜色
+    .el-table tr .is-leaf {
+      background: #738498;
+      color: rgb(255, 255, 255);
+    }
+
+    // 按钮蓝色部分
     .el-button--primary {
-    //   background-color: #4b1823 !important;
       background-color: #4283d8 !important;
       border-color: #4283d8 !important;
     }
 
+    // 按钮黄色部分
     .el-button--warning {
-    //   background-color: #4b1823;
       background-color: #ebb563;
-
       border-color: #ebb563;
     }
-      
-    .navbar {
-      background-image: linear-gradient(143deg, #304156 20%, #2a5a98 81%, #4283d8);
+
+    // logo底色
+    .sidebar-logo-container {
+      background: #2b2f3a;
     }
 
+    // 公共头部颜色
+    .navbar {
+      background-image: linear-gradient(143deg, #304156 20%, #2a5a98 81%, #4283d8);
+
+      // 缩小放大首页左边小图标
+      .hamburger-container {
+        font-size: 24px;
+        padding-top: 3px;
+        color: #fff;
+      }
+    }
+
+    // 面包屑动态导航文字颜色
+    .el-breadcrumb__inner {
+      color: #97a8be;
+    }
+
+    //    导航栏背景色
     .el-scrollbar {
       background-color: #304156 !important;
 
+      //导航栏字体颜色
       .submenu-title-noDropdown {
+        color: #bfcbd9;
         background-color: #304156 !important;
       }
-    //    导航栏点击背景色
+
+      //导航栏点击背景色
       .is-active {
         background-color: #1f2d3d !important;
       }
-
     }
-
-
-
   }
 }

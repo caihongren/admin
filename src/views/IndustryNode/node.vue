@@ -51,7 +51,10 @@
       <div v-if="addisanswer">
         <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
           <el-form-item label="名　称">
-            <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
+            <el-input v-model="addForm.name" placeholder="请输入企业节点名称" />
+          </el-form-item>
+          <el-form-item label="描　述">
+            <el-input v-model="addForm.introduction" placeholder="请输入描述" />
           </el-form-item>
           <el-form-item label="模　式">
             <el-select v-model="addForm.type" placeholder="请选择类型" style="width:100%;" @change="update">
@@ -153,6 +156,9 @@
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" />
+        </el-form-item>
         <el-form-item label="模　式">
           <el-input v-show="false" v-model="addForm.type" :disabled="true" />
           <el-input :value="addForm.type == 'BUILT' ? '自建模式' : addForm.type == 'ESCROW' ? '托管模式' : addForm.type" :disabled="true" />
@@ -248,6 +254,9 @@
       <el-form v-if="isanswer" ref="addForm" :model="addForm" label-width="100px" class="dialog">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" :disabled="true" />
         </el-form-item>
         <el-form-item label="模　式">
           <el-input v-model="addForm.type" :disabled="true" />
@@ -390,7 +399,8 @@ export default {
         oneselfAgentId: '',
         oneselfBasicsId: '',
         trusteeshipSnmsId: '',
-        trusteeshipAgentId: ''
+        trusteeshipAgentId: '',
+        introduction: ''
       },
       changeisanswe: false,
       addisanswer: false,
@@ -556,6 +566,7 @@ export default {
       // this.addFrom = {}
       // this.selfBuilt = ''
       const addFrom1 = {
+        introduction: '', // 描述
         name: '', // 名称
         type: '', // 模式
         interType: '', // 接口访问类型（自建）
@@ -805,6 +816,7 @@ export default {
       this.isanswer = true
       getEnterpriseNode(id).then(res => {
         if (res.code == 0) {
+          this.addForm.introduction = res.data.introduction
           this.addForm.name = res.data.name
           this.addForm.type = res.data.type
           if (res.data.type == '自建模式') {
@@ -857,6 +869,7 @@ export default {
       this.changeisanswe = true
       getEnterpriseNode(id).then(res => {
         if (res.code == 0) {
+          this.addForm.introduction = res.data.introduction
           this.addForm.name = res.data.name
           if (res.data.type == '自建模式') {
             this.selfBuilt = true
@@ -948,6 +961,7 @@ export default {
         })
       } else {
         putEnterpriseNode({
+          introduction: this.addForm.introduction,
           id: this.putid,
           name: this.addForm.name,
           type: this.addForm.type,

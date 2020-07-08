@@ -9,10 +9,10 @@
 
         <div class="avatar-wrapper">
           <!-- <img src="./../../img/个人中心.jpg" class="user-avatar"> -->
-          <div style="color:#fff;font-size:16px;">
+          <div class="adminName">
             {{ name }}
           </div>
-          <i class="el-icon-caret-bottom" style="color:#fff;" />
+          <i class="el-icon-caret-bottom"  />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/IndustryPersonal/personal">
@@ -91,9 +91,6 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  // background: #fff;
-  background: #304156;
-background-image: linear-gradient(143deg,#304156 20%,#2a5a98 81%,#4283d8);
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {

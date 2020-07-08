@@ -37,13 +37,9 @@
           <div style="border: 1px solid #dddddd; height:50px;cursor: pointer;" title="点击刷新验证码">
             <img :src="pictureCode" alt="" height="100%;" width="100%" @click="account">
           </div>
-
         </el-col>
-
       </el-row>
-
       <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="submitForm('loginForm')">登录</el-button>
-
     </el-form>
   </div>
 </template>
@@ -64,7 +60,7 @@ export default {
       },
       rules1: {
         loginName: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' },
+          { required: true, message: '账号不能为空', trigger: 'blur' },
           {
             pattern: /^[a-zA-Z0-9]{5,18}$/,
             message: '长度在5到18个大小写字母',
@@ -74,7 +70,7 @@ export default {
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
           {
-            pattern: /^[a-zA-Z0-9_]{6,18}$/,
+            pattern: /^[0-9a-zA-Z]{6,18}$/,
             message: '长度在6到18个大小写字母和数字或者下划线组合',
             trigger: ['blur', 'change']
           }
@@ -139,14 +135,21 @@ export default {
           sessionStorage.clear()
           login(this.loginUser).then(res => {
             if (res.code == 0) {
-              logo().then(res => {
-                if (res.code == 0) {
-                  console.log(res, 'tupian')
-                }
-              })
+              // logo().then(res => {
+              //   if (res.code == 0) {
+              //     let str = res.data.replace(/\. +/g, '')
+              //     str = str.replace(/[\r\n]/g, '')
+              //     this.$store.state.theme = str
+              //     console.log(this.$store.state.theme, 'this.$store.state.theme')
+
+              //     console.log(res, 'tupian')
+              //   }
+              // })
               themeStyle().then(res => {
                 if (res.code == 0) {
-                  console.log(res, 'fengge')
+                  if (res.code == 0) {
+                    this.this.$store.state.color = res.datda
+                  }
                 }
               })
               const token = res.data.token
