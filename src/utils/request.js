@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import Vue from 'vue'
+import {
+  MessageBox,
+  Message
+} from 'element-ui'
 import store from '@/store'
 // import { getToken } from '@/utils/auth'
 
@@ -42,7 +46,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -51,8 +55,10 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+
     // if the custom code is not 20000, it is judged as an error.
     if (res.code != 0) {
+      console.log('res', res)
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
@@ -65,15 +71,45 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+      } else if (res.code === 50016) {
+        // Message.error('该用户未授权，请退出登录或前往授权');
+        Message({
+          message: res.msg,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        const path = window.location.origin + '/#'
+
+
+        if (sessionStorage.getItem('user')) {
+          const user = JSON.parse(sessionStorage.getItem('user'))
+          // 前往授权
+          if (user.accountNumber == 'admin') {
+            window.location.href = path + '/IndustryAuthorization/authorization'
+            return
+          } else {
+            // 退出登录
+            window.location.href = path + '/login'
+            return
+          }
+        } else {
+          // 退出登录
+
+          window.location.href = path + '/login'
+          return
+        }
       } else {
+
         return res
       }
       // return Promise.reject(new Error(res.message || 'Error'))
     } else {
+
       return res
     }
   },
   error => {
+    console.log('error')
     Message({
       message: error.message,
       type: 'error',
