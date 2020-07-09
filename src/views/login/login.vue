@@ -68,7 +68,7 @@
         </el-col>
         <el-col :span="9">
           <div style="border: 1px solid #dddddd; height:50px;cursor: pointer;" title="点击刷新验证码">
-            <img :src="pictureCode" alt height="100%;" width="100%" @click="account" />
+            <img :src="pictureCode" alt height="100%;" width="100%" @click="account">
           </div>
         </el-col>
       </el-row>
@@ -84,58 +84,58 @@
 
 <script>
 // import { validUsername } from '@/utils/validate'
-import { login, account, logo, themeStyle } from "@/api/user.js";
+import { login, account, logo, themeStyle } from '@/api/user.js'
 export default {
   // name: 'Login',
   data() {
     return {
-      pictureCode: "",
+      pictureCode: '',
       loginUser: {
-        loginName: "",
-        password: "",
-        pictureId: "",
-        pictureCode: ""
+        loginName: '',
+        password: '',
+        pictureId: '',
+        pictureCode: ''
       },
       rules1: {
         loginName: [
-          { required: true, message: "用户名不能为空", trigger: "blur" },
+          { required: true, message: '账号不能为空', trigger: 'blur' },
           {
             pattern: /^[a-zA-Z0-9]{5,18}$/,
-            message: "长度在5到18个大小写字母",
-            trigger: ["blur", "change"]
+            message: '长度在5到18个大小写字母',
+            trigger: ['blur', 'change']
           }
         ],
         password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
+          { required: true, message: '密码不能为空', trigger: 'blur' },
           {
-            pattern: /^[a-zA-Z0-9_]{6,18}$/,
-            message: "长度在6到18个大小写字母和数字或者下划线组合",
-            trigger: ["blur", "change"]
+            pattern: /^[0-9a-zA-Z]{6,18}$/,
+            message: '长度在6到18个大小写字母和数字或者下划线组合',
+            trigger: ['blur', 'change']
           }
         ],
         pictureCode: [
-          { required: true, message: "验证码不能为空", trigger: "blur" },
+          { required: true, message: '验证码不能为空', trigger: 'blur' },
           {
             pattern: /^[a-zA-Z0-9_]{4}$/,
-            message: "长度在4个字符,数字和英文组合",
-            trigger: ["blur", "change"]
+            message: '长度在4个字符,数字和英文组合',
+            trigger: ['blur', 'change']
           }
         ]
       },
-      password: "password",
-      redirect: ""
-    };
+      password: 'password',
+      redirect: ''
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect;
+        this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
   created() {
-    this.account();
+    this.account()
   },
   mounted() {},
   methods: {
@@ -144,77 +144,77 @@ export default {
         if (this.loginUser.loginName !== null) {
           this.loginUser.loginName = this.loginUser.loginName.replace(
             /[^\w\.\/]/gi,
-            ""
-          );
+            ''
+          )
         }
-      });
+      })
     },
 
     // 登录验证
     account() {
       account().then(res => {
-        const pictureId = res.data.pictureId;
-        sessionStorage.setItem("pictureId", JSON.stringify(pictureId));
-        let str = res.data.pictureCode.replace(/\. +/g, "");
-        str = str.replace(/[\r\n]/g, "");
-        this.pictureCode = str;
-        this.loginUser.pictureId = pictureId;
-      });
+        const pictureId = res.data.pictureId
+        sessionStorage.setItem('pictureId', JSON.stringify(pictureId))
+        let str = res.data.pictureCode.replace(/\. +/g, '')
+        str = str.replace(/[\r\n]/g, '')
+        this.pictureCode = str
+        this.loginUser.pictureId = pictureId
+      })
     },
     showPwd() {
-      if (this.password === "password") {
-        this.password = "";
+      if (this.password === 'password') {
+        this.password = ''
       } else {
-        this.password = "password";
+        this.password = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          sessionStorage.clear();
+          sessionStorage.clear()
           login(this.loginUser).then(res => {
             if (res.code == 0) {
               logo().then(res => {
                 if (res.code == 0) {
-                  console.log(res, "tupian");
+                  console.log(res, 'tupian')
                 }
-              });
+              })
               themeStyle().then(res => {
                 if (res.code == 0) {
-                  console.log(res, "fengge");
+                  console.log(res, 'fengge')
                 }
-              });
-              const token = res.data.token;
-              const user = res.data.accountResp;
-              localStorage.setItem("token", token);
-              sessionStorage.setItem("token", token);
-              sessionStorage.setItem("user", JSON.stringify(user));
-              this.$router.push({ path: this.redirect || "/IndustryHome" });
+              })
+              const token = res.data.token
+              const user = res.data.accountResp
+              localStorage.setItem('token', token)
+              sessionStorage.setItem('token', token)
+              sessionStorage.setItem('user', JSON.stringify(user))
+              this.$router.push({ path: this.redirect || '/IndustryHome' })
             } else {
               this.$message.error({
                 showClose: true,
                 message: res.msg,
-                type: "warning",
+                type: 'warning',
                 duration: 1000
-              });
-              this.account();
+              })
+              this.account()
             }
-          });
+          })
         } else {
           this.$message.error({
             showClose: true,
             duration: 1000,
-            message: "您输入的账号或密码输入不正确,验证码不正确",
-            type: "warning"
-          });
+            message: '您输入的账号或密码输入不正确,验证码不正确',
+            type: 'warning'
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

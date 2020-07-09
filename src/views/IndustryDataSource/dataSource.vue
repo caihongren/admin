@@ -56,6 +56,9 @@
         <el-form-item label="名　称">
           <el-input v-model="lookForm.name" :disabled="true" />
         </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="lookForm.introduction" :disabled="true" />
+        </el-form-item>
         <el-form-item label="源类型">
           <el-input v-model="lookForm.type" :disabled="true" />
         </el-form-item>
@@ -84,6 +87,9 @@
       <el-form ref="lookForm" :model="lookForm" label-width="100px">
         <el-form-item label="名　称">
           <el-input v-model="lookForm.name" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="lookForm.introduction" :disabled="true" />
         </el-form-item>
         <el-form-item label="源类型">
           <el-input v-model="lookForm.type" :disabled="true" />
@@ -142,6 +148,7 @@ export default {
         endTimeStr: null
       },
       lookForm: {
+        introduction: '',
         name: '',
         type: '',
         databaseType: '',
@@ -271,6 +278,8 @@ export default {
           if (res.code == 0) {
             this.lookForm.name = res.data.name
             this.lookForm.type = res.data.type
+            this.lookForm.introduction = res.data.introduction
+
             this.lookForm.databaseType = res.data.databaseType
             this.lookForm.databaseName = res.data.databaseName
             this.lookForm.databaseUrl = res.data.databaseUrl
@@ -281,6 +290,8 @@ export default {
         } else if (res.data.type == '文件') {
           this.isanswerFile = true
           this.lookForm.name = res.data.name
+          this.lookForm.introduction = res.data.introduction
+
           this.lookForm.type = res.data.type
           for (let i = 0; i < res.data.files.length; i++) {
             this.dataSourcetable.push({ name: res.data.files[i].fileName, type: res.data.files[i].fileType, size: Size(res.data.files[i].fileSize) })

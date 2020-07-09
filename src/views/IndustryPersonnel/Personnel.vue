@@ -29,13 +29,13 @@
     <!-- 新增加弹出框 -->
     <el-dialog title="新增用户" :visible.sync="dialogFormVisibleadd" width="25%" :close-on-click-modal="false">
       <el-form ref="formadd" :model="formadd" :rules="rules" label-width="70px">
-        <el-form-item label="名称" prop="name">
+        <el-form-item label="用户名" prop="name">
           <el-input v-model="formadd.name" maxlength="20" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="用户名" prop="accountNumber">
+        <el-form-item label="账　号" prop="accountNumber">
           <el-input v-model="formadd.accountNumber" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item label="角色">
+        <el-form-item label="角　色">
           <el-select v-model="formadd.roleId" placeholder="请选择角色" style="width:100%">
             <el-option
               v-for="item in teacherOptions"
@@ -45,7 +45,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密　码">
           <el-input v-model="defaultPassword" style="width:100%" :disabled="true" />
         </el-form-item>
         <el-form-item>

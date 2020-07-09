@@ -482,14 +482,46 @@ export function putThemeStyle(data) {
     data
   })
 }
-// export function queryHomeTask(query) {
-//   return request({
-//     url: '/general/homeTask',
-//     method: 'get',
-//     params: query
+// 获取任务状态
+export function taskState(id) {
+  return request({
+    url: '/job/taskState?ids=' + id,
+    method: 'get'
+  })
+}
 
-//   })
-// }
+// 获取实时任务
+export function timeTask(id) {
+  return request({
+    url: '/job/timeTask?creatorId=' + id,
+    method: 'get'
+  })
+}
+
+// 清空数据
+export function timeHandle(data) {
+  return request({
+    url: '/job/timeHandle',
+    method: 'delete',
+    data
+  })
+}
+// 获取请求码
+export function requestCode() {
+  return request({
+    url: '/request/requestCode',
+    method: 'get'
+
+  })
+}
+// 激活授权码
+export function putRequestCode(data) {
+  return request({
+    url: '/request/requestCode',
+    method: 'put',
+    data
+  })
+}
 // 计算文件大小,根据字节计算大小
 export function Size(num) {
   //
@@ -524,40 +556,40 @@ export function formatDate(date) {
   }
 }
 // 获取日其
-export function formatDateDay(dates) {
-  if (dates == null || dates == '' || dates == undefined) {
+export function formatDateDay(dates) {
+  if (dates == null || dates == '' || dates == undefined) {
     return
-  } else {
+  } else {
     // let datas = new Date(date)
-    const date = new Date(dates) // 这样直接获取的是当前时间，如果传参就是想要修改的日期格式的参数
-    const month = date.getMonth() + 1
-    const year = date.getFullYear()
-    const day = date.getDate()
-    const hours = date.getHours()
-    const mints = date.getMinutes()
-    const seconds = date.getSeconds()
-    const millise = date.getMilliseconds()
-    return year + '-' + month + '-' + day
+    const date = new Date(dates) // 这样直接获取的是当前时间，如果传参就是想要修改的日期格式的参数
+    const month = date.getMonth() + 1
+    const year = date.getFullYear()
+    const day = date.getDate()
+    const hours = date.getHours()
+    const mints = date.getMinutes()
+    const seconds = date.getSeconds()
+    const millise = date.getMilliseconds()
+    return year + '-' + month + '-' + day
     // datas.setTime(datas.getTime() + 3600 * 1000 * 8)
     // let dateee = datas.toJSON();
     // return new Date(+new Date(dateee)).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
   }
 }
 // 获取小时
-export function formatDateHours(dates) {
-  if (dates == null || dates == '' || dates == undefined) {
+export function formatDateHours(dates) {
+  if (dates == null || dates == '' || dates == undefined) {
     return
-  } else {
+  } else {
     // let datas = new Date(date)
-    const date = new Date(dates) // 这样直接获取的是当前时间，如果传参就是想要修改的日期格式的参数
-    const month = date.getMonth() + 1
-    const year = date.getFullYear()
-    const day = date.getDate()
-    const hours = date.getHours()
-    const mints = date.getMinutes()
-    const seconds = date.getSeconds()
-    const millise = date.getMilliseconds()
-    return hours + ':' + mints + ':' + seconds
+    const date = new Date(dates) // 这样直接获取的是当前时间，如果传参就是想要修改的日期格式的参数
+    const month = date.getMonth() + 1
+    const year = date.getFullYear()
+    const day = date.getDate()
+    const hours = date.getHours()
+    const mints = date.getMinutes()
+    const seconds = date.getSeconds()
+    const millise = date.getMilliseconds()
+    return hours + ':' + mints + ':' + seconds
     // datas.setTime(datas.getTime() + 3600 * 1000 * 8)
     // let dateee = datas.toJSON();
     // return new Date(+new Date(dateee)).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
@@ -565,53 +597,53 @@ export function formatDateHours(dates) {
 }
 
 // 获取输入月份天数
-export function mGetDate(year, month) {
-  var d = new Date(year, month, 0)
-  return d.getDate()
+export function mGetDate(year, month) {
+  var d = new Date(year, month, 0)
+  return d.getDate()
 }
 
 // 获取当前时间上月或者下月月份天数
-export function mGetDateThis(num) {
-  var date = new Date()
-  var year = date.getFullYear()
-  var month = date.getMonth() + 1 + num
-  var d = new Date(year, month, 0)
-  return d.getDate()
+export function mGetDateThis(num) {
+  var date = new Date()
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1 + num
+  var d = new Date(year, month, 0)
+  return d.getDate()
 }
-export function parseTime(time, cFormat) {
-  if (arguments.length === 0) {
-    return null
+export function parseTime(time, cFormat) {
+  if (arguments.length === 0) {
+    return null
   }
-  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
-  let date
-  if (typeof time === 'object') {
-    date = time
-  } else {
-    if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
-      time = parseInt(time)
+  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  let date
+  if (typeof time === 'object') {
+    date = time
+  } else {
+    if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
+      time = parseInt(time)
     }
-    if ((typeof time === 'number') && (time.toString().length === 10)) {
-      time = time * 1000
+    if ((typeof time === 'number') && (time.toString().length === 10)) {
+      time = time * 1000
     }
-    date = new Date(time)
+    date = new Date(time)
   }
-  const formatObj = {
-    y: date.getFullYear(),
-    m: date.getMonth() + 1,
-    d: date.getDate(),
-    h: date.getHours(),
-    i: date.getMinutes(),
-    s: date.getSeconds(),
-    a: date.getDay()
+  const formatObj = {
+    y: date.getFullYear(),
+    m: date.getMonth() + 1,
+    d: date.getDate(),
+    h: date.getHours(),
+    i: date.getMinutes(),
+    s: date.getSeconds(),
+    a: date.getDay()
   }
-  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
-    let value = formatObj[key]
+  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
+    let value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
-    if (result.length > 0 && value < 10) {
-      value = '0' + value
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
+    if (result.length > 0 && value < 10) {
+      value = '0' + value
     }
-    return value || 0
+    return value || 0
   })
-  return time_str
+  return time_str
 }

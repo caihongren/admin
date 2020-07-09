@@ -10,10 +10,12 @@
         <div class="old">
           <h2>请求码：</h2>
           <div class="value">
-            <el-input v-model="getYard" type="textarea" :autosize="{ minRows: 16 }" placeholder="没获取到请求码" />
+            <el-input v-model="getYard" readonly="readonly" type="textarea" :disabled="true" :autosize="{ minRows: 16 }" placeholder="没获取到请求码" />
+            <input ref="inputCopy" :value="getYard" type="textarea" style="opacity: 0;">
           </div>
           <div class="btn">
-            <el-button style="margin:auto;width:70%;" round @click="setYard=getYard">复制</el-button>
+            <el-button style="margin:auto;width:70%;" round @click="copy">复制</el-button>
+
           </div>
         </div>
         <div class="new">
@@ -30,29 +32,76 @@
   </div>
 </template>
 <script>
+import { requestCode, putRequestCode } from '@/api/user.js'
 export default {
+
   data() {
     return {
+      copyBtn: null, // 存储初始化复制按钮事件
       type: true,
       time: new Date(),
       setYard: '',
-      getYard:
-        'doksaihfiurehfshFOEHSFHSHFIHSFHOSHEHFIUSHFUIHSIUHFOSHIUFEHIASHFISNKSJBCJSFIUWHIUFEHSBFIJSBFIUBUI'
+      getYard: ''
     }
   },
-  mounted() { },
-  created() { },
+  mounted() {
+
+  },
+  created() {
+    this.requestCode()
+  },
   methods: {
+    copy(data) {
+      const oInput = this.$refs.inputCopy
+      oInput.select() // 选择对象;
+      // console.log(document.execCommand('Copy'))
+      if (document.execCommand('Copy')) {
+        this.$message({
+          message: '复制成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: '复制失败，不支持复制',
+          type: 'success'
+        })
+      }
+    },
+    requestCode() {
+      requestCode().then(res => {
+        if (res.code == 0) {
+          this.getYard = res.data
+        }
+      })
+    },
     setValue() {
-      // eslint-disable-next-line no-undef
-      const value = setYard
-      if (value == '' || value == null) {
+      if (this.getYard == '' || this.setYard == '') {
         this.$message.error({
           showClose: true,
           duration: 1000,
-          message: '请输入内容'
+          message: '请求码与授权码不能为空'
         })
-      } 
+        return
+      }
+      putRequestCode({
+        requestCode: this.getYard,
+        activationCode: this.setYard
+      }).then(res => {
+        if (res.code == 0) {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            type: 'success',
+            message: '激活成功!'
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            duration: 1000,
+            message: res.msg
+          })
+        }
+      })
     }
   }
 }
@@ -62,7 +111,7 @@ export default {
   width: 100%;
   height: 40px;
   margin: auto;
-  color: rebeccapurple;
+  color: #4283d8;
   h2 {
     text-align: center;
     height: 100%;
@@ -73,7 +122,7 @@ export default {
   width: 100%;
   height: 40px;
   margin: auto;
-  color: rebeccapurple;
+  color: #4283d8;
   h2 {
     text-align: center;
     height: 100%;

@@ -61,7 +61,7 @@
             <template slot-scope="scope">
               <div style="display: flex; justify-content: left; width: 100%;margin-top: 5px;">
                 <span>{{ completionStatusc(scope.row) }}</span>
-                 <el-progress :show-text="false" :stroke-width="5" :percentage="num(scope.row.handlePerformed,scope.row.handleTotal)" color="#4283d8" style="width: 78%;margin-left: 10px;margin-top: 8px;" />
+                 <el-progress :show-text="false" :stroke-width="5" :percentage="num(scope.row.handlePerformed,scope.row.handleTotal)" style="width: 78%;margin-left: 10px;margin-top: 8px;" />
               </div>
               <div style="text-align: center;font-size: 12px;font-weight: 700;color: #4283d8;">{{ scope.row.handlePerformed }} / {{ scope.row.handleFailed }} / {{ scope.row.handleTotal }}</div>
 
@@ -368,7 +368,7 @@ export default {
     // 删除未开始任务
 
     tabelDelete(id) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该日志, 是否继续?', '提示', {
         confirmButtonText: '取消',
         cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',
@@ -634,7 +634,7 @@ export default {
     },
     // 删除
     det(id) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该日志, 是否继续?', '提示', {
         confirmButtonText: '取消',
         cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',

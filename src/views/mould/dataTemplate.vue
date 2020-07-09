@@ -1,29 +1,6 @@
 <template>
   <div class="node">
     <div class="head">
-      <!-- <div style="display: flex; justify-content: left; width: 100%;" :model="query">
-        <div style="display: flex;padding-right:20px;width: 30%;">
-          <span style="color: #606266;line-height: 35px;font-weight: 700;font-size: 12px;">数据模板</span>
-          <el-input v-model="query.version" placeholder="请输入数据模板名称" />
-        </div>
-        <div style="display: flex;padding-right:20px;">
-          <span style="width: 17%;color: #606266;line-height: 35px;font-weight: 700;font-size: 12px;">前缀</span>
-          <el-input v-model="query.prefix" placeholder="请输入前缀" />
-        </div>
-        <div style="display: flex;padding-right:20px;">
-          <span style="width: 22%;color: #606266;line-height: 35px;font-weight: 700;font-size: 12px;">企业节点</span>
-          <el-select v-model="query.enterpriseNodeId" placeholder="请选择企业节点">
-            <el-option v-for="(item,index) in nodelist" :key="index" :label="item.label" :value="item.value" />
-          </el-select>
-        </div>
-        <div style="display: flex;">
-          <el-button type="primary" size="mini" round icon="el-icon-search" @click="getLists">查询</el-button>
-          <el-button type="primary" size="mini" round icon="el-icon-search" @click="getQuery">从SNMS查询</el-button>
-
-          <el-button type="warning" size="mini" round icon="el-icon-refresh" @click="Reset">重置</el-button>
-        </div>
-
-      </div> -->
       <el-form :inline="true" :model="query" class="demo-form-inline">
         <el-form-item label="数据模板" style="font-size:12px">
           <el-input v-model="query.version" placeholder="请输入数据模板名称" />
@@ -205,7 +182,7 @@
       </div>
     </el-dialog>
     <!-- 添加数据模板的创建一行弹出框 -->
-    <el-dialog width="35%" top="15vh" :visible.sync="addEstablish" append-to-body title="创建一行" :close-on-click-modal="false">
+    <el-dialog width="35%" top="15vh" :visible.sync="addEstablish" append-to-body title="修改一行" :close-on-click-modal="false">
       <el-form ref="createData" :model="createData" :rules="rules2" label-width="80px" class="demo-ruleForm" size="mini">
         <el-form-item label="中文名称" prop="name">
           <el-input v-model="createData.name" placeholder="请输入中文名称" />

@@ -52,6 +52,9 @@
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
         </el-form-item>
+        <el-form-item label="描　述">
+          <el-input v-model="addForm.introduction" :disabled="true" />
+        </el-form-item>
         <el-form-item label="模　式">
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
@@ -140,7 +143,6 @@ export default {
       times: null,
       query: {
         putid: '',
-        creatorId: '',
         order: '',
         orderBy: '',
         pageNum: 1,
@@ -152,6 +154,7 @@ export default {
       },
       // 查看企业节点数据绑定
       addForm: {
+        introduction: '',
         name: '', // 名称
         type: '', // 模式
         interType: '', // 接口访问类型（自建）
@@ -277,27 +280,24 @@ export default {
       this.query.pageSize = this.pageSize
       this.query.pageNum = this.currentPage
       this.query.pageSize = this.pageSize
-
-      if (sessionStorage.getItem('user')) {
-        const user = JSON.parse(sessionStorage.getItem('user'))
-        this.query.creatorId = user.id
-        if (this.times != null && this.times.length == 2) {
-          this.query.startTimeStr = this.times[0]
-          this.query.endTimeStr = this.times[1]
-        }
-        nodeList(this.query).then(res => {
-          if (res.code == 0) {
-            this.tableData = res.data.result
-            this.length = res.data.total
-          }
-        })
+      if (this.times != null && this.times.length == 2) {
+        this.query.startTimeStr = this.times[0]
+        this.query.endTimeStr = this.times[1]
       }
+      nodeList(this.query).then(res => {
+        if (res.code == 0) {
+          this.tableData = res.data.result
+          this.length = res.data.total
+        }
+      })
     },
     // 查看按钮
     see(id) {
       this.isanswer = true
       getEnterpriseNode(id).then(res => {
         if (res.code == 0) {
+          this.addForm.introduction = res.data.introduction
+
           this.addForm.name = res.data.name
           this.addForm.type = res.data.type
           if (res.data.type == '自建模式') {
