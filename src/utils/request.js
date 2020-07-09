@@ -1,11 +1,12 @@
 import axios from 'axios'
-import Vue from 'vue'
+import router from '../router'
 import {
   MessageBox,
   Message
 } from 'element-ui'
 import store from '@/store'
 // import { getToken } from '@/utils/auth'
+
 
 // create an axios instance
 const service = axios.create({
@@ -55,10 +56,9 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
     // if the custom code is not 20000, it is judged as an error.
     if (res.code != 0) {
-      console.log('res', res)
+
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
@@ -78,24 +78,24 @@ service.interceptors.response.use(
           type: 'error',
           duration: 1000
         })
-        const path = window.location.origin + '/#'
-        console.log(path, 'path')
+
+
 
         if (sessionStorage.getItem('user')) {
           const user = JSON.parse(sessionStorage.getItem('user'))
           // 前往授权
           if (user.accountNumber == 'admin') {
-            window.location.href = path + '/IndustryAuthorization/authorization'
+            router.push('/IndustryAuthorization/authorization')
             return
           } else {
             // 退出登录
-            window.location.href = path + '/login'
+            router.push('/login')
             return
           }
         } else {
           // 退出登录
+          router.push('/login')
 
-          window.location.href = path + '/login'
           return
         }
       } else {
