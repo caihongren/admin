@@ -63,8 +63,13 @@
               <span v-model="operation.setDentity" style="border:1px solid #dcdfe6;;width:25%;padding-left:10px;display:inline-block;border-radius: 3px;">{{ operation.inputPrefix }}　／　{{ operation.setDentity }}</span>
             </el-form-item>
             <el-form-item v-if="this.newBuild.taskType=='TIME'" label="时间点" style="margin-left: 10px;">
-
-              <el-input v-model="operation.updateAt" style="width:25%" />
+              <el-date-picker
+                v-model="operation.updateAt"
+                style="width: 25%;"
+                type="datetime"
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              />
 
             </el-form-item>
             <el-form-item v-if="this.newBuild.taskType=='TIME'" label="时间戳" prop="updateBasis">
@@ -726,6 +731,7 @@ export default {
         ]
 
       },
+      value1: new Date(),
       link: false, // 连接测试加载
       display: false, // 用户名密码  输入框是否可以输入
       display2: false, // 用户名密码  输入框是否可以输入

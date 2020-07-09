@@ -60,7 +60,7 @@
           <el-table-column label="任务状态" sortable="custom" :formatter="completionStatusc" min-width="100">
             <template slot-scope="scope">
               <div style="display: flex; justify-content: left; width: 100%;margin-top: 5px;">
-                <span>{{ completionStatusc(scope.row) }}</span>
+                <span style="min-width: 60px;">{{ completionStatusc(scope.row) }}</span>
                  <el-progress :show-text="false" :stroke-width="5" :percentage="num(scope.row.handlePerformed,scope.row.handleTotal)" style="width: 78%;margin-left: 10px;margin-top: 8px;" />
               </div>
               <div style="text-align: center;font-size: 12px;font-weight: 700;color: #4283d8;">{{ scope.row.handlePerformed }} / {{ scope.row.handleFailed }} / {{ scope.row.handleTotal }}</div>
@@ -212,6 +212,8 @@
 </template>
 <script>
 import {
+  taskState, // 获取任务状态
+
   deleteloginHistory, // 删除历史记录
   formatDate, // 时间转换
   loginHistory, // 获取历史登录
@@ -336,10 +338,11 @@ export default {
   },
   mounted() {
     time = setInterval(() => {
-      this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false)
-    }, 1000)// 获取导入任务列表
+      this.taskState()
+    }, 5000)// 获取导入任务列表
   },
   created() {
+    this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false)
     // 获取历史登录
     this.loginHistory()
     this.nodelists2()
@@ -348,6 +351,21 @@ export default {
     this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc') // 获取导入任务列表
   },
   methods: {
+    taskState() {
+      taskState(this.listPage).then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+          for (let j = 0; j < this.tableData.length; j++) {
+            if (res.data[i].id == this.tableData[j].id) {
+              this.tableData[j].handleFailed = res.data[i].handleFailed ? res.data[i].handleFailed : this.tableData[j].handleFailed
+              this.tableData[j].state = res.data[i].state ? res.data[i].state : this.tableData[j].state
+              this.tableData[j].handlePerformed = res.data[i].handlePerformed ? res.data[i].handlePerformed : this.tableData[j].handlePerformed
+              this.tableData[j].handleTotal = res.data[i].handleTotal ? res.data[i].handleTotal : this.tableData[j].handleTotal
+              break
+            }
+          }
+        }
+      })
+    },
     // 表格状态值
     seeCompletionStatusc(row) {
       if (row.success == 'SUCCESS') {
