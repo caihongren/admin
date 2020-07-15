@@ -522,6 +522,22 @@ export function putRequestCode(data) {
     data
   })
 }
+// 获取授权日期
+export function activationInfo() {
+  return request({
+    url: '/request/activationInfo',
+    method: 'get'
+
+  })
+}
+// 查询数据管理员列表
+export function dataList() {
+  return request({
+    url: '/account/dataList',
+    method: 'get'
+
+  })
+}
 // 计算文件大小,根据字节计算大小
 export function Size(num) {
   //

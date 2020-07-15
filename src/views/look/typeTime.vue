@@ -172,10 +172,20 @@ export default {
       timeTaskState: '',
 
       formInline: {
+
+        seeFile: '',
+        state: '',
+
+        order: '',
         pageSize: 10,
         pageNum: 1,
-        creatorId: '',
-        seePageSize: 10
+
+        orderBy: '',
+        startTimeStr: null,
+        endTimeStr: null,
+        dataSourceId: '',
+        enterpriseNodeId: '',
+        creatorId: ''
 
       },
       lookDataList: {
@@ -283,7 +293,6 @@ export default {
       console.log(selected, '222')
       taskInfo(selected || this.seeId).then(res => {
         if (res.code == 0) {
-          console.log(res, '00000')
           this.handleNum = res.data.handleNum
           this.successNum = res.data.successNum
           this.failedNum = res.data.failedNum
@@ -357,7 +366,7 @@ export default {
               message: '暂停成功'
             })
             this.see(this.seeId)
-            this.getLists()
+            this.$emit('CallbackGetLists')
           } else {
             this.$message({
               showClose: true,
@@ -380,7 +389,7 @@ export default {
             })
             this.see(this.seeId)
 
-            this.getLists()
+            this.$emit('CallbackGetLists')
           } else {
             this.$message({
               showClose: true,
@@ -406,7 +415,7 @@ export default {
               message: '继续成功'
             })
             this.see(this.seeId)
-            this.getLists()
+            this.$emit('CallbackGetLists')
           } else {
             this.$message({
               showClose: true,
@@ -428,7 +437,7 @@ export default {
               message: '暂停成功'
             })
             this.see(this.seeId)
-            this.getLists()
+            this.$emit('CallbackGetLists')
           } else {
             this.$message({
               showClose: true,
@@ -456,7 +465,7 @@ export default {
             })
             this.see(this.seeId)
 
-            this.getLists()
+            this.$emit('CallbackGetLists')
           } else {
             this.$message({
               showClose: true,
@@ -479,7 +488,7 @@ export default {
             })
             this.see(this.seeId)
 
-            this.getLists()
+            this.$emit('CallbackGetLists')
           } else {
             this.$message({
               showClose: true,
@@ -504,7 +513,7 @@ export default {
             message: '开始成功'
           })
           this.see(this.seeId)
-          this.getLists()
+          this.$emit('CallbackGetLists')
         } else {
           this.$message({
             showClose: true,

@@ -7,7 +7,6 @@ import {
 import store from '@/store'
 // import { getToken } from '@/utils/auth'
 
-
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -58,7 +57,6 @@ service.interceptors.response.use(
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     if (res.code != 0) {
-
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
@@ -67,9 +65,7 @@ service.interceptors.response.use(
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+          router.push('/login')
         })
       } else if (res.code === 50016) {
         // Message.error('该用户未授权，请退出登录或前往授权');
@@ -78,8 +74,6 @@ service.interceptors.response.use(
           type: 'error',
           duration: 1000
         })
-
-
 
         if (sessionStorage.getItem('user')) {
           const user = JSON.parse(sessionStorage.getItem('user'))

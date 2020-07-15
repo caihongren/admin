@@ -2,7 +2,11 @@
   <div>
     <div style="width:95%;margin: 10px auto;min-height: 35px;">
       <div style=" display: inline-block; vertical-align: middle;"><img src="./../../img/data.png" alt=""></div>
-      <div class="infos" style="display: inline-block;">数据总览</div>
+      <div class="infos" style="display: inline-block;margin-right:30px;">数据总览</div>
+      <el-select v-model="HomePage" placeholder="请选择数据" @change="HomeClick(HomePage)">
+        <el-option label="全部" value="" />
+        <el-option v-for="(item,index) in pageData" :key="index" :label="item.label" :value="item.value" />
+      </el-select>
     </div>
     <el-row style="width:95%;margin: 0 auto;" :gutter="20">
 
@@ -119,7 +123,7 @@
   </div>
 </template>
 <script>
-import { mGetDateThis, homeTask, handleDataECharts } from '@/api/user.js'
+import { mGetDateThis, homeTask, handleDataECharts, dataList } from '@/api/user.js'
 import echarts from 'echarts'
 export default {
   data() {
@@ -141,10 +145,13 @@ export default {
       taskStockAbnormalCount: '',
       taskRunCount: '',
       value: [],
-      data: []
+      data: [],
+      HomePage: '',
+      pageData: []
     }
   },
   mounted() {
+    this.dataPage()
     this.drawLine()
   },
   created() {
@@ -152,49 +159,54 @@ export default {
     this.homeTaskList()
   },
   methods: {
-    homeTaskList() {
-      if (sessionStorage.getItem('user')) {
-        const user = JSON.parse(sessionStorage.getItem('user'))
-        this.creatorId = user.id
-        homeTask(user.accountNumber == 'admin' ? '' : user.id).then(res => {
-          if (res.code == 0) {
-            this.dataSourceCount = res.data.dataSourceCount// 数据源
-            this.enterpriseNodeCount = res.data.enterpriseNodeCount// 企业节点
-            this.taskAbnormalCount = res.data.taskAbnormalCount// 异常终止任务
-            this.taskArchiveCount = res.data.taskArchiveCount// 归档任务
-            this.taskCount = res.data.taskCount// 任务总数
-            this.taskEndCount = res.data.taskEndCount// 已结束任务
-            this.taskManualCount = res.data.taskManualCount// 手动停止任务
-            this.taskRunCount = res.data.taskRunCount// 进行中任务
-            this.taskStockAbnormalCount = res.data.taskStockAbnormalCount// 存量异常终止
-
-            this.taskStockCount = res.data.taskStockCount// 存量导入任务
-            this.taskStockEndCount = res.data.taskStockEndCount// 存量已结束
-            this.taskStockRunCount = res.data.taskStockRunCount// 存量进行中
-            this.taskTimeCount = res.data.taskTimeCount// 实时导入任务
-            this.taskTimeManualCount = res.data.taskTimeManualCount// 实时手动终止
-            this.taskTimeRunCount = res.data.taskTimeRunCount// 实时进行中
-          }
-        })
-      }
+    HomeClick(HomePage) {
+      console.log('set', HomePage)
+      this.getChart(HomePage)
+      this.homeTaskList(HomePage)
     },
-    getChart() {
-      if (sessionStorage.getItem('user')) {
-        const user = JSON.parse(sessionStorage.getItem('user'))
-        this.creatorId = user.id
-        handleDataECharts(user.accountNumber == 'admin' ? '' : user.id).then(res => {
-          if (res.code == 0) {
-            this.value = []
-            this.data = []
-            for (let i = 0; i < res.data.length; i++) {
-              const item = res.data[i]
-              this.value.push(item.value)
-              this.data.push(item.data)
-            }
+    dataPage() {
+      dataList().then(res => {
+        this.pageData = []
+        for (let i = 0; i < res.data.length; i++) {
+          this.pageData.push({ label: res.data[i].name, value: res.data[i].id })
+        }
+      })
+    },
+    homeTaskList(id) {
+      homeTask(id || '').then(res => {
+        if (res.code == 0) {
+          this.dataSourceCount = res.data.dataSourceCount// 数据源
+          this.enterpriseNodeCount = res.data.enterpriseNodeCount// 企业节点
+          this.taskAbnormalCount = res.data.taskAbnormalCount// 异常终止任务
+          this.taskArchiveCount = res.data.taskArchiveCount// 归档任务
+          this.taskCount = res.data.taskCount// 任务总数
+          this.taskEndCount = res.data.taskEndCount// 已结束任务
+          this.taskManualCount = res.data.taskManualCount// 手动停止任务
+          this.taskRunCount = res.data.taskRunCount// 进行中任务
+          this.taskStockAbnormalCount = res.data.taskStockAbnormalCount// 存量异常终止
+
+          this.taskStockCount = res.data.taskStockCount// 存量导入任务
+          this.taskStockEndCount = res.data.taskStockEndCount// 存量已结束
+          this.taskStockRunCount = res.data.taskStockRunCount// 存量进行中
+          this.taskTimeCount = res.data.taskTimeCount// 实时导入任务
+          this.taskTimeManualCount = res.data.taskTimeManualCount// 实时手动终止
+          this.taskTimeRunCount = res.data.taskTimeRunCount// 实时进行中
+        }
+      })
+    },
+    getChart(id) {
+      handleDataECharts(id || '').then(res => {
+        if (res.code == 0) {
+          this.value = []
+          this.data = []
+          for (let i = 0; i < res.data.length; i++) {
+            const item = res.data[i]
+            this.value.push(item.value)
+            this.data.push(item.data)
           }
-          this.drawLine() // 初始化图标对象
-        })
-      }
+        }
+        this.drawLine() // 初始化图标对象
+      })
     },
     drawLine() {
       // 基于准备好的dom，初始化echarts实例
@@ -209,6 +221,7 @@ export default {
           year + '-' + month + '-' + i
         )
       }
+
       var option = {
         grid: {
           x: 195,
@@ -248,7 +261,6 @@ export default {
         },
         yAxis: {
           name: '数据量', // 坐标名字
-
           splitLine: { show: false },
           axisLine: {
             lineStyle: {

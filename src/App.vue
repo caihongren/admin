@@ -16,7 +16,6 @@ export default {
   },
   computed: {
     getcolor() {
-      console.log(this.$store.state.color, '1111')
       return this.$store.state.color
     }
   },

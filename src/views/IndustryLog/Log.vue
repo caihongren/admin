@@ -23,7 +23,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="请选择任务状态" style="font-size:12px">
-            <el-select v-model="formInline.state" placeholder="请选择状态" @change="seeLists()">
+            <el-select v-model="formInline.state" placeholder="请选择状态">
               <el-option label="全部" value="" />
               <el-option label="进行中" value="RUN" />
               <el-option label="暂停" value="PAUSE" />
@@ -450,7 +450,7 @@ export default {
           if (res.code == 0) {
             this.nodelist = []
             for (let i = 0; i < res.data.length; i++) {
-              this.nodelist.push({ label: res.data[i].name, value: res.data[i].id })
+              this.nodelist.push({ label: res.data[i].name, value: res.data[i].name })
             }
           }
         })

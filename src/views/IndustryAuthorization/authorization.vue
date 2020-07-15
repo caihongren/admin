@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-import { requestCode, putRequestCode } from '@/api/user.js'
+import { requestCode, putRequestCode, activationInfo } from '@/api/user.js'
 export default {
 
   data() {
@@ -49,12 +49,21 @@ export default {
   },
   created() {
     this.requestCode()
+    this.activationInfo()
   },
   methods: {
-    copy(data) {
+    // 授权时间
+    activationInfo() {
+      activationInfo().then(res => {
+        if (res.code == 0) {
+          this.time = res.data.activationTime
+          this.type = res.data.activation
+        }
+      })
+    },
+    copy() {
       const oInput = this.$refs.inputCopy
       oInput.select() // 选择对象;
-      // console.log(document.execCommand('Copy'))
       if (document.execCommand('Copy')) {
         this.$message({
           message: '复制成功',
@@ -94,10 +103,12 @@ export default {
             type: 'success',
             message: '激活成功!'
           })
+          this.requestCode()
+          this.activationInfo()
         } else {
           this.$message({
             showClose: true,
-            duration: 1000,
+            duration: 3000,
             message: res.msg
           })
         }

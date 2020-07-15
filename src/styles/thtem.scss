@@ -77,20 +77,24 @@
     }
 
     .submenu-title-noDropdown :hover {
-      color: red;
+      color: #738498;
       // background-color: #304156 !important;
     }
 
     //    导航栏点击背景色
     .is-active {
-      background-color: #cbd4dd !important;
+      color: #738498;
+      
+      background-color: #7fb5ec !important;
     }
-
+    .el-menu-item:focus, .el-menu-item:hover{
+      background-color: #87aace;
+    }
     //    导航栏hover背景色
 
     #app .sidebar-container .submenu-title-noDropdown:hover,
     #app .sidebar-container .el-submenu__title:hover {
-      background-color: #fff !important;
+      background-color: #87aace !important;
       color: #304156;
 
     }
@@ -101,7 +105,9 @@
   }
 
   &[data-color='DEFAULT'] {
-
+    .el-menu-item:focus, .el-menu-item:hover{
+      background-color: #87aace;
+    }
     // 首页字体 颜色
     .el-breadcrumb__inner,
     .el-breadcrumb__inner a {
@@ -202,7 +208,7 @@
         color: #bfcbd9;
         background-color: #304156 !important;
       }
-
+     
       //导航栏点击背景色
       .is-active {
         background-color: #1f2d3d !important;

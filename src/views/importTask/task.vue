@@ -136,7 +136,7 @@
     </el-dialog>
     <!-- 数据表格类型实时导入查看弹出框 -->
     <el-dialog width="70%" top="2vh" :visible.sync="endIsanswer1" append-to-body title="导入数据管理" :close-on-click-modal="false">
-      <typeTime v-if="endIsanswer1" :selected="seeId" @closeGetLists="closeGetLists" />
+      <typeTime v-if="endIsanswer1" :selected="seeId" @closeGetLists="closeGetLists" @CallbackGetLists="CallbackGetLists" />
     </el-dialog>
 
     <div style="width:100%;" :style="{height:!isshowheight?'100%':'0px'}">
@@ -284,6 +284,9 @@ export default {
     closeGetLists() {
       this.endIsanswer1 = false
       this.getLists()
+    },
+    CallbackGetLists() {
+      this.getLists(this.formInline.orderBy = 't.created', this.formInline.order = 'desc', this.formInline.seeFile = false)
     },
     // stateEnd
     closelsanswer() {

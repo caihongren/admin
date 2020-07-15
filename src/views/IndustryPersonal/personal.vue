@@ -216,15 +216,14 @@ export default Vue.extend({
                 message: '更改用户名成功!'
               })
               this.changename = false
+            } else {
+              this.$message.error({
+                showClose: true,
+                duration: 1000,
+                message: res.msg,
+                type: 'warning'
+              })
             }
-          }).catch(() => {
-            this.$message.error({
-              showClose: true,
-              duration: 1000,
-              message: '修改用户名错误',
-              type: 'warning'
-            })
-            return false
           })
       }
     },
