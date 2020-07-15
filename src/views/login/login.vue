@@ -82,7 +82,7 @@
       </el-form>
     </div>
 
-    <p style="text-align:center;color:#e5e5e5">版本： PIPE</p>
+    <p style="text-align:center;color:#e5e5e5">版本： PIPE 1.0.0</p>
   </div>
 </template>
 
