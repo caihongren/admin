@@ -709,7 +709,8 @@ export default {
           type: 'error',
           message: '请输入企业节点名称'
         })
-        this.link = true
+        // this.link = true
+        // return
       } else if (this.addForm.type == '') {
         this.$message({
           showClose: true,
@@ -717,7 +718,8 @@ export default {
           type: 'error',
           message: '请选择模式'
         })
-        this.link = true
+        // this.link = true
+        // return
       } else if ((this.addForm.type == 'ESCROW' && this.addForm.accessType == '') || (this.addForm.type == 'BUILT' && this.addForm.interType == '')) {
         this.$message({
           showClose: true,
@@ -725,7 +727,8 @@ export default {
           type: 'error',
           message: '请选择接口访问类型'
         })
-        this.link = true
+        // this.link = true
+        // return
       } else if (
         (this.addForm.type == 'BUILT' && (this.addForm.oneselfAgentUrl == '' || this.addForm.oneselfBasicsUrl == '')) ||
         (this.addForm.type == 'ESCROW' && (this.addForm.trusteeshipSnmsUrl == '' || this.addForm.trusteeshipAgentUrl == ''))
@@ -736,7 +739,8 @@ export default {
           type: 'error',
           message: '请输入地址'
         })
-        this.link = true
+        // this.link = true
+        // return
       } else if (
         (this.addForm.type == 'BUILT' && this.addForm.oneselfAgentCheck == false && (this.addForm.oneselfAgentUsername == '' || this.addForm.oneselfAgentPassword == '')) ||
         (this.addForm.type == 'BUILT' && this.addForm.oneselfBasicsCheck == false && (this.addForm.oneselfBasicsUsername == '' || this.addForm.oneselfBasicsPassword == '')) ||
@@ -748,7 +752,8 @@ export default {
           type: 'error',
           message: '请输入用户名密码'
         })
-        this.link = true
+        // this.link = true
+        // return
       } else {
         this.link = true
         nodeConnectionTest({

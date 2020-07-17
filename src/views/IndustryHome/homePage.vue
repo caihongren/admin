@@ -3,7 +3,7 @@
     <div style="width:95%;margin: 10px auto;min-height: 35px;">
       <div style=" display: inline-block; vertical-align: middle;"><img src="./../../img/data.png" alt=""></div>
       <div class="infos" style="display: inline-block;margin-right:30px;">数据总览</div>
-      <el-select v-model="HomePage" placeholder="请选择数据" @change="HomeClick(HomePage)">
+      <el-select v-if="isstudent" v-model="HomePage" placeholder="请选择数据" @change="HomeClick(HomePage)">
         <el-option label="全部" value="" />
         <el-option v-for="(item,index) in pageData" :key="index" :label="item.label" :value="item.value" />
       </el-select>
@@ -128,6 +128,7 @@ import echarts from 'echarts'
 export default {
   data() {
     return {
+      isstudent: false,
       creatorId: '',
       dataSourceCount: '',
       enterpriseNodeCount: '',
@@ -155,14 +156,24 @@ export default {
     this.drawLine()
   },
   created() {
+    this.supervisor()
     this.getChart()
     this.homeTaskList()
   },
   methods: {
     HomeClick(HomePage) {
-      console.log('set', HomePage)
       this.getChart(HomePage)
       this.homeTaskList(HomePage)
+    },
+    // 判断教导主任
+    supervisor() {
+      const user = JSON.parse(sessionStorage.getItem('user'))
+
+      if (user.role == 'data') {
+        this.isstudent = false
+      } else if (user.role == 'admin') {
+        this.isstudent = true
+      }
     },
     dataPage() {
       dataList().then(res => {
@@ -173,7 +184,16 @@ export default {
       })
     },
     homeTaskList(id) {
-      homeTask(id || '').then(res => {
+      let crId = ''
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user')).role
+        if (user == 'admin') {
+          crId = id
+        } else {
+          crId = JSON.parse(sessionStorage.getItem('user')).id
+        }
+      }
+      homeTask(crId || '').then(res => {
         if (res.code == 0) {
           this.dataSourceCount = res.data.dataSourceCount// 数据源
           this.enterpriseNodeCount = res.data.enterpriseNodeCount// 企业节点
@@ -195,7 +215,16 @@ export default {
       })
     },
     getChart(id) {
-      handleDataECharts(id || '').then(res => {
+      let crId = ''
+      if (sessionStorage.getItem('user')) {
+        const user = JSON.parse(sessionStorage.getItem('user')).role
+        if (user == 'admin') {
+          crId = id
+        } else {
+          crId = JSON.parse(sessionStorage.getItem('user')).id
+        }
+      }
+      handleDataECharts(crId || '').then(res => {
         if (res.code == 0) {
           this.value = []
           this.data = []

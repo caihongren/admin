@@ -55,18 +55,34 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+    // console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code != 0) {
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
-        MessageBox.confirm('您的身份已经过期，请重新登录', '确认登出', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          router.push('/login')
+        if (sessionStorage.getItem('islogin')) {
+          return response
+        }
+        sessionStorage.clear()
+        sessionStorage.setItem('islogin', true)
+        setTimeout(() => {
+          sessionStorage.removeItem('islogin')
+        }, 5000)
+        Message({
+          message: '登录已过期，请重新登录'
+
         })
+        router.push('/login')
+        // MessageBox.confirm('您的身份已经过期，请重新登录', '确认登出', {
+        //   confirmButtonText: '重新登录',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+        //   console.log(res, '666')
+
+        //   router.push('/login')
+        // })
       } else if (res.code === 50016) {
         // Message.error('该用户未授权，请退出登录或前往授权');
         Message({
