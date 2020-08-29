@@ -88,7 +88,7 @@
             <el-input v-model="addForm.oneselfAgentUsername" placeholder="请输入用户名" :disabled="display" />
           </el-form-item>
           <el-form-item v-show="selfBuilt" label="密　码">
-            <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" />
+            <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" type="password"/>
           </el-form-item>
           <!-- 标识基础服务 -->
           <el-form-item v-show="selfBuilt">
@@ -104,7 +104,7 @@
             <el-input v-model="addForm.oneselfBasicsUsername" placeholder="请输入用户名" :disabled="display2" />
           </el-form-item>
           <el-form-item v-show="selfBuilt" label="密　码">
-            <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" />
+            <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" type="password"/>
           </el-form-item>
           <!-- 托管模式下 -->
           <!-- SNMS系统 -->
@@ -118,7 +118,7 @@
             <el-input v-model="addForm.trusteeshipSnmsUsername" placeholder="请输入用户名" />
           </el-form-item>
           <el-form-item v-show="managed" label="密　码">
-            <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" />
+            <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" type="password"/>
           </el-form-item>
           <!-- 标识代理服务 -->
           <el-form-item v-show="managed">
@@ -134,7 +134,7 @@
             <el-input v-model="addForm.trusteeshipAgentUsername" placeholder="请输入用户名" :disabled="display3" />
           </el-form-item>
           <el-form-item v-show="managed" label="密　码">
-            <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" />
+            <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" type="password"/>
           </el-form-item>
           <el-form-item style="margin-left: -80px;">
             <el-row :gutter="20">
@@ -189,7 +189,7 @@
           <el-input v-model="addForm.oneselfAgentUsername" placeholder="请输入用户名" :disabled="display" />
         </el-form-item>
         <el-form-item v-show="selfBuilt" label="密　码">
-          <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" />
+          <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" type="password"/>
         </el-form-item>
         <!-- 标识基础服务 -->
         <el-form-item v-show="selfBuilt">
@@ -205,7 +205,7 @@
           <el-input v-model="addForm.oneselfBasicsUsername" placeholder="请输入用户名" :disabled="display2" />
         </el-form-item>
         <el-form-item v-show="selfBuilt" label="密　码">
-          <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" />
+          <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" type="password"/>
         </el-form-item>
         <!-- 托管模式下 -->
         <!-- SNMS系统 -->
@@ -219,7 +219,7 @@
           <el-input v-model="addForm.trusteeshipSnmsUsername" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item v-show="managed" label="密　码">
-          <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" />
+          <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" type="password"/>
         </el-form-item>
         <!-- 标识代理服务 -->
         <el-form-item v-show="managed">
@@ -235,7 +235,7 @@
           <el-input v-model="addForm.trusteeshipAgentUsername" placeholder="请输入用户名" :disabled="display3" />
         </el-form-item>
         <el-form-item v-show="managed" label="密　码">
-          <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" />
+          <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" type="password"/>
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
@@ -283,7 +283,7 @@
           <el-input v-model="addForm.oneselfAgentUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="selfBuilt" label="密　码">
-          <el-input v-model="addForm.oneselfAgentPassword" :disabled="true" />
+          <el-input v-model="addForm.oneselfAgentPassword" :disabled="true" type="password"/>
         </el-form-item>
         <!-- 标识基础服务 -->
         <el-form-item v-show="selfBuilt">
@@ -299,7 +299,7 @@
           <el-input v-model="addForm.oneselfBasicsUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="selfBuilt" label="密　码">
-          <el-input v-model="addForm.oneselfBasicsPassword" :disabled="true" />
+          <el-input v-model="addForm.oneselfBasicsPassword" :disabled="true" type="password"/>
         </el-form-item>
         <!-- 托管模式下 -->
         <!-- SNMS系统 -->
@@ -313,7 +313,7 @@
           <el-input v-model="addForm.trusteeshipSnmsUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="managed" label="密　码">
-          <el-input v-model="addForm.trusteeshipSnmsPassword" :disabled="true" />
+          <el-input v-model="addForm.trusteeshipSnmsPassword" :disabled="true" type="password"/>
         </el-form-item>
         <!-- 标识代理服务 -->
         <el-form-item v-show="managed">
@@ -329,7 +329,7 @@
           <el-input v-model="addForm.trusteeshipAgentUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="managed" label="密　码">
-          <el-input v-model="addForm.trusteeshipAgentPassword" :disabled="true" />
+          <el-input v-model="addForm.trusteeshipAgentPassword" :disabled="true" type="password"/>
         </el-form-item>
       </el-form>
     </el-dialog>

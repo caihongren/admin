@@ -80,7 +80,7 @@
           <el-input v-model="addForm.oneselfAgentUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="selfBuilt" label="密　码">
-          <el-input v-model="addForm.oneselfAgentPassword" :disabled="true" />
+          <el-input v-model="addForm.oneselfAgentPassword" :disabled="true" type="password"/>
         </el-form-item>
         <!-- 标识基础服务 -->
         <el-form-item v-show="selfBuilt">
@@ -96,7 +96,7 @@
           <el-input v-model="addForm.oneselfBasicsUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="selfBuilt" label="密　码">
-          <el-input v-model="addForm.oneselfBasicsPassword" :disabled="true" />
+          <el-input v-model="addForm.oneselfBasicsPassword" :disabled="true" type="password"/>
         </el-form-item>
         <!-- 托管模式下 -->
         <!-- SNMS系统 -->
@@ -110,7 +110,7 @@
           <el-input v-model="addForm.trusteeshipSnmsUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="managed" label="密　码">
-          <el-input v-model="addForm.trusteeshipSnmsPassword" :disabled="true" />
+          <el-input v-model="addForm.trusteeshipSnmsPassword" :disabled="true" type="password"/>
         </el-form-item>
         <!-- 标识代理服务 -->
         <el-form-item v-show="managed">
@@ -126,7 +126,7 @@
           <el-input v-model="addForm.trusteeshipAgentUsername" :disabled="true" />
         </el-form-item>
         <el-form-item v-show="managed" label="密　码">
-          <el-input v-model="addForm.trusteeshipAgentPassword" :disabled="true" />
+          <el-input v-model="addForm.trusteeshipAgentPassword" :disabled="true" type="password"/>
         </el-form-item>
       </el-form>
     </el-dialog>

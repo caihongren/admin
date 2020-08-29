@@ -13,49 +13,151 @@
           </el-select>
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker v-model="times" style="margin-right:20px" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" />
+          <el-date-picker
+            v-model="times"
+            style="margin-right:20px"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" round icon="el-icon-search" @click="list">查询</el-button>
-          <el-button type="warning" size="mini" round icon="el-icon-refresh" @click="Reset">重置</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            round
+            icon="el-icon-search"
+            @click="list"
+            >查询</el-button
+          >
+          <el-button
+            type="warning"
+            size="mini"
+            round
+            icon="el-icon-refresh"
+            @click="Reset"
+            >重置</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
     <div class="conter">
       <div style="padding:10px 0;">
-        <p class="tableList" style="float:left;padding-left: 10px;">数据源列表</p>
-        <el-button type="text" icon="el-icon-plus" class="tableButton" style="float:right;padding-top: 18px;" @click="adddata">添加数据源</el-button>
+        <p class="tableList" style="float:left;padding-left: 10px;">
+          数据源列表
+        </p>
+        <el-button
+          type="text"
+          icon="el-icon-plus"
+          class="tableButton"
+          style="float:right;padding-top: 18px;"
+          @click="adddata"
+          >添加数据源</el-button
+        >
       </div>
-      <el-table :data="tableData" stripe style="color:#43454a;" @sort-change="sort_change">
+      <el-table
+        :data="tableData"
+        stripe
+        style="color:#43454a;"
+        @sort-change="sort_change"
+      >
         <el-table-column fixed label="序号" type="index" width="100" />
-        <el-table-column prop="creatorName" label="创建人" min-width="130" sortable="custom" />
-        <el-table-column prop="name" label="名称" min-width="130" sortable="custom" />
-        <el-table-column prop="created" label="创建时间" min-width="130" sortable="custom" />
-        <el-table-column prop="type" label="类型 / 数据库类型" :formatter="completionStatusc" min-width="130">
+        <el-table-column
+          prop="creatorName"
+          label="创建人"
+          min-width="130"
+          sortable="custom"
+        />
+        <el-table-column
+          prop="name"
+          label="名称"
+          min-width="130"
+          sortable="custom"
+        />
+        <el-table-column
+          prop="created"
+          label="创建时间"
+          min-width="130"
+          sortable="custom"
+        />
+        <el-table-column
+          prop="type"
+          label="类型 / 数据库类型"
+          :formatter="completionStatusc"
+          min-width="130"
+        >
           <template slot-scope="scope">
             <span>{{ completionStatusc(scope.row) }}</span>
-            <span v-if="scope.row.databaseType"> / {{ scope.row.databaseType }}</span>
+            <span v-if="scope.row.databaseType">
+              / {{ scope.row.databaseType }}</span
+            >
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="180">
           <template slot-scope="scope">
-            <el-button type="text" class="tableButton" @click="see(scope.row.id)">查看</el-button>
-            <el-button type="text" class="tableButton" @click="seedata(scope.row.id)">查看数据</el-button>
+            <el-button
+              type="text"
+              class="tableButton"
+              @click="see(scope.row.id)"
+              >查看</el-button
+            >
+            <el-button
+              type="text"
+              class="tableButton"
+              @click="seedata(scope.row.id)"
+              >查看数据</el-button
+            >
 
-            <el-button v-if="scope.row.type=='database'" class="tableButton" type="text" @click="modify(scope.row.id)">修改</el-button>
-            <el-button type="text" style="color: #d05e5e;" @click="det(scope.row.id)">删除</el-button>
-
+            <el-button
+              v-if="scope.row.type == 'database'"
+              class="tableButton"
+              type="text"
+              @click="modify(scope.row.id)"
+              >修改</el-button
+            >
+            <el-button
+              type="text"
+              style="color: #d05e5e;"
+              @click="det(scope.row.id)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
       <div style="text-align: center;margin-top: 5%;">
-        <el-pagination :current-page="currentPage" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+        <el-pagination
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="length"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </div>
     </div>
 
     <!-- 添加数据源弹窗 -->
-    <el-dialog v-if="addisanswer" width="35%" :visible.sync="addisanswer" append-to-body title="添加数据源" :close-on-click-modal="false" @close="closeDialog">
-      <el-form ref="addForm" :model="addForm" label-width="100px" size="mini" class="dialog">
+    <el-dialog
+      v-if="addisanswer"
+      width="35%"
+      :visible.sync="addisanswer"
+      append-to-body
+      title="添加数据源"
+      :close-on-click-modal="false"
+      @close="closeDialog"
+    >
+      <el-form
+        ref="addForm"
+        :model="addForm"
+        label-width="100px"
+        size="mini"
+        class="dialog"
+      >
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
@@ -63,13 +165,22 @@
           <el-input v-model="addForm.introduction" placeholder="请输入描述" />
         </el-form-item>
         <el-form-item label="源类型">
-          <el-select v-model="addForm.type" placeholder="请选择类型" 　style="width:100%" @change="updateAdddisplay">
+          <el-select
+            v-model="addForm.type"
+            placeholder="请选择类型"
+            　style="width:100%"
+            @change="updateAdddisplay"
+          >
             <el-option label="数据库" value="database" />
             <el-option label="文件" value="file" />
           </el-select>
         </el-form-item>
         <el-form-item v-show="addDataShow" label="库类型">
-          <el-select v-model="addForm.databaseType" placeholder="请选择类型" style="width:100%">
+          <el-select
+            v-model="addForm.databaseType"
+            placeholder="请选择类型"
+            style="width:100%"
+          >
             <el-option label="mysql" value="mysql" />
             <el-option label="oracle" value="oracle" />
             <el-option label="postgresql" value="postgresql" />
@@ -77,22 +188,40 @@
           </el-select>
         </el-form-item>
         <el-form-item v-show="addDataShow" label="库名称">
-          <el-input v-model="addForm.databaseName" placeholder="请输入数据库名称" />
+          <el-input
+            v-model="addForm.databaseName"
+            placeholder="请输入数据库名称"
+          />
         </el-form-item>
         <el-form-item v-show="addDataShow" label="地　址">
-          <el-input v-model="addForm.databaseUrl" placeholder="请输入连接地址" />
+          <el-input
+            v-model="addForm.databaseUrl"
+            placeholder="请输入连接地址"
+          />
         </el-form-item>
         <el-form-item v-show="addDataShow" label="端口号">
           <el-input v-model="addForm.databasePort" placeholder="请输入端口号" />
         </el-form-item>
         <el-form-item v-show="addDataShow" label="用户名">
-          <el-input v-model="addForm.databaseUsername" placeholder="请输入用户名" />
+          <el-input
+            v-model="addForm.databaseUsername"
+            placeholder="请输入用户名"
+          />
         </el-form-item>
-        <el-form-item v-show="addDataShow" label="密　码">
-          <el-input v-model="addForm.databasePassword" placeholder="请输入密码" />
+        <el-form-item v-show="addDataShow" label="密　码"　>
+          <el-input
+           type="password"
+            v-model="addForm.databasePassword"
+            placeholder="请输入密码"
+          />
         </el-form-item>
         <el-form-item v-show="addFileShow">
-          <el-table class="tableColor" stripe :data="dataSourcetable" style="width: 100%">
+          <el-table
+            class="tableColor"
+            stripe
+            :data="dataSourcetable"
+            style="width: 100%"
+          >
             <el-table-column fixed label="序号" type="index" min-width="100" />
 
             <el-table-column prop="name" label="文件名" width="180" />
@@ -105,27 +234,72 @@
             <el-col v-show="addFileShow" :span="10" style="padding-left: 30px;">
               <div class="file-upload">
                 上传文件夹
-                <input ref="file"   class="file-upload-input"   type="file"  name="file"  webkitdirectory  @change="changesData()" />
+                <input
+                  ref="file"
+                  class="file-upload-input"
+                  type="file"
+                  name="file"
+                  webkitdirectory
+                  @change="changesData()"
+                />
               </div>
             </el-col>
             <el-col v-show="addDataShow" :span="20">
-              <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
+              <el-button
+                type="warning"
+                size="mini"
+                class="lianjieBtn"
+                round
+                :loading="link"
+                @click="connectionTest"
+                >连接测试</el-button
+              >
             </el-col>
             <el-col v-show="addFileShow" :span="10">
-              <el-upload class="upload-demo" action="#" enctype="multipart/form-data" :before-upload="uploading" style="display: inline-block">
-                <el-button type="primary" size="mini" round style="border: 1px solid #4283d8;background:#4283d8;">上传文件</el-button>
+              <el-upload
+                class="upload-demo"
+                action="#"
+                enctype="multipart/form-data"
+                :before-upload="uploading"
+                style="display: inline-block"
+              >
+                <el-button
+                  type="primary"
+                  size="mini"
+                  round
+                  style="border: 1px solid #4283d8;background:#4283d8;"
+                  >上传文件</el-button
+                >
               </el-upload>
             </el-col>
             <el-col :span="4">
-              <el-button type="primary" size="mini" round class="determine" @click="adddatabase">确定</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                round
+                class="determine"
+                @click="adddatabase"
+                >确定</el-button
+              >
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
     </el-dialog>
     <!-- 修改数据源弹窗 -->
-    <el-dialog width="35%" :visible.sync="changeisanswe" append-to-body title="修改数据源" :close-on-click-modal="false">
-      <el-form ref="addForm" :model="addForm" label-width="100px" class="dialog">
+    <el-dialog
+      width="35%"
+      :visible.sync="changeisanswe"
+      append-to-body
+      title="修改数据源"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        ref="addForm"
+        :model="addForm"
+        label-width="100px"
+        class="dialog"
+      >
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" placeholder="请输入数据源名称" />
         </el-form-item>
@@ -133,10 +307,18 @@
           <el-input v-model="addForm.introduction" />
         </el-form-item>
         <el-form-item label="源类型">
-          <el-input v-model="addForm.type" placeholder="请输入数据源名称" :disabled="true" />
+          <el-input
+            v-model="addForm.type"
+            placeholder="请输入数据源名称"
+            :disabled="true"
+          />
         </el-form-item>
         <el-form-item label="库类型">
-          <el-input v-model="addForm.databaseType" placeholder="请输入数据源名称" :disabled="true" />
+          <el-input
+            v-model="addForm.databaseType"
+            placeholder="请输入数据源名称"
+            :disabled="true"
+          />
         </el-form-item>
         <el-form-item label="库名称">
           <el-input v-model="addForm.databaseName" />
@@ -151,26 +333,54 @@
           <el-input v-model="addForm.databaseUsername" />
         </el-form-item>
         <el-form-item label="密　码">
-          <el-input :key="password" ref="password" v-model="addForm.databasePassword" :type="password" />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="password === 'password' ? 'eye' : 'eye-open'" />
-          </span>
+          <el-input
+            :key="password"
+            ref="password"
+            v-model="addForm.databasePassword"
+            type="password"
+          />
+          <!-- <span class="show-pwd" @click="showPwd">
+            <svg-icon
+              :icon-class="password === 'password' ? 'eye' : 'eye-open'"
+            />
+          </span> -->
         </el-form-item>
         <el-form-item style="margin-left: -80px;">
           <el-row :gutter="20">
             <el-col :span="20">
-              <el-button type="warning" size="mini" class="lianjieBtn" round :loading="link" @click="connectionTest">连接测试</el-button>
+              <el-button
+                type="warning"
+                size="mini"
+                class="lianjieBtn"
+                round
+                :loading="link"
+                @click="connectionTest"
+                >连接测试</el-button
+              >
             </el-col>
 
             <el-col :span="4">
-              <el-button type="primary" size="mini" class="determine" round @click="updateDatabase">确定</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                class="determine"
+                round
+                @click="updateDatabase"
+                >确定</el-button
+              >
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
     </el-dialog>
     <!-- 数据表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看数据源" :close-on-click-modal="false">
+    <el-dialog
+      width="35%"
+      :visible.sync="isanswer"
+      append-to-body
+      title="查看数据源"
+      :close-on-click-modal="false"
+    >
       <el-form ref="addForm" :model="addForm" label-width="100px">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
@@ -196,13 +406,19 @@
         <el-form-item label="用户名">
           <el-input v-model="addForm.databaseUsername" :disabled="true" />
         </el-form-item>
-        <el-form-item label="密　码">
-          <el-input v-model="addForm.databasePassword" :disabled="true" />
+        <el-form-item label="密　码"　>
+          <el-input v-model="addForm.databasePassword" :disabled="true" type="password"/>
         </el-form-item>
       </el-form>
     </el-dialog>
     <!-- 文件表格查看弹出框 -->
-    <el-dialog width="35%" :visible.sync="isanswerFile" append-to-body title="查看文件数据源" :close-on-click-modal="false">
+    <el-dialog
+      width="35%"
+      :visible.sync="isanswerFile"
+      append-to-body
+      title="查看文件数据源"
+      :close-on-click-modal="false"
+    >
       <el-form ref="addForm" :model="addForm" label-width="100px">
         <el-form-item label="名　称">
           <el-input v-model="addForm.name" :disabled="true" />
@@ -214,7 +430,12 @@
           <el-input v-model="addForm.type" :disabled="true" />
         </el-form-item>
         <el-form-item>
-          <el-table class="tableColor" stripe :data="dataSourcetable" style="width: 100%">
+          <el-table
+            class="tableColor"
+            stripe
+            :data="dataSourcetable"
+            style="width: 100%"
+          >
             <el-table-column fixed label="序号" type="index" min-width="100" />
             <el-table-column prop="name" label="文件名" width="180" />
             <el-table-column prop="type" label="拓展名" width="180" />
@@ -224,13 +445,35 @@
       </el-form>
     </el-dialog>
     <!-- 产看数据表弹出框 -->
-    <el-dialog width="70%" :visible.sync="lookdata" append-to-body title="查看数据" :close-on-click-modal="false">
-      <el-select v-model="itemlist" placeholder="请选择排序依据" style="width:30%" @change="addFileInput(itemlist)">
-        <el-option v-for="item in teacherOptions" :key="item.value" :label="item.label" :value="item.value" />
+    <el-dialog
+      width="70%"
+      :visible.sync="lookdata"
+      append-to-body
+      title="查看数据"
+      :close-on-click-modal="false"
+    >
+      <el-select
+        v-model="itemlist"
+        placeholder="请选择排序依据"
+        style="width:30%"
+        @change="addFileInput(itemlist)"
+      >
+        <el-option
+          v-for="item in teacherOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
       </el-select>
 
       <el-table :data="tableDatas" stripe style="margin:20px  0;">
-        <el-table-column v-for="(item, index) in tableLabel" :key="index" :prop="item" min-width="60" :label="item" />
+        <el-table-column
+          v-for="(item, index) in tableLabel"
+          :key="index"
+          :prop="item"
+          min-width="60"
+          :label="item"
+        />
       </el-table>
     </el-dialog>
   </div>
@@ -246,9 +489,8 @@ import {
   deleteDatabase, // 删除数据库数据源
   database, // 添加数据库数据源
   Size, // 计算大小
-  dataSourceFile// 上传文件
-
-} from '@/api/user.js'
+  dataSourceFile // 上传文件
+} from "@/api/user.js";
 export default {
   data() {
     return {
@@ -256,43 +498,43 @@ export default {
       isanswerFile: false,
       tableData: [], // 数据列表
       dataSourcetable: [],
-      putid: '',
+      putid: "",
       tableLabel: [],
       tableData2: [],
-      id333: '',
+      id333: "",
       itemlist: {},
       teacherOptions: [],
       lookdata: false,
-      password: '******',
+      password: "******",
       times: null,
       query: {
-        creatorId: '',
-        order: '',
-        orderBy: '',
+        creatorId: "",
+        order: "",
+        orderBy: "",
         pageNum: 1,
         pageSize: 10,
         startTimeStr: null,
         endTimeStr: null,
-        type: '',
-        name: ''
+        type: "",
+        name: ""
       },
-      closeDialogNull: '',
-      deleteId: '',
+      closeDialogNull: "",
+      deleteId: "",
       addDataShow: false,
       addFileShow: false,
       addForm: {
-        introduction: '',
-        name: '',
-        type: '',
-        creatorId: '',
-        databaseType: '',
-        databaseName: '',
-        databasePassword: '',
-        databasePort: '',
-        databaseUrl: '',
-        databaseUsername: '',
-        fileName: '',
-        id: '',
+        introduction: "",
+        name: "",
+        type: "",
+        creatorId: "",
+        databaseType: "",
+        databaseName: "",
+        databasePassword: "",
+        databasePort: "",
+        databaseUrl: "",
+        databaseUsername: "",
+        fileName: "",
+        id: "",
         fileList: []
       },
 
@@ -305,89 +547,95 @@ export default {
       currentPage: 1, // 当前页数
 
       pickerOptions: {
-        shortcuts: [{
-          text: '本月',
-          onClick(picker) {
-            picker.$emit('pick', [new Date(), new Date()])
+        shortcuts: [
+          {
+            text: "本月",
+            onClick(picker) {
+              picker.$emit("pick", [new Date(), new Date()]);
+            }
+          },
+          {
+            text: "今年至今",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date(new Date().getFullYear(), 0);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近六个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 6);
+              picker.$emit("pick", [start, end]);
+            }
           }
-        }, {
-          text: '今年至今',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date(new Date().getFullYear(), 0)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近六个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setMonth(start.getMonth() - 6)
-            picker.$emit('pick', [start, end])
-          }
-        }]
+        ]
       },
 
       tableDatas: []
-    }
+    };
   },
   created() {
-    this.list(this.query.order = 'desc', this.query.orderBy = 's.created')
+    this.list((this.query.order = "desc"), (this.query.orderBy = "s.created"));
   },
   methods: {
     adddata() {
-      this.addisanswer = true
-      this.dataSourcetable = []
-      this.addDataShow = false
-      this.addFileShow = false
+      this.addisanswer = true;
+      this.dataSourcetable = [];
+      this.addDataShow = false;
+      this.addFileShow = false;
       const addForm = {
-        introduction: '', // 描述
-        name: '',
-        type: '',
-        creatorId: '',
-        databaseType: '',
-        databaseName: '',
-        databasePassword: '',
-        databasePort: '',
-        databaseUrl: '',
-        databaseUsername: ''
-      }
-      this.addForm = addForm
+        introduction: "", // 描述
+        name: "",
+        type: "",
+        creatorId: "",
+        databaseType: "",
+        databaseName: "",
+        databasePassword: "",
+        databasePort: "",
+        databaseUrl: "",
+        databaseUsername: ""
+      };
+      this.addForm = addForm;
     },
     // 排序功能
     sort_change(column) {
-      if (column.order == 'descending') {
-        this.query.order = 'desc'
-      } else if (column.order == 'ascending') {
-        this.query.order = 'asc'
+      if (column.order == "descending") {
+        this.query.order = "desc";
+      } else if (column.order == "ascending") {
+        this.query.order = "asc";
       }
-      if (column.prop == 'creatorName') {
-        this.query.orderBy = 'a.name'
-      } else if (column.prop == 'name') {
-        this.query.orderBy = 's.name'
-      } else if (column.prop == 'created') {
-        this.query.orderBy = 's.created'
+      if (column.prop == "creatorName") {
+        this.query.orderBy = "a.name";
+      } else if (column.prop == "name") {
+        this.query.orderBy = "s.name";
+      } else if (column.prop == "created") {
+        this.query.orderBy = "s.created";
       }
-      this.list()
+      this.list();
     },
 
     // 获取表
     seedata(id) {
-      this.id333 = id
-      this.lookdata = true
+      this.id333 = id;
+      this.lookdata = true;
       tableList(id).then(res => {
         if (res.code == 0) {
-          console.log(res, 'res111')
           if (res.data.length > 0) {
-            this.teacherOptions = []
+            this.teacherOptions = [];
             for (let i = 0; i < res.data.length; i++) {
-              this.teacherOptions.push({ label: res.data[i], value: res.data[i] })
+              this.teacherOptions.push({
+                label: res.data[i],
+                value: res.data[i]
+              });
             }
-            this.itemlist = res.data[0]
-            this.addFileInput(res.data[0])
+            this.itemlist = res.data[0];
+            this.addFileInput(res.data[0]);
           }
         }
-      })
+      });
     },
     // 下拉选择文件后，将文件添加到添加内容输入框
     addFileInput(id) {
@@ -398,64 +646,63 @@ export default {
         if (res.code == 0) {
           // console.log(res, 'res')
 
-          this.tableDatas = res.data.data
-          this.tableLabel = res.data.title
+          this.tableDatas = res.data.data;
+          this.tableLabel = res.data.title;
         }
-      })
+      });
     },
-    showPwd() {
-      if (this.password === 'password') {
-        this.password = ''
-      } else {
-        this.password = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
+    // showPwd() {
+    //   if (this.password === "password") {
+    //     this.password = "";
+    //   } else {
+    //     this.password = "password";
+    //   }
+    //   this.$nextTick(() => {
+    //     this.$refs.password.focus();
+    //   });
+    // },
     // 表格状态值
     completionStatusc(row) {
-      if (row.type == 'database') {
-        return '数据库'
-      } else if (row.type == 'file') {
-        return '文件'
+      if (row.type == "database") {
+        return "数据库";
+      } else if (row.type == "file") {
+        return "文件";
       }
     },
     // 查询数据列表
     list() {
-      this.query.pageSize = this.limit
-      this.query.pageNum = this.offset
-      if (sessionStorage.getItem('user')) {
-        const user = JSON.parse(sessionStorage.getItem('user'))
-        this.query.creatorId = user.id
+      this.query.pageSize = this.limit;
+      this.query.pageNum = this.offset;
+      if (sessionStorage.getItem("user")) {
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        this.query.creatorId = user.id;
         if (this.times != null && this.times.length == 2) {
-          this.query.startTimeStr = this.times[0]
-          this.query.endTimeStr = this.times[1]
+          this.query.startTimeStr = this.times[0];
+          this.query.endTimeStr = this.times[1];
         }
         list(this.query).then(res => {
           if (res.code == 0) {
-            this.tableData = res.data.result
-            this.length = res.data.total ? res.data.total : 0
+            this.tableData = res.data.result;
+            this.length = res.data.total ? res.data.total : 0;
           }
-        })
+        });
       }
     },
 
     // 新增弹出框，数据类型联动
     updateAdddisplay() {
-      this.dataSourcetable = [],
-      this.addForm.creatorId = ''
-      this.addForm.databaseType = ''
-      this.addForm.databaseName = ''
-      this.addForm.databasePort = ''
-      this.addForm.databasePassword = ''
-      this.addForm.databaseUrl = ''
-      this.addForm.databaseUsername = ''
-      this.addDataShow = (this.addForm.type == 'database')
-      this.addFileShow = (this.addForm.type == 'file')
+      (this.dataSourcetable = []), (this.addForm.creatorId = "");
+      this.addForm.databaseType = "";
+      this.addForm.databaseName = "";
+      this.addForm.databasePort = "";
+      this.addForm.databasePassword = "";
+      this.addForm.databaseUrl = "";
+      this.addForm.databaseUsername = "";
+      this.addDataShow = this.addForm.type == "database";
+      this.addFileShow = this.addForm.type == "file";
     },
     closeDialog() {
-      console.log('23213232')
+      console.log("23213232");
 
       // this.$router.go(0)
       // console.log('23213232')
@@ -463,280 +710,310 @@ export default {
     },
     // 上传文件夹
     changesData() {
-      console.log('3333333')
-      // this.closeDialogNull = this.$refs.file.files
-      // console.log(this.closeDialogNull, 'this.$refs.file.value')
 
-      const box = this.$refs.file.files
-      console.log(box)
-      this.addForm.fileList = []
-      this.dataSourcetable = []
+      const box = this.$refs.file.files;
+      this.addForm.fileList = [];
+      this.dataSourcetable = [];
+      const size1 = 0;
       for (let i = 0; i < box.length; i++) {
-        const sort = box[i].name.split('.')
-        sort = sort[sort.length - 1]
-        if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
-          this.addForm.fileList.push(box[i])
-          this.dataSourcetable.push({ name: box[i].name, type: sort, size: Size(box[i].size) })
+        const sort = box[i].name.split(".");
+        sort = sort[sort.length - 1];
+        if (sort == "csv"|| sort == 'xls' || sort == 'xlsx'||sort == 'rar'||sort == 'zip') {
+          this.addForm.fileList.push(box[i]);
+          this.dataSourcetable.push({
+            name: box[i].name,
+            type: sort,
+            size: Size(box[i].size)
+          });
+          size1 = size1 + box[i].size;
         }
+      }
+      if (size1 > 1024 * 1024 * 500) {
+        this.$message.error({
+          showClose: true,
+          duration: 1000,
+          message: "单次上传不允许超过500m",
+          type: "warning"
+        });
+        return;
       }
       if (this.dataSourcetable.length <= 0) {
         this.$message.error({
           showClose: true,
           duration: 1000,
-          message: '只能上传csv或者xls,xlsx格式文件',
-          type: 'warning'
-        })
+          message: "只能上传csv、xls、xlsx格式文件",
+          type: "warning"
+        });
+        return;
       }
     },
 
     // 上传文件
     uploading(file) {
       // console.log(file, '444')
-      this.addForm.fileList = []
-      this.dataSourcetable = []
-      let sort = file.name.split('.')
-      sort = sort[sort.length - 1]
-      const size = Size(file.size)
+      this.addForm.fileList = [];
+      this.dataSourcetable = [];
+      let sort = file.name.split(".");
+      sort = sort[sort.length - 1];
+      const size = Size(file.size);
       if (size == 0) {
         this.$message.error({
           showClose: true,
           duration: 1000,
-          message: '不允许空文件上传。',
-          type: 'warning'
-        })
-        return
+          message: "不允许空文件上传。",
+          type: "warning"
+        });
+        return;
       }
-      if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
-        this.addForm.fileList.push(file)
-        this.dataSourcetable.push({ name: file.name, type: sort, size: Size(file.size) })
+      if (sort == "csv" || sort == 'xls' || sort == 'xlsx') {
+        this.addForm.fileList.push(file);
+        this.dataSourcetable.push({
+          name: file.name,
+          type: sort,
+          size: Size(file.size)
+        });
+        if (size > 1024 * 1024 * 300) {
+          this.$message.error({
+            showClose: true,
+            duration: 1000,
+            message: "单个文件不允许超过300m",
+            type: "warning"
+          });
+          return;
+        }
       } else {
         this.$message.error({
           showClose: true,
           duration: 2000,
-          message: '只能上传csv或者xls,xlsx格式文件。',
-          type: 'warning'
-        })
-        return
+          message: "只能上传csv、xls、xlsx格式文件。",
+          type: "warning"
+        });
+        return;
       }
     },
     // 数据库连接测试
     connectionTest() {
-      if (this.addForm.name == '') {
+      if (this.addForm.name == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-        this.link = true
-      } else if (this.addForm.type == '') {
+          type: "error",
+          message: "请输入数据源名称"
+        });
+        this.link = true;
+      } else if (this.addForm.type == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据源类型'
-        })
-        this.link = true
-      } else if (this.addForm.databaseName == '') {
+          type: "error",
+          message: "请输入数据源类型"
+        });
+        this.link = true;
+      } else if (this.addForm.databaseName == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据库名称'
-        })
-        this.link = true
-      } else if (this.addForm.databaseType == '') {
+          type: "error",
+          message: "请输入数据库名称"
+        });
+        this.link = true;
+      } else if (this.addForm.databaseType == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-        this.link = true
-      } else if (this.addForm.databaseUrl == '') {
+          type: "error",
+          message: "请输入数据源名称"
+        });
+        this.link = true;
+      } else if (this.addForm.databaseUrl == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入连接地址'
-        })
-        this.link = true
-      } else if (this.addForm.databasePort == '') {
+          type: "error",
+          message: "请输入连接地址"
+        });
+        this.link = true;
+      } else if (this.addForm.databasePort == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入端口号'
-        })
-        this.link = true
-      } else if (this.addForm.databaseUsername == '') {
+          type: "error",
+          message: "请输入端口号"
+        });
+        this.link = true;
+      } else if (this.addForm.databaseUsername == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入用户名'
-        })
-        this.link = true
+          type: "error",
+          message: "请输入用户名"
+        });
+        this.link = true;
       } else {
-        if (sessionStorage.getItem('user')) {
-          const user = JSON.parse(sessionStorage.getItem('user')).id
-          this.addForm.creatorId = user
-          connectionTest(this.addForm).then(res => {
-            if (res.code == 0) {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '连接成功'
-              })
-              this.link = false
-            } else {
-              this.$message({
-                showClose: true,
-                duration: 1000,
-                type: 'success',
-                message: '连接失败'
-              })
-              this.link = false
-            }
-          })
+        if (sessionStorage.getItem("user")) {
+          const user = JSON.parse(sessionStorage.getItem("user")).id;
+          this.addForm.creatorId = user;
+          connectionTest(this.addForm)
+            .then(res => {
+              if (res.code == 0) {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: "success",
+                  message: "连接成功"
+                });
+                this.link = false;
+              } else {
+                this.$message({
+                  showClose: true,
+                  duration: 1000,
+                  type: "success",
+                  message: "连接失败"
+                });
+                this.link = false;
+              }
+            })
             .catch(() => {
               this.$message({
                 showClose: true,
                 duration: 1000,
-                type: 'error',
-                message: '连接失败'
-              })
-            })
+                type: "error",
+                message: "连接失败"
+              });
+            });
         }
       }
     },
     // 添加数据源
     adddatabase() {
       if (this.addDataShow == true) {
-        if (this.addForm.name == '') {
+        if (this.addForm.name == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入数据源名称'
-          })
-        } else if (this.addForm.type == '') {
+            type: "error",
+            message: "请输入数据源名称"
+          });
+        } else if (this.addForm.type == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入数据源类型'
-          })
-        } else if (this.addForm.databaseName == '') {
+            type: "error",
+            message: "请输入数据源类型"
+          });
+        } else if (this.addForm.databaseName == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入数据库名称'
-          })
-        } else if (this.addForm.databaseType == '') {
+            type: "error",
+            message: "请输入数据库名称"
+          });
+        } else if (this.addForm.databaseType == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入数据源名称'
-          })
-        } else if (this.addForm.databaseUrl == '') {
+            type: "error",
+            message: "请输入数据源名称"
+          });
+        } else if (this.addForm.databaseUrl == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入连接地址'
-          })
-        } else if (this.addForm.databasePort == '') {
+            type: "error",
+            message: "请输入连接地址"
+          });
+        } else if (this.addForm.databasePort == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入端口号'
-          })
-        } else if (this.addForm.databaseUsername == '') {
+            type: "error",
+            message: "请输入端口号"
+          });
+        } else if (this.addForm.databaseUsername == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入用户名'
-          })
+            type: "error",
+            message: "请输入用户名"
+          });
         } else {
-          if (sessionStorage.getItem('user')) {
-            const user = JSON.parse(sessionStorage.getItem('user')).id
-            this.addForm.creatorId = user
+          if (sessionStorage.getItem("user")) {
+            const user = JSON.parse(sessionStorage.getItem("user")).id;
+            this.addForm.creatorId = user;
             database(this.addForm).then(res => {
               if (res.code == 0) {
                 this.$message({
                   showClose: true,
                   duration: 1000,
-                  type: 'success',
-                  message: '添加成功'
-                })
-                this.list()
-                this.addisanswer = false
+                  type: "success",
+                  message: "添加成功"
+                });
+                this.list();
+                this.addisanswer = false;
               } else {
                 this.$message({
                   showClose: true,
                   duration: 1000,
-                  type: 'error',
+                  type: "error",
                   message: res.msg
-                })
+                });
               }
-            })
+            });
           }
         }
       } else if (this.addFileShow == true) {
-        if (this.addForm.name == '') {
+        if (this.addForm.name == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入数据源名称'
-          })
-        } else if (this.addForm.type == '') {
+            type: "error",
+            message: "请输入数据源名称"
+          });
+        } else if (this.addForm.type == "") {
           this.$message({
             showClose: true,
             duration: 1000,
-            type: 'error',
-            message: '请输入数据源类型'
-          })
+            type: "error",
+            message: "请输入数据源类型"
+          });
         } else {
-          if (sessionStorage.getItem('user')) {
-            const user = JSON.parse(sessionStorage.getItem('user')).id
-            this.addForm.creatorId = user
-            if (this.addForm.fileList != '' && this.addForm.fileList != null && this.addForm.fileList != undefined) {
-              const fd = new FormData()
-              const list = this.addForm.fileList
-              fd.append('length', list.length)
+          if (sessionStorage.getItem("user")) {
+            const user = JSON.parse(sessionStorage.getItem("user")).id;
+            this.addForm.creatorId = user;
+            if (
+              this.addForm.fileList != "" &&
+              this.addForm.fileList != null &&
+              this.addForm.fileList != undefined
+            ) {
+              const fd = new FormData();
+              const list = this.addForm.fileList;
+              fd.append("length", list.length);
               for (let i = 0; i < list.length; i++) {
-                fd.append('fileList' + i, list[i]) // 传多个文件
+                fd.append("fileList" + i, list[i]); // 传多个文件
               }
-              fd.append('name', this.addForm.name ? this.addForm.name : '')
-              fd.append('type', this.addForm.type ? this.addForm.type : '')
-              fd.append('creatorId', this.addForm.creatorId)
+              fd.append("name", this.addForm.name ? this.addForm.name : "");
+              fd.append("type", this.addForm.type ? this.addForm.type : "");
+              fd.append("creatorId", this.addForm.creatorId);
               dataSourceFile(fd).then(res => {
-                if (res.code == '0') {
-                  this.closeDialogNull = null
+                if (res.code == "0") {
+                  this.closeDialogNull = null;
                   this.$message({
                     showClose: true,
-                    message: '文件上传成功',
-                    type: 'success',
+                    message: "文件上传成功",
+                    type: "success",
                     duration: 1000
-                  })
-                  this.list()
-                  this.addisanswer = false
+                  });
+                  this.list();
+                  this.addisanswer = false;
                 } else {
                   this.$message({
                     showClose: true,
                     message: res.msg,
-                    type: 'error',
+                    type: "error",
                     duration: 1000
-                  })
+                  });
                 }
-              })
+              });
             }
           }
         }
@@ -752,117 +1029,121 @@ export default {
     // },
     // 分页
     handleSizeChange(val) {
-      this.limit = val
-      this.list()
+      this.limit = val;
+      this.list();
     },
     handleCurrentChange(val) {
-      this.offset = val
-      this.list()
+      this.offset = val;
+      this.list();
     },
 
     // 重置按钮
     Reset() {
-      this.query.name = ''
-      this.query.type = ''
-      this.times = ''
-      this.query.startTimeStr = ''
-      this.query.endTimeStr = ''
+      this.query.name = "";
+      this.query.type = "";
+      this.times = "";
+      this.query.startTimeStr = "";
+      this.query.endTimeStr = "";
 
-      this.list()
+      this.list();
     },
     // 查看按钮
     see(id) {
       getDatabase(id).then(res => {
-        if (res.data.type == '数据库') {
-          this.isanswer = true
+        if (res.data.type == "数据库") {
+          this.isanswer = true;
           if (res.code == 0) {
-            console.log(res, '777')
-            this.addForm.name = res.data.name
-            this.addForm.introduction = res.data.introduction
-            this.addForm.type = res.data.type
-            this.addForm.databaseType = res.data.databaseType
-            this.addForm.databaseName = res.data.databaseName
-            this.addForm.databaseUrl = res.data.databaseUrl
-            this.addForm.databasePort = res.data.databasePort
-            this.addForm.databaseUsername = res.data.databaseUsername
-            this.addForm.databasePassword = res.data.databasePassword
+            console.log(res, "777");
+            this.addForm.name = res.data.name;
+            this.addForm.introduction = res.data.introduction;
+            this.addForm.type = res.data.type;
+            this.addForm.databaseType = res.data.databaseType;
+            this.addForm.databaseName = res.data.databaseName;
+            this.addForm.databaseUrl = res.data.databaseUrl;
+            this.addForm.databasePort = res.data.databasePort;
+            this.addForm.databaseUsername = res.data.databaseUsername;
+            this.addForm.databasePassword = res.data.databasePassword;
           }
-        } else if (res.data.type == '文件') {
-          this.isanswerFile = true
-          this.addForm.name = res.data.name
-          this.addForm.type = res.data.type
+        } else if (res.data.type == "文件") {
+          this.isanswerFile = true;
+          this.addForm.name = res.data.name;
+          this.addForm.type = res.data.type;
           for (let i = 0; i < res.data.files.length; i++) {
-            this.dataSourcetable.push({ name: res.data.files[i].fileName, type: res.data.files[i].fileType, size: Size(res.data.files[i].fileSize) })
+            this.dataSourcetable.push({
+              name: res.data.files[i].fileName,
+              type: res.data.files[i].fileType,
+              size: Size(res.data.files[i].fileSize)
+            });
           }
         }
-      })
+      });
     },
     // 修改初始化
     modify(id) {
-      this.putid = id
-      this.changeisanswe = true
+      this.putid = id;
+      this.changeisanswe = true;
       getDatabase(id).then(res => {
-        this.addForm.name = res.data.name
-        this.addForm.introduction = res.data.introduction
-        this.addForm.type = res.data.type
-        this.addForm.databaseType = res.data.databaseType
-        this.addForm.databaseName = res.data.databaseName
-        this.addForm.databaseUrl = res.data.databaseUrl
-        this.addForm.databasePort = res.data.databasePort
-        this.addForm.databaseUsername = res.data.databaseUsername
-        this.addForm.databasePassword = res.data.databasePassword
-      })
+        this.addForm.name = res.data.name;
+        this.addForm.introduction = res.data.introduction;
+        this.addForm.type = res.data.type;
+        this.addForm.databaseType = res.data.databaseType;
+        this.addForm.databaseName = res.data.databaseName;
+        this.addForm.databaseUrl = res.data.databaseUrl;
+        this.addForm.databasePort = res.data.databasePort;
+        this.addForm.databaseUsername = res.data.databaseUsername;
+        this.addForm.databasePassword = res.data.databasePassword;
+      });
     },
     updateDatabase() {
-      if (this.addForm.name == '') {
+      if (this.addForm.name == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-      } else if (this.addForm.type == '') {
+          type: "error",
+          message: "请输入数据源名称"
+        });
+      } else if (this.addForm.type == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据源类型'
-        })
-      } else if (this.addForm.databaseName == '') {
+          type: "error",
+          message: "请输入数据源类型"
+        });
+      } else if (this.addForm.databaseName == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据库名称'
-        })
-      } else if (this.addForm.databaseType == '') {
+          type: "error",
+          message: "请输入数据库名称"
+        });
+      } else if (this.addForm.databaseType == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入数据源名称'
-        })
-      } else if (this.addForm.databaseUrl == '') {
+          type: "error",
+          message: "请输入数据源名称"
+        });
+      } else if (this.addForm.databaseUrl == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入连接地址'
-        })
-      } else if (this.addForm.databasePort == '') {
+          type: "error",
+          message: "请输入连接地址"
+        });
+      } else if (this.addForm.databasePort == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入端口号'
-        })
-      } else if (this.addForm.databaseUsername == '') {
+          type: "error",
+          message: "请输入端口号"
+        });
+      } else if (this.addForm.databaseUsername == "") {
         this.$message({
           showClose: true,
           duration: 1000,
-          type: 'error',
-          message: '请输入用户名'
-        })
+          type: "error",
+          message: "请输入用户名"
+        });
       } else {
         putDatabase({
           introduction: this.addForm.introduction,
@@ -880,36 +1161,36 @@ export default {
             this.$message({
               showClose: true,
               duration: 1000,
-              type: 'success',
-              message: '修改成功'
-            })
-            this.changeisanswe = false
-            this.list()
+              type: "success",
+              message: "修改成功"
+            });
+            this.changeisanswe = false;
+            this.list();
           } else {
             this.$message({
               showClose: true,
               duration: 1000,
-              type: 'error',
+              type: "error",
               message: res.msg
-            })
+            });
           }
-        })
+        });
       }
     },
     det(id) {
-      this.$confirm('此操作将永久删除该数据源, 是否继续?', '提示', {
-        confirmButtonText: '取消',
-        cancelButtonText: '确定',
-        confirmButtonClass: 'classStyle2',
+      this.$confirm("此操作将永久删除该数据源, 是否继续?", "提示", {
+        confirmButtonText: "取消",
+        cancelButtonText: "确定",
+        confirmButtonClass: "classStyle2",
         closeOnClickModal: false,
         showClose: false,
-        type: 'warning'
+        type: "warning"
       })
         .then(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+            type: "info",
+            message: "已取消删除"
+          });
         })
         .catch(() => {
           deleteDatabase({
@@ -918,17 +1199,15 @@ export default {
             this.$message({
               showClose: true,
               duration: 1000,
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.list()
-          })
-        })
+              type: "success",
+              message: "删除成功!"
+            });
+            this.list();
+          });
+        });
     }
-
   }
-
-}
+};
 </script>
 <style lang="less" scoped>
 .file-upload {
@@ -1040,4 +1319,3 @@ export default {
   overflow: auto;
 }
 </style>
-

@@ -137,6 +137,21 @@ export const constantRoutes = [
       }
     }]
   },
+  // 系统配置
+  {
+    path: '/configuration',
+    component: Layout,
+    children: [{
+      path: 'configure',
+      name: '系统管理',
+      component: () => import('@/views/configuration/configure'),
+      meta: {
+        requireAuth: true,
+        title: '系统配置',
+        icon: 'config'
+      }
+    }]
+  },
   // 个人中心
   {
     path: '/IndustryPersonal',
@@ -186,21 +201,7 @@ export const constantRoutes = [
       }
     }]
   },
-  // 导入任务管理
-  {
-    path: '/importTask',
-    component: Layout,
-    children: [{
-      path: 'task',
-      name: '导入任务管理',
-      component: () => import('@/views/importTask/task'),
-      meta: {
-        requireAuth: true,
-        title: '导入任务管理',
-        icon: 'node'
-      }
-    }]
-  },
+
   // 数据模板管理
   {
     path: '/mould',
@@ -216,6 +217,21 @@ export const constantRoutes = [
       }
     }]
   },
+    // 导入任务管理
+    {
+      path: '/importTask',
+      component: Layout,
+      children: [{
+        path: 'task',
+        name: '导入任务管理',
+        component: () => import('@/views/importTask/task'),
+        meta: {
+          requireAuth: true,
+          title: '导入任务管理',
+          icon: 'node'
+        }
+      }]
+    },
   // 404 page must be placed at the end !!!
   {
     path: '*',

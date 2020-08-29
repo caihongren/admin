@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="display: flex; justify-content: center; width: 100%; ">
+    <div style="display: flex; justify-content: center;flex-direction: row;flex-wrap: nowrap ; width: 100%; ">
       <p style="font-size: 16px;">任务名称： </p>
       <el-select v-model="timeTask" placeholder="请选择任务名称" @change="see(timeTask)">
         <el-option v-for="(item,index) in seeTimeTask" :key="index" :label="item.label" :value="item.value" />
@@ -19,17 +19,28 @@
       <p style="font-size: 16px;">修改： </p>
       <p style="width:5%;color: #738498;font-weight: 700;font-size:16px;">{{ update }}</p>
     </div>
-    <div style="width: 80%; margin: 20px auto;display: flex; justify-content: center;">
-      <p>状态筛选:　</p>
-      <el-select v-model="successFlie" placeholder="请选择状态" @change="seeLists()">
-        <el-option label="全部" value="all" />
+    
+   <el-row :gutter="20" style="margin: 20px 6%; text-align: center;">
+      <el-col :span="8">
+        <el-input v-model="search" placeholder="请输入关键字" style="width:80%">
 
-        <el-option label="成功" value="success" />
-        <el-option label="失败" value="failed" />
-        <el-option label="删除" value="delect" />
+          <el-button @click="seeLists" slot="append" icon="el-icon-search" style="background-color: #538ef4;color: #fff;border: 1px solid #538ef4;"></el-button>
+        </el-input>
+      </el-col>
+      <el-col :span="8">
+        <span>状态筛选:　</span>
+        <el-select v-model="successFlie" placeholder="请选择状态" @change="seeLists()">
+          <el-option label="全部" value="all" />
+          <el-option label="成功" value="success" />
+          <el-option label="失败" value="failed" />
+          <el-option label="删除" value="delect" />
+        </el-select>
+      </el-col>
+      <el-col :span="8">
+        <el-button style="background-color: #538ef4;color: #fff;border: 1px solid #538ef4;" @click="download()" >导出</el-button>
+      </el-col>
 
-      </el-select>
-    </div>
+    </el-row>
     <template>
       <el-table
         ref="multipleTable"
@@ -67,7 +78,7 @@
           min-width="25"
         />
         <el-table-column
-          :formatter="seeCompletionStatusc"
+        
           prop="success"
           label="状态"
           show-overflow-tooltip
@@ -87,7 +98,7 @@
       </el-table>
     </template>
 
-    <div style="text-align: center;margin: 5%; 0">
+    <div style="text-align: center;margin: 5% 0">
       <el-pagination :current-page="seeCurrentPage" :page-size="seePageSize" layout="total, sizes, prev, pager, next, jumper" :total="seeLength" @size-change="seeHandleSizeChange" @current-change="seeHandleCurrentChange" />
     </div>
     <div style="padding-bottom: 40px;width: 80%; margin: 0 auto;">
@@ -130,7 +141,7 @@
 <script>
 import {
   handleInfo, // 查看标识数据
-
+download,
   timeTask, // 获取实时任务
   taskList, // 获取任务列表
   resume, // 任务恢复
@@ -141,6 +152,8 @@ import {
   handleData, // 查看任务数据
   timeHandle// 清空数据
 } from '@/api/user.js'
+import FileSaver from 'file-saver'
+
 export default {
   props: {
     selected: String
@@ -149,7 +162,7 @@ export default {
   data() {
     return {
       lookData: false,
-
+search:'',
       seeCurrentPage: 1,
       seeLength: 0,
       seePageSize: 10,
@@ -245,16 +258,6 @@ export default {
           })
         })
     },
-    // 表格状态值
-    seeCompletionStatusc(row) {
-      if (row.success == 'SUCCESS') {
-        return '成功'
-      } else if (row.success == 'FAILED') {
-        return '失败'
-      } else if (row.success == 'DELETE') {
-        return '删除'
-      }
-    },
     headClass() {
       return 'text-align: left;'
     },
@@ -265,19 +268,24 @@ export default {
     // 获取数据管理列表
     seeLists() {
       handleData({
+        handle:this.search,
         pageNum: this.seeOffset,
         pageSize: this.seeLimit,
         success: this.successFlie == 'all' ? null : this.successFlie,
         taskId: this.seeId
       }).then(res => {
-        console.log(res, '获取数据管理列表')
         if (res.code == 0) {
           this.tableData3 = res.data.result
           this.seeLength = res.data.total
         }
       })
     },
-
+     download() {
+         let elemIF = document.createElement('iframe')
+  elemIF.src = 'http://192.168.0.17:9057/job/download?taskId='+this.seeId+'&handle='+this.search
+            elemIF.style.display = 'none'
+            document.body.appendChild(elemIF)
+    },
     // 分页
     seeHandleSizeChange(val) {
       this.seeLimit = val
@@ -322,8 +330,8 @@ export default {
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user')).id
         timeTask(user).then(res => {
-          console.log(res, '获取任务名称下拉菜单')
           if (res.code == 0) {
+            
             this.seeTimeTask = []
             for (let i = 0; i < res.data.length; i++) {
               this.seeTimeTask.push({ label: res.data[i].name, value: res.data[i].id })

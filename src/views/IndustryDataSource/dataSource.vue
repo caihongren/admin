@@ -78,7 +78,7 @@
           <el-input v-model="lookForm.databaseUsername" :disabled="true" />
         </el-form-item>
         <el-form-item label="密　码">
-          <el-input v-model="lookForm.databasePassword" :disabled="true" />
+          <el-input v-model="lookForm.databasePassword" :disabled="true" type="password"/>
         </el-form-item>
       </el-form>
     </el-dialog>

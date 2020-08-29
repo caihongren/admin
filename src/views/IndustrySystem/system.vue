@@ -39,7 +39,7 @@
       </el-tab-pane>
       <el-tab-pane label="主题风格管理">
         <div class="theme">
-          <p class="current">当前主提</p>
+          <p class="current">当前主题</p>
           <div style="width:500px;height:250px;">
             <img :src="bbb" alt style="width:100%;height:100%">
           </div>

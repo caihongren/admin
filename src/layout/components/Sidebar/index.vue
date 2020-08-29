@@ -48,7 +48,8 @@ export default {
              item.path == '/IndustryLog' ||
              item.path == '/IndustryAuthorization' ||
              item.path == '/IndustrySystem' ||
-             item.path == '/IndustryPersonal') {
+             item.path == '/IndustryPersonal'|| 
+             item.path == '/configuration') {
               newlist.push(item)
             }
           }

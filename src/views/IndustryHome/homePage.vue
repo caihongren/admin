@@ -32,7 +32,7 @@
           </div>
 
         </div>
-        <div style="width: 100%; height: 200px;background-color: #fff;border-radius: 10px;margin-top:4%;">
+        <div style="width: 100%; height: 200px;background-color: #fff;border-radius: 10px;margin-top:8%;">
           <div style="width:100%;background: #bdc4ce; border-radius: 10px 10px 0 0;text-align: center;height: 50px;line-height: 50px;font-size: 20px;">
             <img src="../../img/图标1 (10).png" style="width:12%;display: inline-block; vertical-align: middle; ">
             <div style="display: inline-block;">实时导入任务</div>
@@ -51,7 +51,7 @@
         </div>
       </el-col>
       <el-col :span="19" style="padding-right: 0px;padding-left: 20px;">
-        <div class="nine">
+        <!-- <div class="nine"> -->
           <div class="ddd">
             <div class="divIcon">
 
@@ -61,14 +61,14 @@
               <div style="font-size:20px;">{{ dataSourceCount }}</div>
 
             </div>
-            <div class="divIcon" style="margin: 0px 10px 20px 15px;">
+            <div class="divIcon" >
 
               <img src="./../../img/图标1 (2).png">
               <p class="text">企业节点</p>
               <div style="font-size:20px;">{{ enterpriseNodeCount }}</div>
 
             </div>
-            <div class="divIcon" style="margin: 0px 15px 20px 5px;">
+            <div class="divIcon" >
 
               <img src="./../../img/图标1 (3).png">
               <p class="text">任务总数</p>
@@ -85,8 +85,8 @@
 
           </div>
 
-        </div>
-        <div style="margin-top:20px">
+        <!-- </div> -->
+        <div style="margin-top:20px" class="ddd">
           <div class="divIcon">
 
             <img src="./../../img/图标1 (5).png">
@@ -94,14 +94,14 @@
             <div style="font-size:20px;">{{ taskEndCount }}</div>
 
           </div>
-          <div class="divIcon" style="margin: 0px 10px 20px 15px;">
+          <div class="divIcon" >
 
             <img src="./../../img/图标1 (8).png">
             <p class="text">手动停止任务</p>
             <div style="font-size:20px;">{{ taskManualCount }}</div>
 
           </div>
-          <div class="divIcon" style="margin: 0px 15px 20px 5px;">
+          <div class="divIcon" >
 
             <img src="./../../img/图标1 (9).png">
             <p class="text">归档任务</p>
@@ -332,12 +332,22 @@ export default {
         clear:both;
         visibility: hidden;
     }
+.ddd{
+  display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap ;
+            width: 100%;
+           
+           
 
-.nine {
-  width: 100%;
-  min-height: 200px;
+
 }
+// .nine {
+//   width: 100%;
+//   min-height: 200px;
+// }
 .divIcon {
+  margin: 10px;
   border-radius: 15px;
   border-collapse: collapse;
   width: 24%;

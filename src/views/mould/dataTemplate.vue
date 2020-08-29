@@ -182,7 +182,7 @@
       </div>
     </el-dialog>
     <!-- 添加数据模板的创建一行弹出框 -->
-    <el-dialog width="35%" top="15vh" :visible.sync="addEstablish" append-to-body title="修改一行" :close-on-click-modal="false">
+    <el-dialog width="35%" top="15vh" :visible.sync="addEstablish" append-to-body title="编辑一行" :close-on-click-modal="false">
       <el-form ref="createData" :model="createData" :rules="rules2" label-width="80px" class="demo-ruleForm" size="mini">
         <el-form-item label="中文名称" prop="name">
           <el-input v-model="createData.name" placeholder="请输入中文名称" />

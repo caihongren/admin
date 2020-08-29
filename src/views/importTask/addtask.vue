@@ -8,7 +8,7 @@
       </el-row>
       <!-- 新建筛选 -->
       <div style="display: flex; justify-content: left; width: 100%;">
-        <el-form ref="newBuild" :inline="true" :model="newBuild" :rules="rulesTou" style="padding-left:6%;width:82%" class="screen">
+        <el-form ref="newBuild" :inline="true" :model="newBuild" :rules="rulesTou" style="padding-left:6%;width:94%" class="screen">
           <el-form-item label="任务名称" prop="name">
             <el-input v-model="newBuild.name" placeholder="请输入任务名称" />
           </el-form-item>
@@ -26,7 +26,7 @@
         </el-form>
         <div>
           <el-button type="primary" class="determine" round size="mini" @click="startNow('operation')">立即开始</el-button>
-          <el-button type="warning" class="lianjieBtn" round size="mini" @click="startLater('operation')">稍后开始</el-button>
+          <!-- <el-button type="warning" class="lianjieBtn" round size="mini" @click="startLater('operation')">稍后开始</el-button> -->
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@
               <el-button size="mini" class="bottomColor" type="primary" @click="addDatasource">添加</el-button>
             </el-form-item>
             <el-form-item label="数据表" prop="dataSourceList">
-              <el-select v-model="operation.dataSourceList" placeholder="请选择表" @change="addlist(operation.dataSourceList)">
+              <el-select v-model="operation.dataSourceList" placeholder="请选择表" filterable  @change="addlist(operation.dataSourceList)">
                 <el-option v-for="(item,index) in surfacelist" :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
@@ -178,11 +178,9 @@
 
           <el-col :span="10">
             <div class="corresponding">
-              <!-- <el-button size="small" style="margin-bottom: 3%;"  @click="Connection">添加</el-button> -->
               <div v-for="(domain,index) in middle" v-show="addType" :key="index" style="text-align: center;padding-top: 0px;">
                 <el-input v-model="domain.activeName" style="width: 40%;" :disabled="true" />--
                 <el-input v-model="domain.value" style="width: 40%;" :disabled="true" />
-                <!-- <el-button size="small" round @click.prevent="removeDomain(domain.id)">删除</el-button> -->
               </div>
             </div>
           </el-col>
@@ -258,7 +256,7 @@
             <el-input v-model="addData.databaseUsername" placeholder="请输入用户名" />
           </el-form-item>
           <el-form-item v-show="addDataShow" label="密　码">
-            <el-input v-model="addData.databasePassword" placeholder="请输入密码" />
+            <el-input v-model="addData.databasePassword" placeholder="请输入密码" type="password"/>
           </el-form-item>
           <el-form-item v-show="addFileShow">
             <el-table
@@ -352,7 +350,7 @@
             <el-input v-model="addForm.oneselfAgentUsername" placeholder="请输入用户名" :disabled="display" />
           </el-form-item>
           <el-form-item v-show="selfBuilt" label="密　码">
-            <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" />
+            <el-input v-model="addForm.oneselfAgentPassword" placeholder="请输入密码" :disabled="display" type="password"/>
           </el-form-item>
           <!-- 标识基础服务 -->
           <el-form-item v-show="selfBuilt">
@@ -368,7 +366,7 @@
             <el-input v-model="addForm.oneselfBasicsUsername" placeholder="请输入用户名" :disabled="display2" />
           </el-form-item>
           <el-form-item v-show="selfBuilt" label="密　码">
-            <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" />
+            <el-input v-model="addForm.oneselfBasicsPassword" placeholder="请输入密码" :disabled="display2" type="password"/>
           </el-form-item>
           <!-- 托管模式下 -->
           <!-- SNMS系统 -->
@@ -382,7 +380,7 @@
             <el-input v-model="addForm.trusteeshipSnmsUsername" placeholder="请输入用户名" />
           </el-form-item>
           <el-form-item v-show="managed" label="密　码">
-            <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" />
+            <el-input v-model="addForm.trusteeshipSnmsPassword" placeholder="请输入密码" type="password"/>
           </el-form-item>
           <!-- 标识代理服务 -->
           <el-form-item v-show="managed">
@@ -398,7 +396,7 @@
             <el-input v-model="addForm.trusteeshipAgentUsername" placeholder="请输入用户名" :disabled="display3" />
           </el-form-item>
           <el-form-item v-show="managed" label="密　码">
-            <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" />
+            <el-input v-model="addForm.trusteeshipAgentPassword" placeholder="请输入密码" :disabled="display3" type="password"/>
           </el-form-item>
           <el-form-item style="margin-left: -80px;">
             <el-row :gutter="20">
@@ -523,14 +521,22 @@ export default {
       },
       executive: [
         {
-          value: 1,
-          label: '1'
-        }, {
           value: 2,
           label: '2'
         }, {
-          value: 3,
-          label: '3'
+          value: 4,
+          label: '4'
+        }, {
+          value: 6,
+          label: '6'
+        },
+        {
+          value: 8,
+          label: '8'
+        },
+        {
+          value: 10,
+          label: '10'
         }
 
       ], // 任务线程数数据
@@ -679,8 +685,8 @@ export default {
         inputPrefix: [
           { required: true, message: '请输入前缀', trigger: 'blur' },
           {
-            pattern: /^8[68]\.[0-9]{3}\.[1-9][0-9]{0,3}$/,
-            message: '请输入前两位 88或86  .  000-999 . 1-9999',
+            pattern: /^8[68]\.[0-9]{3}\.[1-9][0-9]{0,8}$/,
+            message: '请输入前两位 88或86  .  000-999 . 1-99999999',
             trigger: ['blur', 'change']
           }
         ]
@@ -791,6 +797,7 @@ export default {
       }
     },
     Refresh() {
+      this.rightCardData=[]
       snms({
         enterpriseNodeId: this.operation.node,
         prefix: this.operation.inputPrefix,
@@ -849,6 +856,7 @@ export default {
                   relationItem.push(this.middle[i].value)
                   this.Relation.push(relationItem)
                 }
+
                 task({
                   creatorId: user.id, // 创建人
                   dataSourceId: this.operation.dataSource, // 数据源
@@ -869,13 +877,7 @@ export default {
 
                 }).then(res => {
                   if (res.code == 0) {
-                    this.$message({
-                      showClose: true,
-                      duration: 1000,
-                      type: 'success',
-                      message: '添加成功'
-                    })
-                    this.$emit('detpage')
+                    this.openFullScreen2()
                   } else {
                     this.$message({
                       showClose: true,
@@ -892,7 +894,25 @@ export default {
       })
     },
     // 稍后开始
+    openFullScreen2() {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在创建任务',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      setTimeout(() => {
+        loading.close()
+        this.$message({
+          showClose: true,
+          duration: 1000,
+          type: 'success',
+          message: '添加成功'
+        })
 
+        this.$emit('detpage')
+      }, 1000)
+    },
     startLater() {
       this.$refs['newBuild'].validate(valid => {
         if (valid) {
@@ -937,6 +957,7 @@ export default {
                   relationItem.push(this.middle[i].value)
                   this.Relation.push(relationItem)
                 }
+
                 task({
                   creatorId: user.id, // 创建人
                   dataSourceId: this.operation.dataSource, // 数据源
@@ -1472,20 +1493,31 @@ export default {
     // 上传文件夹
     changesData() {
       const box = this.$refs.file.files
+      const size1 = 0;
       this.addData.fileList = []
       for (let i = 0; i < box.length; i++) {
         const sort = box[i].name.split('.')
         sort = sort[sort.length - 1]
-        if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
+        if (sort == 'csv'|| sort == 'xls' || sort == 'xlsx') {
           this.addData.fileList.push(box[i])
           this.dataSourcetable.push({ name: box[i].name, type: sort, size: Size(box[i].size) })
+           size1 = size1 + box[i].size;
         }
+      }
+       if (size1 > 1024 * 1024 * 500) {
+        this.$message.error({
+          showClose: true,
+          duration: 1000,
+          message: "单次上传不允许超过500m",
+          type: "warning"
+        });
+        return;
       }
       if (this.dataSourcetable.length <= 0) {
         this.$message.error({
           showClose: true,
           duration: 1000,
-          message: '只能上传csv或者xls,xlsx格式文件',
+          message: '只能上传csv、xls、xlsx格式文件',
           type: 'warning'
         })
       }
@@ -1505,14 +1537,23 @@ export default {
         })
         return
       }
-      if (sort == 'csv' || sort == 'xls' || sort == 'xlsx') {
+      if (sort == 'csv'|| sort == 'xls' || sort == 'xlsx') {
         this.addData.fileList.push(file)
         this.dataSourcetable.push({ name: file.name, type: sort, size: Size(file.size) })
-      } else {
+      }if (size > 1024 * 1024 * 300) {
+          this.$message.error({
+            showClose: true,
+            duration: 1000,
+            message: "单个文件不允许超过300m",
+            type: "warning"
+          });
+          return;
+        }
+       else {
         this.$message.error({
           showClose: true,
           duration: 2000,
-          message: '只能上传csv或者xls,xlsx格式文件。',
+          message: '只能上传csv、xls、xlsx格式文件。',
           type: 'warning'
         })
         return

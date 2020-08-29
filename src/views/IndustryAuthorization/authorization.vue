@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="author">
     <div class="headline">
       <h2>授权管理</h2>
     </div>
@@ -10,7 +10,7 @@
         <div class="old">
           <h2>请求码：</h2>
           <div class="value">
-            <el-input v-model="getYard" readonly="readonly" type="textarea" :disabled="true" :autosize="{ minRows: 16 }" placeholder="没获取到请求码" />
+            <el-input v-model="getYard" readonly="readonly" type="textarea" :disabled="true" :autosize="{ minRows: 15 }" placeholder="没获取到请求码" />
             <input ref="inputCopy" :value="getYard" type="textarea" style="opacity: 0;">
           </div>
           <div class="btn">
@@ -118,10 +118,15 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.author {
+  width: 98%;
+  background: #ffffff;
+  height: 870px;
+  margin: 0 auto;
+}
 .headline {
   width: 100%;
-  height: 40px;
-  margin: auto;
+
   color: #4283d8;
   h2 {
     text-align: center;
@@ -131,8 +136,7 @@ export default {
 }
 .main {
   width: 100%;
-  height: 40px;
-  margin: auto;
+
   color: #4283d8;
   h2 {
     text-align: center;
@@ -146,9 +150,29 @@ export default {
   }
   .text {
     display: flex;
-    height: 500px;
+    // min-height: 500px;
     width: 100%;
-    .old,
+    .old{
+      width: 30%;
+      margin: 40px 10%;
+      height: 100%;
+       h2 {
+        height: 50px;
+      }
+      .value {
+        border: 2px solid black;
+        border-radius: 20px;
+        padding: 10px;
+        height: 80%;
+      }
+      .btn {
+        height: 50px;
+        margin: auto;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+      }
+    }
     .new {
       width: 30%;
       margin: 40px 10%;

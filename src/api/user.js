@@ -374,6 +374,13 @@ export function taskInfo(id) {
     method: 'get'
   })
 }
+// 查看任务配置
+export function taskConfig(id) {
+  return request({
+    url: '/job/taskConfig?taskId=' + id,
+    method: 'get'
+  })
+}
 // 开始执行任务
 export function start(data) {
   return request({
@@ -536,6 +543,31 @@ export function dataList() {
     url: '/account/dataList',
     method: 'get'
 
+  })
+}
+// 获取配置列表
+export function configList() {
+  return request({
+    url: '/general/configList',
+    method: 'get'
+
+  })
+}
+// 修改配置
+export function putConfig(data) {
+  return request({
+    url: '/general/config',
+    method: 'put',
+    data
+  })
+}
+// 下载数据
+export function download(query) {
+  return request({
+    url: '/job/download',
+    method: 'get',
+    params: query,
+    timeout:120000
   })
 }
 // 计算文件大小,根据字节计算大小

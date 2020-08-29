@@ -46,7 +46,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="密　码">
-          <el-input v-model="defaultPassword" style="width:100%" :disabled="true" />
+          <el-input v-model="defaultPassword" style="width:100%" :disabled="true" type="password"/>
         </el-form-item>
         <el-form-item>
           <div style="width: 40%;float:right">

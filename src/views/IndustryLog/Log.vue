@@ -2,12 +2,27 @@
   <div class="log">
 
     <div style="background-color: #ffffff;padding: 1%;">
-      <span style="font-size:18px;font-weight:600;">类型　</span>
+      <el-alert
+        style="margin-bottom:20px;"
+        title="数据量较大时，当前数据更新可能存在延迟，请耐心等待"
+        type="info"
+        center
+        close-text="知道了"
+
+        show-icon
+      />
+
+      <span
+        style="
+        font-size:18px;font-weight:600;"
+      >类型　</span>
       <el-select v-model="value" placeholder="请选择" style="margin-right:20px" @change="coursePractice(value)">
         <el-option label="任务日志" value="任务日志" />
         <el-option label="登录日志" value="登录日志" />
+        <el-option label="操作日志" value="操作日志" />
+
       </el-select>
-    </div>
+      </div>
     <div v-if="taskDisplay">
 
       <div class="head">
@@ -105,6 +120,9 @@
       </div>
 
     </div>
+    <div v-if="operation">
+      操作日志
+    </div>
     <!-- 数据表格进行中查看弹出框 -->
     <el-dialog width="35%" :visible.sync="isanswer" append-to-body title="查看任务" :close-on-click-modal="false">
       <el-form ref="task" :model="task" label-width="100px" class="dialog">
@@ -146,13 +164,13 @@
           <el-option v-for="(item,index) in seeName" :key="index" :label="item.label" :value="item.value" />
         </el-select>
         <p style="padding-left: 20px;font-size: 16px;">数据总量：</p>
-        <p style="width:3%;color: #738498;font-weight: 700;font-size:16px;">{{ handleNum }}</p>
+        <p style="color: #738498;font-weight: 700;font-size:16px;">{{ handleNum }}</p>
         <p style="font-size: 16px;">成功： </p>
-        <p style="width:3%;color: #738498;font-weight: 700;font-size:16px;">{{ successNum }}</p>
+        <p style="color: #738498;font-weight: 700;font-size:16px;">{{ successNum }}</p>
         <p style="font-size: 16px;">失败： </p>
-        <p style="width:3%;color: #738498;font-weight: 700;font-size:16px;">{{ failedNum }}</p>
+        <p style="color: #738498;font-weight: 700;font-size:16px;">{{ failedNum }}</p>
         <p style="font-size: 16px;">用时： </p>
-        <p style="width:10%;color: #738498;font-weight: 700;font-size:16px;">{{ costTime }}</p>
+        <p style="color: #738498;font-weight: 700;font-size:16px;">{{ costTime }}</p>
 
         <p style="font-size: 16px;">平均速度： </p>
         <p style="width:5%;color: #738498;font-weight: 700;font-size:16px;">{{ speed }}</p>
@@ -277,6 +295,7 @@ export default {
       History: [],
       taskDisplay: true,
       Sign: false,
+      operation: false,
       form: {
         name: '',
         region: '',
@@ -645,9 +664,16 @@ export default {
       if (id == '任务日志') {
         this.taskDisplay = true
         this.Sign = false
-      } else {
+        this.operation= false
+       
+      } else if(id == '登录日志'){
         this.Sign = true
         this.taskDisplay = false
+         this.operation= false
+      }else if(id == '操作日志'){
+         this.operation= true
+  this.Sign = false
+  this.taskDisplay = false
       }
     },
     // 删除

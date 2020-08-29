@@ -1,83 +1,35 @@
 <template>
-  <div>
-    <div style="display: flex; justify-content: center; width: 100%; ">
-      <p style="font-size: 16px;">任务名称： </p>
-      <el-select v-model="taskName" placeholder="请选择任务名称" @change="see(taskName)">
-        <el-option v-for="(item,index) in seeName" :key="index" :label="item.label" :value="item.value" />
-      </el-select>
-      <p style="padding-left: 20px;font-size: 16px;">数据总量：</p>
-      <p style="width:3%;color: #738498;font-weight: 700;font-size:16px;">{{ handleNum }}</p>
-      <p style="font-size: 16px;">成功： </p>
-      <p style="width:3%;color: #738498;font-weight: 700;font-size:16px;">{{ successNum }}</p>
-      <p style="font-size: 16px;">失败： </p>
-      <p style="width:3%;color: #738498;font-weight: 700;font-size:16px;">{{ failedNum }}</p>
-      <p style="font-size: 16px;">用时： </p>
-      <p style="width:5%;color: #738498;font-weight: 700;font-size:16px;">{{ costTime }}</p>
+  <div style="padding:0 30px;">
+    <div style="display: flex;   width: 100%; ">
+      <div>任务名称：
+        <el-input v-model="textName" style="margin: 10px;width:65%"></el-input>
 
-      <p style="font-size: 16px;">平均速度： </p>
-      <p style="width:10%;color: #738498;font-weight: 700;font-size:16px;">{{ speed }}</p>
-    </div>
-    <div style="width: 80%; margin: 20px auto;display: flex; justify-content: center;">
-      <p>状态筛选:　</p>
-      <el-select v-model="successFlie" placeholder="请选择状态" @change="seeLists()">
-        <el-option label="全部" value="all" />
-
-        <el-option label="成功" value="success" />
-        <el-option label="失败" value="failed" />
-        <el-option label="删除" value="delect" />
-
-      </el-select>
+      </div>
+      <div style="margin: 10px;">状态筛选:
+        <el-select v-model="successFlie" placeholder="请选择状态" @change="seeLists()">
+          <el-option label="全部" value="all" />
+          <el-option label="成功" value="success" />
+          <el-option label="失败" value="failed" />
+          <el-option label="删除" value="delect" />
+        </el-select>
+      </div>
+      <div>标识名称:
+        <el-input v-model="search" placeholder="请输入关键字" style="width:70%;margin: 10px;">
+          <el-button @click="seeLists" slot="append" icon="el-icon-search" style="background-color: #538ef4;color: #fff;border: 1px solid #538ef4;"></el-button>
+        </el-input>
+      </div>
+      <el-button style="background-color: #538ef4;color: #fff;border: 1px solid #538ef4;margin: 10px;" @click="download()" v-loading.fullscreen.lock="link">导出</el-button>
     </div>
     <template>
-      <el-table
-        ref="multipleTable"
-        :cell-style="rowClass"
-        border
-        :header-cell-style="headClass"
-        :data="tableData2"
-        tooltip-effect="dark"
-        style="width: 80%;color:#43454a;margin: 0px auto;"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          min-width="100"
-        />
-        <el-table-column
-          prop="handle"
-          label="标识名称"
-          min-width="100"
-        />
-        <el-table-column
-          prop="prefix"
-          label="前缀"
-          min-width="45"
-        />
-        <el-table-column
-          prop="updated"
-          label="执行时间"
-          show-overflow-tooltip
-          min-width="80"
-        />
-        <el-table-column
-          prop="type"
-          label="类型"
-          show-overflow-tooltip
-          min-width="25"
-        />
-        <el-table-column
-          :formatter="seeCompletionStatusc"
-          prop="success"
-          label="状态"
-          show-overflow-tooltip
-          min-width="25"
-        />
-        <el-table-column
-          prop="msg"
-          label="失败原因"
-          show-overflow-tooltip
-          min-width="100"
-        />
+      <el-table ref="multipleTable" :cell-style="rowClass" border :header-cell-style="headClass" :data="tableData2" tooltip-effect="dark"
+        style="width: 100%;color:#43454a;margin: 0px auto;" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" min-width="100" />
+        <el-table-column prop="handle" label="标识名称" min-width="100" />
+        <el-table-column prop="prefix" label="前缀" min-width="45" />
+        <el-table-column prop="updated" label="执行时间" show-overflow-tooltip min-width="80" />
+        <el-table-column prop="type" label="类型" show-overflow-tooltip min-width="25" />
+        <el-table-column prop="success" label="状态" show-overflow-tooltip min-width="25" />
+        <el-table-column prop="msg" label="失败原因" show-overflow-tooltip min-width="100" />
         <el-table-column label="操作" min-width="100">
           <template slot-scope="scope">
             <el-button type="text" class="tableButton" @click="seeData(scope.row.id)">查看数据</el-button>
@@ -88,7 +40,8 @@
       </el-table>
     </template>
     <div style="text-align: center;margin: 5%; 0">
-      <el-pagination :current-page="seeCurrentPage" :page-size="seePageSize" layout="total, sizes, prev, pager, next, jumper" :total="seeLength" @size-change="seeHandleSizeChange" @current-change="seeHandleCurrentChange" />
+      <el-pagination :current-page="seeCurrentPage" :page-size="seePageSize" layout="total, sizes, prev, pager, next, jumper" :total="seeLength"
+        @size-change="seeHandleSizeChange" @current-change="seeHandleCurrentChange" />
     </div>
     <div style="width: 80%; margin: 0 auto;text-align: right;">
       <el-button class="stop" type="primary " size="mini" @click="bulkImport">批量导入</el-button>
@@ -117,6 +70,7 @@
 </template>
 <script>
 import {
+  download,//下载数据
   timeTask, // 获取实时任务
   taskState, // 获取任务状态
   taskList, // 获取任务列表
@@ -136,13 +90,18 @@ import {
   deleteTask, // 删除未开始任务
   timeHandle// 清空数据
 } from '@/api/user.js'
+// import FileSaver from 'file-saver'
 export default {
   props: {
-    selected: String
+    selected: String,
+
 
   },
-  data() {
+  data () {
     return {
+      search: '',
+      textName: '',
+      link: false,
       ItemSelected: [], // 表格选中
 
       seeName: [],
@@ -184,17 +143,17 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.seeId = this.selected
-    this.see(this.seeId)
+    // this.see(this.seeId)
     this.seeLists()
-    this.seeTask()
+    // this.seeTask()
   },
   methods: {
-    endIsanswer() {
+    endIsanswer () {
       this.$emit('closelsanswer')
     },
-    seeData(id) {
+    seeData (id) {
       this.lookData = true
       handleInfo(id).then(res => {
         if (res.code == 0) {
@@ -205,39 +164,43 @@ export default {
         }
       })
     },
-    // 表格状态值
-    seeCompletionStatusc(row) {
-      if (row.success == 'SUCCESS') {
-        return '成功'
-      } else if (row.success == 'FAILED') {
-        return '失败'
-      } else if (row.success == 'DELETE') {
-        return '删除'
-      }
-    },
-    headClass() {
+    headClass () {
       return 'text-align: left;'
     },
     // 表格样式设置
-    rowClass() {
+    rowClass () {
       return 'text-align: left;'
     },
     // 获取导入任务列表
-    seeLists() {
+    seeLists () {
       handleData({
+        handle: this.search,
         pageNum: this.seeOffset,
         pageSize: this.seeLimit,
         success: this.successFlie == 'all' ? null : this.successFlie,
         taskId: this.seeId
       }).then(res => {
         if (res.code == 0) {
-          this.tableData2 = res.data.result
-          this.seeLength = res.data.total
+          this.textName = res.data.taskName
+          this.tableData2 = res.data.taskData.result
+          this.seeLength = res.data.taskData.total
         }
       })
     },
+    download () {
+      this.link = true
+      setTimeout(() => {
+        let  elemIF  =  document.createElement('iframe')
+        elemIF.src  =  'http://192.168.0.17:9057/job/download?taskId=' + this.seeId + '&handle=' + this.search
+                    elemIF.style.display  =  'none'
+                    document.body.appendChild(elemIF)
+        this.link = false;
+      }, 5000);
+
+
+    },
     // 多选
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       const list = []
       val.forEach(row => {
         list.push(row.id)
@@ -245,7 +208,7 @@ export default {
       this.ItemSelected = list
     },
     // 批量导入
-    bulkImport() {
+    bulkImport () {
       const list = this.ItemSelected
       if (list.length == 0) {
         this.$message({
@@ -279,7 +242,7 @@ export default {
       })
     },
     // 批量删除
-    bulkDelete() {
+    bulkDelete () {
       const list = this.ItemSelected
       if (list.length == 0) {
         this.$message({
@@ -313,7 +276,7 @@ export default {
       })
     },
     // 重新导入
-    reImport(id) {
+    reImport (id) {
       handle({
         handles: [id],
         taskId: this.seeId
@@ -327,7 +290,7 @@ export default {
           })
           this.ItemSelected = []
           this.seeLists()
-          this.see(this.seeId)
+          // this.see(this.seeId)
         } else {
           this.$message({
             showClose: true,
@@ -339,28 +302,27 @@ export default {
       })
     },
     // 删除
-    modify(id) {
-      this.$confirm('此操作将删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '取消',
-        cancelButtonText: '确定',
+    modify (id) {
+      this.$confirm('此操作将删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '取消',
+        cancelButtonText: '确定',
         confirmButtonClass: 'classStyle2',
         closeOnClickModal: false,
         showClose: false,
-        type: 'warning'
+        type: 'warning'
       })
-        .then(() => {
+        .then(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: 'info',
+            message: '已取消删除'
           })
         })
-        .catch(() => {
+        .catch(() => {
           deleteHandle({
             handles: [id],
             taskId: this.seeId
           }).then(res => {
             if (res.code == 0) {
-              console.log(res, 'shanchu ')
               this.$message({
                 showClose: true,
                 duration: 1000,
@@ -381,16 +343,16 @@ export default {
         })
     },
     // 分页
-    seeHandleSizeChange(val) {
+    seeHandleSizeChange (val) {
       this.seeLimit = val
       this.seeLists()
     },
-    seeHandleCurrentChange(val) {
+    seeHandleCurrentChange (val) {
       this.seeOffset = val
       this.seeLists()
     },
     // 查看已完成任务
-    seeNames() {
+    seeNames () {
       if (sessionStorage.getItem('user')) {
         const user = JSON.parse(sessionStorage.getItem('user')).id
         taskEndList(user).then(res => {
@@ -404,49 +366,47 @@ export default {
       }
     },
     // 查看按钮
-    see(selected) {
-      taskInfo(selected || this.seeId).then(res => {
-        if (res.code == 0) {
-          console.log(res, '00000')
-          this.handleNum = res.data.handleNum
-          this.successNum = res.data.successNum
-          this.failedNum = res.data.failedNum
-          this.costTime = res.data.costTime
-          this.deleteNum = res.data.deleteNum
-          this.speed = res.data.speed
-          this.taskName = res.data.taskId
-          this.operatingType = res.data.operatingType
+    // see(selected) {
+    //   taskInfo(selected || this.seeId).then(res => {
+    //     if (res.code == 0) {
+    //       this.handleNum = res.data.handleNum
+    //       this.successNum = res.data.successNum
+    //       this.failedNum = res.data.failedNum
+    //       this.costTime = res.data.costTime
+    //       this.deleteNum = res.data.deleteNum
+    //       this.speed = res.data.speed
+    //       this.taskName = res.data.taskId
+    //       this.operatingType = res.data.operatingType
 
-          this.seeId = res.data.taskId
+    //       this.seeId = res.data.taskId
 
-          this.seeLists()
-          this.seeNames()
-        } else {
-          this.$message({
-            showClose: true,
-            duration: 1000,
-            type: 'error',
-            message: '此表单无数据'
-          })
-        }
-      })
-    },
-    seeTask() {
-      if (sessionStorage.getItem('user')) {
-        const user = JSON.parse(sessionStorage.getItem('user')).id
-        timeTask(user).then(res => {
-          console.log(res, 'seeTask')
-          if (res.code == 0) {
-            this.seeTimeTask = []
-            for (let i = 0; i < res.data.length; i++) {
-              this.seeTimeTask.push({ label: res.data[i].name, value: res.data[i].id })
-            }
-          }
-        })
-      }
-    },
+    //       this.seeLists()
+    //       this.seeNames()
+    //     } else {
+    //       this.$message({
+    //         showClose: true,
+    //         duration: 1000,
+    //         type: 'error',
+    //         message: '此表单无数据'
+    //       })
+    //     }
+    //   })
+    // },
+    // seeTask() {
+    //   if (sessionStorage.getItem('user')) {
+    //     const user = JSON.parse(sessionStorage.getItem('user')).id
+    //     timeTask(user).then(res => {
+    //       if (res.code == 0) {
+    //         this.seeTimeTask = []
+    //         for (let i = 0; i < res.data.length; i++) {
+    //           this.seeTimeTask.push({ label: res.data[i].name, value: res.data[i].id })
+    //         }
+    //       }
+    //     })
+    //   }
+    // },
     // 获取导入任务列表
-    getLists() {
+    getLists () {
       this.formInline.pageSize = this.pageSize
       this.formInline.pageNum = this.currentPage
       if (sessionStorage.getItem('user')) {
